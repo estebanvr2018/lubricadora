@@ -265,7 +265,41 @@ public class ProductosDAO {
 		
 	}
 	/*** FIN inserta categoría ***/
-	
+
+	public int insertaPrCSoloSubcategoria(Connection objConnection,  String subCate, String strProducto) throws SQLException 
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		int resQuery=0;
+		int id_productoCat = idMayorProducto(objConnection);
+		int id_categ = idCategoria(objConnection, strProducto);
+		String user="Lubri";
+		String estado="A";
+		try {
+			ps = objConnection.prepareStatement("insert into tb_producto_descrip (id_prod_des,id_producto_cat,descripcion,estado,usuario_ingreso)values(?, ?, ?, ?, ?)");
+			ps.setInt(1, id_productoCat);
+			ps.setInt(2, id_categ);
+			ps.setString(3, subCate);
+			ps.setString(4, estado);
+			ps.setString(5, user);
+			resQuery = ps.executeUpdate();
+			
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+			resQuery=-1;
+		} finally {
+			if (rs != null && rs.isClosed()) {
+				rs.close();
+			}
+			if (ps != null && !ps.isClosed()) {
+				ps.close();
+			}
+		}
+		return resQuery;
+		
+	}
+	/*** FIN inserta categoría ***/
 	
 	public int insertaProductosDAO(Connection objConnection, String strProducto, String descripcionProd, float valorUni, int Stock, float fltPrecioVta) throws SQLException 
 	{
@@ -317,6 +351,37 @@ public class ProductosDAO {
 			}
 			else 
 				return rs.getInt("idMax");
+
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+			return 0;
+		} finally {
+			if (rs != null && rs.isClosed()) {
+				rs.close();
+			}
+			if (ps != null && !ps.isClosed()) {
+				ps.close();
+			}
+		}
+	}
+	
+	public int idCategoria(Connection objConnection, String categoria) throws SQLException 
+	{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = objConnection.prepareStatement("select f.id_producto_cat as idCategoria from tb_producto_cat f where f.descripcion= ?");
+			ps.setString(1, categoria);
+			rs = ps.executeQuery();
+			
+			if (rs.next() == true) 
+			{
+				return rs.getInt("idCategoria");
+			}
+			else 
+				return rs.getInt("idCategoria");
 
 		} catch (Exception e) {
 			StringWriter errores = new StringWriter();

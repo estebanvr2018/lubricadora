@@ -57,6 +57,8 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 	public List<productosCategoriaDTO> categoriaProductos=null;
 	public List<productosDescripcionDTO> subCategoriaProductos=null;
 	
+	
+	public String productoGeneral = null, productoEspecifico=null;
 	/*** ingreso de productos ***/
 	public ObservableList<String> Contenido= 
 			    FXCollections.observableArrayList (
@@ -64,10 +66,9 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 			        );;
 	public ObservableList<String> ContenidoDesc= 
 				FXCollections.observableArrayList (
-						"Nuevo "
 						);;			        
 			        
-			        
+						
 	public ComboBox<String> comboProductosCat= new ComboBox<String>(Contenido);
 	
 	public ComboBox<String> comboProCatDescripcion= new ComboBox<String>(ContenidoDesc);
@@ -225,25 +226,7 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 		comboProCatDescripcion.setLayoutX(330);
 		comboProCatDescripcion.setLayoutY(55);
 		comboProCatDescripcion.setVisible(false);
-		comboProCatDescripcion.valueProperty().addListener((ov, p1, p2) -> 
-		{	
-				
-			System.out.println("SubProducto --> " + p2);
-			lblNProducto.setVisible(true);
-			lblDescripcion.setVisible(true);
-			lblPCompra.setVisible(true);
-			lblStock.setVisible(true);
-			lblPorcentaje.setVisible(true);
-			lblPVta.setVisible(true);
-			txtNProducto.setVisible(true);
-			txtDescripcion.setVisible(true);
-			txtPrecioCompra.setVisible(true);
-			txtStock.setVisible(true);
-			txtValorPorcentual.setVisible(true);
-			btnPrecio.setVisible(true);
-			txtPrecioVta.setVisible(true);
-			
-		});
+		
 		
 		Label lblCatMin = new Label("Medida");
 		lblCatMin.setLayoutX(20);
@@ -300,6 +283,8 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 		{	
 				
 			System.out.println("Producto --> " + p2);
+			productoGeneral=null;
+			productoGeneral=p2;
 			System.out.println("================================================================================");
 			System.out.println(" Agregando producto a la tabla...");
 			System.out.println("================================================================================");
@@ -349,6 +334,8 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 				
 				
 				traeProdSubCat(p2);
+				
+				ContenidoDesc.add("Nuevo subproducto");
 				System.out.println("Cantidad de combos; "+comboProCatDescripcion.getItems().size());
 				if ( comboProCatDescripcion.getItems().size() >0 )
 				{
@@ -367,6 +354,48 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 					txtPrecioVta.setVisible(true);
 				}	
 			}
+		});
+		
+		comboProCatDescripcion.valueProperty().addListener((ov, p1, p2) -> 
+		{	
+			productoEspecifico = null ;
+			productoEspecifico = p2;
+			if (p2 == "Nuevo subproducto")
+			{
+				System.out.println("Nuevo subproducto");
+				lblCatMin.setVisible(true);
+				txtCatNew.setText("");
+				txtCatNew.setVisible(true);
+				btnAddMedida.setVisible(true);
+				tableDescProductos.setVisible(true);
+				tableDescProductos.getItems().removeAll();
+				tableDescProductos.getItems().clear();
+				btnGuardarCategoria.setVisible(true);
+			}
+			else
+			{	lblCatMin.setVisible(false);
+				txtCatNew.setVisible(false);
+				btnAddMedida.setVisible(false);
+				tableDescProductos.setVisible(false);
+				btnGuardarCategoria.setVisible(false);
+				
+				System.out.println("SubProducto --> " + p2);
+				lblNProducto.setVisible(true);
+				lblDescripcion.setVisible(true);
+				lblPCompra.setVisible(true);
+				lblStock.setVisible(true);
+				lblPorcentaje.setVisible(true);
+				lblPVta.setVisible(true);
+				txtNProducto.setVisible(true);
+				txtDescripcion.setVisible(true);
+				txtPrecioCompra.setVisible(true);
+				txtStock.setVisible(true);
+				txtValorPorcentual.setVisible(true);
+				btnPrecio.setVisible(true);
+				txtPrecioVta.setVisible(true);
+			
+			}
+			
 		});
 		
 		traeProductosCategoria();
@@ -587,6 +616,37 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 		
 	}
 	/*** FIN guardando categoria del producto ***/
+	
+	/*** INICIO guardando solo subcategoria del producto ***/
+	public void insertaProductosDet(String nomCat)
+	{
+		System.out.println("==================================================");
+		System.out.println(" Guardando solo Sub-categoria...");
+		System.out.println("==================================================");
+		int resInsert = 0;
+		try
+		{
+		for (int i = 0; i < tableDescProductos.getItems().size(); i++)
+		{	String descripcion = null;
+			descripcion =tableDescProductos.getItems().get(i).getDescripcion();
+			resInsert = new ProductosBO().insertaSubProducto( descripcion, nomCat);
+		    System.out.println(tableDescProductos.getItems().get(i).getDescripcion());
+		    if ( resInsert != 1)
+			{	
+				String srtError="La subcategoría " + descripcion  +  "no se pudo ingresar : ";
+				alertasMensajes alerta = new alertasMensajes();
+				alerta.alertaGeneral(srtError);
+				System.out.println("NO HAY DATOS");
+			}
+		}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
+	}
+	/*** FIN guardando solo subcategoria del producto ***/
 	
 
 	public void consultaProductos(Stage ventanaParam) 
@@ -862,11 +922,22 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 			    	int validaCategoria = 0;
 			    	validaCategoria =txtProNew.getText().length();
 			    	System.out.println("valida: "+validaCategoria);
-			    	if( validaCategoria == 0 || tableDescProductos.getItems().size() <= 0 )
-			    	{
-			    		String srtError="No ha ingresado la nueva categoría o subcategoría...";
-						alertasMensajes alerta = new alertasMensajes();
-						alerta.alertaGeneral(srtError);
+			    	if( validaCategoria == 0 ) 
+			    	{ 
+			    		if(	tableDescProductos.getItems().size() <= 0 )
+			    	    {
+				    		String srtError="No ha ingresado la nueva categoría o subcategoría...";
+							alertasMensajes alerta = new alertasMensajes();
+							alerta.alertaGeneral(srtError);
+			    	    }
+			    		else
+			    		{	
+			    			System.out.println("==================================================");
+			    			System.out.println(" Creando subcategoría...");
+			    			System.out.println("==================================================");
+			    			System.out.println(" Correcion primera..." +productoGeneral+ " - "+productoEspecifico);
+			    			insertaProductosDet(productoGeneral);
+			    		}
 			    	}	
 			    	else
 			    	{	
@@ -876,8 +947,10 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 				    	insertaProductosCategoria(txtProNew.getText().toString().trim());
 				    	
 				    	
-			    	}	
-			    }	
+			    	}
+			    	
+			    }
+			
 		
 	}
 }	

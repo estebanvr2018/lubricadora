@@ -149,6 +149,27 @@ public class ProductosBO {
 	}
 	/*** FIN Inserta producto subcategoria ***/
 	
+	/*** INICIO Inserta solo subproducto subcategoria ***/
+	public int insertaSubProducto(String SubCate ,String descripcionProd) throws SQLException
+	{
+		Connection objConnection = new ConexionMySQL().conexion();
+		int insertQuery=0;
+		try {
+			insertQuery = new ProductosDAO().insertaPrCSoloSubcategoria(objConnection, SubCate, descripcionProd);
+			return insertQuery;
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+		} finally {
+			if (objConnection != null) {
+				objConnection.close();
+			}
+		}
+		return insertQuery;
+	}
+	/*** FIN Inserta producto subcategoria ***/
+	
+	
 	public int insertaProductos(String nomProd, String descripcionProd, float precioCompra, int stock, float fltPrecioVta) throws SQLException
 	{
 		Connection objConnection = new ConexionMySQL().conexion();
