@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jdbcDataAdapter class="net.sf.jasperreports.data.jdbc.JdbcDataAdapterImpl"><name>adaptador</name><driver>com.mysql.jdbc.Driver</driver><username>root</username><password>1234</password><savePassword>true</savePassword><url>jdbc:mysql://localhost/db_facturacion</url><database></database><serverAddress></serverAddress><classpath>C:\apache-tomcat-7.0.62\lib\mysql-connector-java-5.1.23-bin.jar</classpath></jdbcDataAdapter>
