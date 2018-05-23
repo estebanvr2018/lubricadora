@@ -125,7 +125,7 @@ public class botones
 	}
 	public ImageView facturaP()
 	{
-	Image imgCarga = new Image("application/images/facturacion.png",30,30,true,true); 
+	Image imgCarga = new Image("application/images/facturacion.png",30,40,true,true); 
 	ImageView imgView = new ImageView(imgCarga);
 	return imgView;
 	}

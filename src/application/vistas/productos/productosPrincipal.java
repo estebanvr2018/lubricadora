@@ -36,16 +36,23 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class productosPrincipal implements EventHandler<ActionEvent> 
 {
 	public TextField txtNProducto, txtDescripcion, txtPrecioCompra, txtValorPorcentual, txtPrecioVta, txtStock, txtValorU;
 	
-	public TextField txtProNew, txtCatNew;
+	public TextField txtProNew, txtCatNew, numProductos;
 	
-	public Button btnGuardar, btnBuscar,btnExit, btnPrecio, btnGuardarCategoria;
+	public Button btnGuardar, btnBuscar,btnExit, btnPrecio, btnGuardarCategoria, btnEnvia;
 	public Stage ventanaActual;
+	public Stage VentanaConsulta;
+	
+	public boolean verifica=false;
+	
+	public productoDTO productoRec = new productoDTO();
+	
 	
 	public TableView<tablaFacturaDet> tableProductos = new TableView();
 	
@@ -897,21 +904,22 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 	}
 	/*** FIN CONSULTA DE PRODUCTOS ***/
 	
-	/*** se añadio esta clase para cuando el usuario desee agregar un producto ***/
-	public void consultaProductoCliente() 
+	/*** se añadio esta clase para cuando el usuario desee agregar un producto 
+	 * @return ***/
+	public productoDTO consultaProductoCliente() 
 	{
-		Stage VentanaConsulta = new Stage();
+		VentanaConsulta = new Stage();
 		VentanaConsulta.setTitle("Principal");
 		
 		Label lblDescripcion = new Label("Ingrese el producto");
-		lblDescripcion.setLayoutX(20);
+		lblDescripcion.setLayoutX(40);
 		lblDescripcion.setLayoutY(60);
 		lblDescripcion.setFont(Font.font("Tahoma", FontWeight.NORMAL, 18));
 		txtDescripcion = new TextField();
-		txtDescripcion.setLayoutX(200);
+		txtDescripcion.setLayoutX(220);
 		txtDescripcion.setLayoutY(60);
 		txtDescripcion.setPrefSize(200, 25);
-		
+		productoRec=null;
 		/*INICIO
 		 CARGA DE PRODUCTOS A LA TABLA*/
 		txtDescripcion.setOnKeyPressed(new EventHandler<KeyEvent>() 
@@ -946,6 +954,7 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 		 CARGA DE PRODUCTOS A LA TABLA*/
 		botones b = new botones();
         Group rootConsulta = new Group();
+        BorderPane sur  = new BorderPane();
         BorderPane bp  = new BorderPane();
 		bp.setCenter(b.fondoPantalla());
 		
@@ -978,12 +987,13 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 		productosIngresados.setPrefSize(580, 220);
 		productosIngresados.setVisible(true);
 		Label lblProd = new Label("Número productos");
-		lblProd.setLayoutX(30);
+		lblProd.setLayoutX(50);
 		lblProd.setLayoutY(350);
 		lblProd.setVisible(false);
-		TextField numProductos = new TextField();
+		numProductos = new TextField();
 		numProductos.setVisible(false);
-		Button btnEnvia = new Button("Agregar a factura");
+		btnEnvia = new Button("Agregar");
+		btnEnvia.setVisible(false);
 		productosIngresados.setOnMouseClicked( event -> {
 			if( event.getClickCount() == 2  || event.getClickCount() == 1 ) 
 		    {
@@ -992,8 +1002,8 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 					System.out.println("1 o 2 click");
 					lblProd.setVisible(true);
 					numProductos.setVisible(true);
-					numProductos.setLayoutX(150);
-					numProductos.setLayoutY(350);
+					numProductos.setLayoutX(165);
+					numProductos.setLayoutY(345);
 					numProductos.setPrefSize(50, 20);
 					numProductos.textProperty().addListener(new ChangeListener<String>() {
 			            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -1004,10 +1014,11 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 			            }
 			        });
 					botones btna = new botones();
-					
-					btnEnvia.setLayoutX(200);
-					btnEnvia.setLayoutY(350);
-					btnEnvia.setGraphic(btna.botonAgregar());
+					btnEnvia.setLayoutX(230);
+					btnEnvia.setLayoutY(345);
+					btnEnvia.setGraphic(btna.botonAgregarLista());
+					btnEnvia.setVisible(true);
+					//btnEnvia.setOnAction(this);
 					btnEnvia.setOnAction(new EventHandler<ActionEvent>() {
 						public void handle(ActionEvent event) {
 							System.out.println("=======================================================");
@@ -1021,12 +1032,21 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 							if ( prodIngreso > 0 && prodIngreso < stock )
 							{	
 								System.out.println("OK cumple...");
+								productoDTO productoT = new productoDTO();
+								productoT.setIdProducto(productosIngresados.getSelectionModel().getSelectedItem().getIdProducto());
+								productoT.setDescripcion(productosIngresados.getSelectionModel().getSelectedItem().getDescripcion());
+								productoT.setStock(productosIngresados.getSelectionModel().getSelectedItem().getStock());
+								productoT.setValorVenta(productosIngresados.getSelectionModel().getSelectedItem().getValorVenta());
+								productoRec = null;
+								productoRec = productoT;
+								verifica=true;
 							}
 							else 
 							{
 								String srtError="El número de productos a comprar es erróneo, por favor verifique";
 								alertasMensajes alerta = new alertasMensajes();
 								alerta.alertaGeneral(srtError);
+								
 							}
 						}
 							
@@ -1035,37 +1055,30 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 				}
 				catch(Exception exs)
 				{
-					//btnAdd.setDisable(true);
 					System.out.println("Error");
 				}
 			}
 			}
 			);
-		/*** ***/
-		
-		btnExit = new Button("Ir al menú ");
-		btnExit.setLayoutX(520);
-		btnExit.setLayoutY(360);
-		btnExit.setOnAction(this);
-		
+	
 		rootConsulta.getChildren().addAll(bp,
 										  lblDescripcion,
 										  txtDescripcion,
 										  productosIngresados,
 										  lblProd,
 										  numProductos,
-										  btnEnvia,
-										  btnExit);
+										  btnEnvia
+										  );
 		Scene escenaProductos = null;
 		escenaProductos = new Scene(rootConsulta, 640, 450);
 		VentanaConsulta.setTitle("Productos");
 		VentanaConsulta.setScene(escenaProductos);
 		VentanaConsulta.setResizable(false);
-		
+		VentanaConsulta.initModality(Modality.APPLICATION_MODAL);
 		VentanaConsulta.show();
-		
+		return productoRec;
 	}
-	/*** fin de cclase***/
+	/*** fin de clase***/
 	
 	/*** MODIFICACION DE PRODUCTOS***/
 	public void updateProductos(Stage ventanaParam) 
@@ -1307,6 +1320,37 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 			    	}
 			    	
 			    }
+			    else
+					if ( event.getSource() == btnEnvia ) 
+				   {
+						System.out.println("=======================================================");
+						System.out.println("Enviando a la factura...");
+						System.out.println("=======================================================");
+						int prodIngreso = 0;
+						prodIngreso = Integer.valueOf(numProductos.getText().toString());
+						int stock = 0; 
+						stock= Integer.valueOf(productosIngresados.getSelectionModel().getSelectedItem().getStock());
+						System.out.println("=Stock "+stock);
+						if ( prodIngreso > 0 && prodIngreso < stock )
+						{	
+							System.out.println("OK cumple...");
+							productoDTO productoT = new productoDTO();
+							productoT.setIdProducto(productosIngresados.getSelectionModel().getSelectedItem().getIdProducto());
+							productoT.setDescripcion(productosIngresados.getSelectionModel().getSelectedItem().getDescripcion());
+							productoT.setStock(productosIngresados.getSelectionModel().getSelectedItem().getStock());
+							productoT.setValorVenta(productosIngresados.getSelectionModel().getSelectedItem().getValorVenta());
+							productoRec = null;
+							productoRec = productoT;
+							
+						}
+						else 
+						{
+							String srtError="El número de productos a comprar es erróneo, por favor verifique";
+							alertasMensajes alerta = new alertasMensajes();
+							alerta.alertaGeneral(srtError);
+							
+						}
+				   }
 			
 		
 	}

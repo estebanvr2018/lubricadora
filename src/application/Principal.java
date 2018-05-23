@@ -11,6 +11,7 @@ import application.BO.ProductosBO;
 import application.com.DTOS.ClientesDTO;
 import application.com.DTOS.ProductosDTO;
 import application.extras.botones;
+import application.vistas.facturaGenera;
 import application.vistas.facturacion;
 import application.vistas.productos.UsuariosPrincipal;
 import application.vistas.productos.clientesPrincipal;
@@ -49,7 +50,11 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -92,6 +97,8 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 
 		primaryStage.setTitle("Login");
 		GridPane grid = new GridPane();
+		grid.setBorder(new Border(new BorderStroke(Color.BLACK, 
+	            BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
 		grid.setVgap(10);
@@ -617,7 +624,9 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 			System.out.println("==================================================");
 			System.out.println("Facturacion...");
 			System.out.println("==================================================");
-			facturacion fact = new facturacion(); 
+			facturacion fact = new facturacion();
+			facturaGenera a = new facturaGenera();
+			a.formularioFactura(VentanaT);
 			//panelFactura();
 			//fact.formularioFactura();
 			boolFact = true;

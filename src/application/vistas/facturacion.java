@@ -14,6 +14,7 @@ import application.BO.ProductosBO;
 import application.Dialog.alertasMensajes;
 import application.com.DTOS.ClientesDTO;
 import application.com.DTOS.ProductosDTO;
+import application.com.DTOS.productoDTO;
 import application.extras.Numeros_a_Letras;
 import application.extras.botones;
 import application.tablas.tablaFacturaDet;
@@ -22,6 +23,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -36,10 +38,18 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class facturacion implements EventHandler<ActionEvent> 
@@ -71,7 +81,7 @@ public class facturacion implements EventHandler<ActionEvent>
 		scenetitle.setY(40);
 		//scenetitle.setFont(new Font("Arial",20));
         
-		Label lblRuc = new Label("CEDULA/RUC: ");
+		Label lblRuc = new Label("Cédula/RUC: ");
 		lblRuc.setLayoutX(20);
 		lblRuc.setLayoutY(60);
 		txtRuc = new TextField();
@@ -116,25 +126,25 @@ public class facturacion implements EventHandler<ActionEvent>
 			}
 		});
 		
-		Label lblFecha = new Label("FECHA: ");
+		Label lblFecha = new Label("Fecha ");
 		lblFecha.setLayoutX(300);
 		lblFecha.setLayoutY(60);
 		TextField txtFecha = new TextField();
 		txtFecha.setLayoutX(380);
-		txtFecha.setLayoutY(60);
+		txtFecha.setLayoutY(55);
 		Date date = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		System.out.println("Fecha actual: "+dateFormat.format(date));
 		txtFecha.setText(dateFormat.format(date).toString());
 		
-		Label lblCliente = new Label("NOMBRES: ");
+		Label lblCliente = new Label("Nombres ");
 		lblCliente.setLayoutX(20);
 		lblCliente.setLayoutY(90);
 		txtCliente = new TextField();
 		txtCliente.setEditable(false);
 		txtCliente.setLayoutX(100);
 		txtCliente.setLayoutY(85);
-		Label lblApellidos = new Label("APELLIDOS: ");
+		Label lblApellidos = new Label("Apellidos ");
 		lblApellidos.setLayoutX(300);
 		lblApellidos.setLayoutY(90);
 		txtApellidos = new TextField();
@@ -143,14 +153,14 @@ public class facturacion implements EventHandler<ActionEvent>
 		txtApellidos.setEditable(false);
 		
 		
-		Label lblDireccion = new Label("DIRECCIÓN: ");
+		Label lblDireccion = new Label("Dirección: ");
 		lblDireccion.setLayoutX(20);
 		lblDireccion.setLayoutY(120);
 		txtDireccion = new TextField();
 		txtDireccion.setEditable(false);
 		txtDireccion.setLayoutX(100);
 		txtDireccion.setLayoutY(115);
-		Label lblTelefono = new Label("TELÉFONO: ");
+		Label lblTelefono = new Label("Teléfono: ");
 		lblTelefono.setLayoutX(300);
 		lblTelefono.setLayoutY(120);
 		txtTelefono = new TextField();
@@ -158,7 +168,7 @@ public class facturacion implements EventHandler<ActionEvent>
 		txtTelefono.setLayoutX(380);
 		txtTelefono.setLayoutY(115);
 		
-		Label lblCorreo = new Label("CORREO: ");
+		Label lblCorreo = new Label("Correo: ");
 		lblCorreo.setLayoutX(20);
 		lblCorreo.setLayoutY(150);
 		txtCorreo = new TextField();	
@@ -211,7 +221,7 @@ public class facturacion implements EventHandler<ActionEvent>
 		txtConsulta.setPrefSize(140, 25);
 		txtConsulta.setEditable(false);
 		
-		Label lblCantidad = new Label("CANTIDAD:");
+		Label lblCantidad = new Label("Cantidad:");
 		lblCantidad.setLayoutX(380);
 		lblCantidad.setLayoutY(210);
 		txtCantidad = new TextField();	
@@ -221,48 +231,48 @@ public class facturacion implements EventHandler<ActionEvent>
 		txtCantidad.setEditable(false);
 		
 		/**/
-		Label lblCantidadString = new Label("SON:");
+		Label lblCantidadString = new Label("Son");
 		lblCantidadString.setLayoutX(40);
-		lblCantidadString.setLayoutY(490);
+		lblCantidadString.setLayoutY(240);
 		txtCantidadString = new TextField();	
 		txtCantidadString.setLayoutX(70);
-		txtCantidadString.setLayoutY(485);
+		txtCantidadString.setLayoutY(235);
 		txtCantidadString.setPrefSize(300, 25);
 		txtCantidadString.setEditable(false);
 		
-		Label lblSubtotal = new Label("SUBTOTAL");
-		lblSubtotal.setLayoutX(420);
-		lblSubtotal.setLayoutY(490);
+		Label lblSubtotal = new Label("Subtotal");
+		lblSubtotal.setLayoutX(400);
+		lblSubtotal.setLayoutY(230);
 		txtSubtotal = new TextField();	
-		txtSubtotal.setLayoutX(480);
-		txtSubtotal.setLayoutY(485);
+		txtSubtotal.setLayoutX(460);
+		txtSubtotal.setLayoutY(225);
 		txtSubtotal.setPrefSize(70, 25);
 		txtSubtotal.setEditable(false);
 		
 		Label lblIvaCero = new Label("IVA 0%");
-		lblIvaCero.setLayoutX(420);
-		lblIvaCero.setLayoutY(520);
+		lblIvaCero.setLayoutX(400);
+		lblIvaCero.setLayoutY(260);
 		txtIva = new TextField();	
-		txtIva.setLayoutX(480);
-		txtIva.setLayoutY(515);
+		txtIva.setLayoutX(460);
+		txtIva.setLayoutY(255);
 		txtIva.setPrefSize(70, 25);
 		txtIva.setEditable(false);
 		
 		Label lblIvaDoce = new Label("IVA 12%");
-		lblIvaDoce.setLayoutX(420);
-		lblIvaDoce.setLayoutY(550);
+		lblIvaDoce.setLayoutX(400);
+		lblIvaDoce.setLayoutY(290);
 		txtIvaDoce = new TextField();	
-		txtIvaDoce.setLayoutX(480);
-		txtIvaDoce.setLayoutY(545);
+		txtIvaDoce.setLayoutX(460);
+		txtIvaDoce.setLayoutY(285);
 		txtIvaDoce.setPrefSize(70, 25);
 		txtIvaDoce.setEditable(false);
 		
 		Label lblTotal = new Label("TOTAL");
-		lblTotal.setLayoutX(420);
-		lblTotal.setLayoutY(580);
+		lblTotal.setLayoutX(400);
+		lblTotal.setLayoutY(320);
 		txtTotal = new TextField();	
-		txtTotal.setLayoutX(480);
-		txtTotal.setLayoutY(575);
+		txtTotal.setLayoutX(460);
+		txtTotal.setLayoutY(315);
 		txtTotal.setPrefSize(70, 25);
 		txtTotal.setEditable(false);
 		//
@@ -306,7 +316,7 @@ public class facturacion implements EventHandler<ActionEvent>
 		
 		btnAdd = new Button("FACTURAR");
 		btnAdd.setLayoutX(170);
-		btnAdd.setLayoutY(530);
+		btnAdd.setLayoutY(280);
 		btnAdd.setDisable(true);
 		btnAdd.setFont(new Font("Arial",15));
 		btnAdd.setPrefSize(150, 30);
@@ -348,8 +358,8 @@ public class facturacion implements EventHandler<ActionEvent>
 		
 		tableFacturacion.getColumns().addAll(idTable, Nombre, Desc, Precio);
 		
-		tableFacturacion.setLayoutX(40);
-		tableFacturacion.setLayoutY(245);
+		tableFacturacion.setLayoutX(10);
+		tableFacturacion.setLayoutY(20);
 		tableFacturacion.setPrefSize(520, 200);
 		botones bot = new botones();
 		btnExit = new Button("Regresar");
@@ -359,38 +369,80 @@ public class facturacion implements EventHandler<ActionEvent>
 		btnExit.setPrefSize(100, 25);
 		btnExit.setOnAction(this);
 		
+		/*** Cabecera de la factura datos del cliente***/
+		AnchorPane datosClientes = new AnchorPane();
+		datosClientes.getChildren().addAll(scenetitle,
+								   lblRuc,
+								   txtRuc,
+								   lblFecha,
+	        					   txtFecha,
+	        					   lblCliente,
+	        					   txtCliente,
+	        					   lblApellidos,
+	        					   txtApellidos,
+	        					   lblDireccion,
+	        					   txtDireccion,
+	        					   lblTelefono,
+	        					   txtTelefono,
+	        					   lblCorreo,
+	        					   txtCorreo,
+	        					   btnExit
+	        					   );
+		datosClientes.setBorder(new Border(new BorderStroke(Color.BLACK, 
+	            BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		datosClientes.setPadding(new Insets(5));
+		datosClientes.setTranslateX(20);
+		datosClientes.setTranslateY(20);
+		datosClientes.setTranslateZ(20);
+		datosClientes.setMaxSize(650, 250);
+		
+		/*** ***/
+		/*** Cabecera de la factura datos del cliente***/
+		AnchorPane datosListaFactura = new AnchorPane();
+		datosListaFactura.getChildren().addAll(tableFacturacion,
+				 							   lblCantidadString,
+				 							   txtCantidadString,
+											   lblSubtotal,
+											   lblIvaCero,
+											   lblIvaDoce,
+											   lblTotal,
+											   txtSubtotal,
+											   txtIva,
+											   txtIvaDoce,	
+											   txtTotal,
+											   btnAdd
+	        					   			);
+		datosListaFactura.setBorder(new Border(new BorderStroke(Color.DARKGREEN, 
+	            BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		datosListaFactura.setPadding(new Insets(5));
+		datosListaFactura.setTranslateX(20);
+		datosListaFactura.setTranslateY(220);
+		datosListaFactura.setTranslateZ(20);
+		datosListaFactura.setMaxSize(650, 250);
+		
+		/*** ***/
+		
+		
         Group root = new Group();
-        
-       /* Label hi= new Label("AVBDFEFgrfdg");
-        Label hi2= new Label("AVBDFEFgrfdg");
-        Button btnE = new Button("Regresar");
-        Group rootA = new Group();
-        rootA.getChildren().addAll(hi, hi2,btnE);*/
+       
 		BorderPane bp  = new BorderPane();
-		//bp.setTop(rootA);
+		
 		bp.setCenter(bot.fondoPantalla());
         /**/
         root.getChildren().addAll(bp,
-        						  lblDireccion,
-        						  lblTelefono,
-        						  lblCorreo,
-        						  //comboProductos,
-        						  btnAddProducto,
-        						  //txtConsulta,
-        						  lblCantidad,
-        						  txtCantidad,
-        						  lblCantidadString,
-        						  txtCantidadString);
-        root.getChildren().addAll(scenetitle, lblRuc,txtRuc,lblCliente,txtCliente,lblApellidos,txtApellidos,txtDireccion,txtTelefono,txtCorreo,lblFecha,txtFecha,tableFacturacion,lblSubtotal,lblIvaCero,lblIvaDoce,lblTotal,txtSubtotal,txtIva,txtIvaDoce,txtTotal,btnAdd,btnExit);
+        						  datosClientes,
+        						  datosListaFactura
+        						  );
+        root.getChildren().addAll(
+        						  //tableFacturacion,
+        						  
+        						  );
 		Scene escenaConsulta = null;
-		escenaConsulta = new Scene(root, 600, 600);
-		//escenaConsulta.setFill(null);
-		//Stage VentanaConsultas;
-		//VentanaConsultas = new Stage();
+		escenaConsulta = new Scene(root, 600, 630);
+		escenaConsulta.setFill(Color.TRANSPARENT);
 		ventanaActual.setTitle("Control de ventas");
 		ventanaActual.setScene(escenaConsulta);
-		ventanaActual.setResizable(false);
-		
+		//ventanaActual.setResizable(false);
 		ventanaActual.show();
 
 	}
@@ -722,9 +774,10 @@ public class facturacion implements EventHandler<ActionEvent>
 				System.out.println("==================================================");
 		    	System.out.println("	Agregar producto...");
 		    	System.out.println("==================================================");
-		    	productosPrincipal productos = new productosPrincipal(); 
-		    	productos.consultaProductoCliente();
-		    	
+		    	productosPrincipal productos = new productosPrincipal();
+		    	productoDTO productoAdd = new productoDTO();
+		    	productoAdd = productos.consultaProductoCliente();
+		    	System.out.println("Que trae desde el prodcuto"+ productoAdd.getDescripcion());
 		   }
 		
 		
