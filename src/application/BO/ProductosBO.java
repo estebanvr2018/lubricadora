@@ -33,13 +33,33 @@ public class ProductosBO {
 		return lsProductosDTO;
 	}
 	
-	public List<ProductosDTO> extraeProductos(String strProducto) throws SQLException 
+	public List<productoDTO> extraeProductos(String strProducto) throws SQLException 
 	{
 		Connection objConnection = new ConexionMySQL().conexion();
-		List<ProductosDTO> lsProductosDTO = null;
+		List<productoDTO> lsProductosDTO = null;
 		
 		try {
 			lsProductosDTO = new ProductosDAO().extraeProductosDAO(objConnection, strProducto);
+			System.out.println("Que trae "+lsProductosDTO.size());
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+		} finally {
+			if (objConnection != null) {
+				objConnection.close();
+			}
+		}
+		
+		return lsProductosDTO;
+	}
+	
+	public List<productoDTO> traeProductos(String strProducto) throws SQLException 
+	{
+		Connection objConnection = new ConexionMySQL().conexion();
+		List<productoDTO> lsProductosDTO = null;
+		
+		try {
+			lsProductosDTO = new ProductosDAO().traeProductosDAO(objConnection, strProducto);
 		
 		} catch (Exception e) {
 			StringWriter errores = new StringWriter();
@@ -92,7 +112,6 @@ public class ProductosBO {
 	{
 		Connection objConnection = new ConexionMySQL().conexion();
 		List<productosDescripcionDTO> lsProductosDTO = null;
-		
 		try {
 			lsProductosDTO = new ProductosDAO().extraeProductoSubCat(objConnection, DescCategoria);
 		
@@ -170,12 +189,12 @@ public class ProductosBO {
 	/*** FIN Inserta producto subcategoria ***/
 	
 	
-	public int insertaProductos(String nomProd, String descripcionProd, float precioCompra, int stock, float fltPrecioVta) throws SQLException
+	public int insertaProductos(String prodEsp, String nomProd, String descripcionProd, float precioCompra, int stock, float fltPrecioVta) throws SQLException
 	{
 		Connection objConnection = new ConexionMySQL().conexion();
 		int insertQuery=0;
 		try {
-			insertQuery = new ProductosDAO().insertaProductosDAO(objConnection, nomProd,descripcionProd, precioCompra, stock, fltPrecioVta);
+			insertQuery = new ProductosDAO().insertaProductosDAO(objConnection, prodEsp, nomProd,descripcionProd, precioCompra, stock, fltPrecioVta);
 			return insertQuery;
 		} catch (Exception e) {
 			StringWriter errores = new StringWriter();

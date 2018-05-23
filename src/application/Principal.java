@@ -156,11 +156,23 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		Group raiz = new Group();
 		MenuBar menuBar = new MenuBar();
 		menuBar.prefWidthProperty().bind(VentanaT.widthProperty());
-		raiz.getChildren().add(menuBar);
-
+		botones b = new botones();
+		BorderPane bp  = new BorderPane();
+		//bp.setTop(rootA);
+		bp.setCenter(b.fondoPantalla());
+		
+		
+		raiz.getChildren().addAll(bp,menuBar);
+		
 		Menu fileMenu = new Menu("_Inicio");
+		fileMenu.setGraphic(b.botonBuscarMax());
 		facturacionMenuItem = new MenuItem("Facturación");
 		facturacionMenuItem.setOnAction(this);
+		
+		facturacionMenuItem.setGraphic(b.botonBuscar());
+		/*btnBuscar = new Button("Buscar");
+		btnBuscar.setGraphic(b.botonBuscar());
+		*/
 		bodegaMenuItem = new MenuItem("Compras");
 		bodegaMenuItem.setOnAction(this);
 		exMenuItem = new MenuItem("Salir");
@@ -170,6 +182,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		consultaProductoMenuItem = new MenuItem("Consulta de producto");
 		consultaProductoMenuItem.setOnAction(this);
 		Menu filePoliticas = new Menu("_Productos");
+		filePoliticas.setGraphic(b.productosP());
 		ingresoProductoMenuItem = new MenuItem("Ingreso de productos");
 		ingresoProductoMenuItem.setOnAction(this);
 		updateProductoMenuItem = new MenuItem("Modificar producto");
@@ -186,14 +199,17 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		updateClientesMenuItem= new MenuItem("Actualizar cliente");
 		updateClientesMenuItem.setOnAction(this);
 		Menu fileClientes = new Menu("_Clientes");
+		fileClientes.setGraphic(b.ClientesP());
 		fileClientes.getItems().addAll(ingresoClientesMenuItem, consultaClientesMenuItem,updateClientesMenuItem);
 		
 		/*** FIN clientes ***/
 		
 		/*** INI Facturas***/
 		Menu fileFacturas = new Menu("_Facturación");
+		fileFacturas.setGraphic(b.facturaP());
 		facturasMenuItem = new MenuItem("Facturar");
 		facturasMenuItem.setOnAction(this);
+		
 		factMaxMenuItem = new MenuItem("Sumarizado de facturas");
 		factMaxMenuItem.setOnAction(this);
 		fileFacturas.getItems().addAll(facturasMenuItem,factMaxMenuItem);
@@ -203,12 +219,13 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		Menu fileUsuarios = new Menu("_Usuarios");
 		cargaUserMenuItem = new MenuItem("Sumarizado de usuarios");
 		cargaUserMenuItem.setOnAction(this);
+		fileUsuarios.setGraphic(b.UsuariosP());
 		fileUsuarios.getItems().add(cargaUserMenuItem);
 		/*** FIN usuarios***/
 		
 		menuBar.getMenus().addAll(fileMenu, filePoliticas, fileClientes, fileFacturas,fileUsuarios);
 		
-		Scene escena = new Scene(raiz, 400, 400);
+		Scene escena = new Scene(raiz, 600, 400);
 		VentanaT.setScene(escena);
 		VentanaT.show();
 	}

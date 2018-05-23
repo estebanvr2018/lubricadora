@@ -3,9 +3,12 @@ package application.vistas.productos;
 import java.sql.SQLException;
 import java.util.List;
 import application.Principal;
+import application.BO.ClientesBO;
 import application.BO.ProductosBO;
 import application.Dialog.alertasMensajes;
+import application.com.DTOS.ClientesDTO;
 import application.com.DTOS.ProductosDTO;
+import application.com.DTOS.productoDTO;
 import application.com.DTOS.productosCategoriaDTO;
 import application.com.DTOS.productosDescripcionDTO;
 import application.extras.botones;
@@ -53,7 +56,21 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 	public TableColumn<tablaFacturaDet, String> Nombre = new TableColumn<>("Descripción");
 	public TableColumn<tablaFacturaDet, String> Desc = new TableColumn<>("Valor unitario");
 	public TableColumn<tablaFacturaDet, String> Stock = new TableColumn<>("Stock");
-	public List<ProductosDTO> productos=null;
+	
+	/*** ***/
+	public TableView<productoDTO> productosIngresados = new TableView();
+	public TableColumn<productoDTO, String> idProducto = new TableColumn<>("Cod");
+	public TableColumn<productoDTO, String> nomProducto = new TableColumn<>("Nombre");
+	public TableColumn<productoDTO, String> descProducto = new TableColumn<>("Descripción");
+	public TableColumn<productoDTO, String> valorCompra = new TableColumn<>("V. Compra");
+	public TableColumn<productoDTO, String> disponibles = new TableColumn<>("Stock");
+	public TableColumn<productoDTO, String> valorVenta = new TableColumn<>("V. Venta");
+	public TableColumn<productoDTO, String> categoria = new TableColumn<>("Categoría");
+	public TableColumn<productoDTO, String> subcategoria = new TableColumn<>("Sub");
+	/*** ***/
+	
+	public List<productoDTO> productos=null;
+	public List<productoDTO> listaProductos=null;
 	public List<productosCategoriaDTO> categoriaProductos=null;
 	public List<productosDescripcionDTO> subCategoriaProductos=null;
 	
@@ -66,6 +83,7 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 			        );;
 	public ObservableList<String> ContenidoDesc= 
 				FXCollections.observableArrayList (
+						 
 						);;			        
 			        
 						
@@ -227,7 +245,61 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 		comboProCatDescripcion.setLayoutY(55);
 		comboProCatDescripcion.setVisible(false);
 		
+		/*** ***/
+		idProducto.setCellValueFactory(new PropertyValueFactory<>("IdProducto"));
+		idProducto.setMinWidth(10);
+		nomProducto.setCellValueFactory(new PropertyValueFactory<>("NombreProducto"));
 		
+		descProducto.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+		descProducto.setMinWidth(170);
+		valorCompra.setCellValueFactory(new PropertyValueFactory<>("valorCompra"));
+		valorCompra.setMinWidth(60);
+		disponibles.setCellValueFactory(new PropertyValueFactory<>("Stock"));
+		disponibles.setMinWidth(40);
+		valorVenta.setCellValueFactory(new PropertyValueFactory<>("valorVenta"));
+		valorVenta.setMinWidth(60);
+		productosIngresados.getColumns().addAll(idProducto,
+												descProducto,
+												valorCompra,
+												disponibles,
+												valorVenta);
+		productosIngresados.setLayoutX(40);
+		productosIngresados.setLayoutY(90);
+		productosIngresados.setPrefSize(490, 100);
+		productosIngresados.setVisible(false);
+		/*** ***/
+		productosIngresados.setOnMouseClicked( event -> {
+			if( event.getClickCount() == 2 ) 
+		    {
+				try
+				{
+					btnGuardar.setVisible(false);
+					System.out.println("Que tiene"+productosIngresados.getSelectionModel().getSelectedItem().getDescripcion());
+					txtNProducto.setText(productosIngresados.getSelectionModel().getSelectedItem().getNombreProducto());
+					txtDescripcion.setText(productosIngresados.getSelectionModel().getSelectedItem().getDescripcion());
+					Float valorCompra = productosIngresados.getSelectionModel().getSelectedItem().getValorCompra();
+					String compra = String.valueOf(valorCompra); 
+					txtPrecioCompra.setText(compra);
+					
+					int Stock = productosIngresados.getSelectionModel().getSelectedItem().getStock();
+					String stock = String.valueOf(Stock); 
+					txtStock.setText(stock);
+					
+					Float valorVta = productosIngresados.getSelectionModel().getSelectedItem().getValorVenta();
+					String venta = String.valueOf(valorVta);
+					txtPrecioVta.setText(venta);
+					
+					
+				}
+				catch(Exception exs)
+				{
+					//btnAdd.setDisable(true);
+					System.out.println("Error");
+				}
+			}
+			}
+			);
+		/*** ***/
 		Label lblCatMin = new Label("Medida");
 		lblCatMin.setLayoutX(20);
 		lblCatMin.setLayoutY(90);
@@ -285,9 +357,12 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 			System.out.println("Producto --> " + p2);
 			productoGeneral=null;
 			productoGeneral=p2;
+			productosIngresados.getItems().removeAll();
+			productosIngresados.getItems().clear();
 			System.out.println("================================================================================");
 			System.out.println(" Agregando producto a la tabla...");
 			System.out.println("================================================================================");
+			
 			if (p2 == "Nuevo producto")
 			{
 				System.out.println(" Validacion...");
@@ -305,6 +380,7 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 				lblSubProd.setVisible(false);
 				comboProCatDescripcion.setVisible(false);
 				
+				
 				lblNProducto.setVisible(false);
 				lblDescripcion.setVisible(false);
 				lblPCompra.setVisible(false);
@@ -318,10 +394,15 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 				txtValorPorcentual.setVisible(false);
 				btnPrecio.setVisible(false);
 				txtPrecioVta.setVisible(false);
+				btnGuardar.setVisible(false);
+				
+				productosIngresados.setVisible(false);
+				
 				
 			}
 			else 
 			{
+				
 				lblCat.setVisible(false);
 				txtProNew.setVisible(false);
 				tableDescProductos.setVisible(false);
@@ -331,13 +412,11 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 				btnGuardarCategoria.setVisible(false);
 				lblSubProd.setVisible(true);
 				comboProCatDescripcion.setVisible(true);
-				
-				
 				traeProdSubCat(p2);
-				
 				ContenidoDesc.add("Nuevo subproducto");
 				System.out.println("Cantidad de combos; "+comboProCatDescripcion.getItems().size());
-				if ( comboProCatDescripcion.getItems().size() >0 )
+				
+				/*if ( comboProCatDescripcion.getItems().size() >0 )
 				{
 					lblNProducto.setVisible(true);
 					lblDescripcion.setVisible(true);
@@ -352,7 +431,7 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 					txtValorPorcentual.setVisible(true);
 					btnPrecio.setVisible(true);
 					txtPrecioVta.setVisible(true);
-				}	
+				}*/
 			}
 		});
 		
@@ -360,6 +439,7 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 		{	
 			productoEspecifico = null ;
 			productoEspecifico = p2;
+			System.out.println("Nuevo subproducto "+p2);
 			if (p2 == "Nuevo subproducto")
 			{
 				System.out.println("Nuevo subproducto");
@@ -371,8 +451,25 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 				tableDescProductos.getItems().removeAll();
 				tableDescProductos.getItems().clear();
 				btnGuardarCategoria.setVisible(true);
+				
+				lblNProducto.setVisible(false);
+				lblDescripcion.setVisible(false);
+				lblPCompra.setVisible(false);
+				lblStock.setVisible(false);
+				lblPorcentaje.setVisible(false);
+				lblPVta.setVisible(false);
+				txtNProducto.setVisible(false);
+				txtDescripcion.setVisible(false);
+				txtPrecioCompra.setVisible(false);
+				txtStock.setVisible(false);
+				txtValorPorcentual.setVisible(false);
+				btnPrecio.setVisible(false);
+				txtPrecioVta.setVisible(false);
+				btnGuardar.setVisible(false);
+				
+				productosIngresados.setVisible(false);
 			}
-			else
+			else if (p2.isEmpty() || comboProCatDescripcion.getItems().size() < 0)
 			{	lblCatMin.setVisible(false);
 				txtCatNew.setVisible(false);
 				btnAddMedida.setVisible(false);
@@ -380,6 +477,32 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 				btnGuardarCategoria.setVisible(false);
 				
 				System.out.println("SubProducto --> " + p2);
+				lblNProducto.setVisible(false);
+				lblDescripcion.setVisible(false);
+				lblPCompra.setVisible(false);
+				lblStock.setVisible(false);
+				lblPorcentaje.setVisible(false);
+				lblPVta.setVisible(false);
+				txtNProducto.setVisible(false);
+				txtDescripcion.setVisible(false);
+				txtPrecioCompra.setVisible(false);
+				txtStock.setVisible(false);
+				txtValorPorcentual.setVisible(false);
+				btnPrecio.setVisible(false);
+				txtPrecioVta.setVisible(false);
+				btnGuardar.setVisible(false);
+				try {
+					cargaProductos(p2);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				productosIngresados.setVisible(true);
+				
+				
+			}
+			else
+			{
 				lblNProducto.setVisible(true);
 				lblDescripcion.setVisible(true);
 				lblPCompra.setVisible(true);
@@ -393,8 +516,24 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 				txtValorPorcentual.setVisible(true);
 				btnPrecio.setVisible(true);
 				txtPrecioVta.setVisible(true);
-			
-			}
+				btnGuardar.setVisible(true);
+				
+				lblCatMin.setVisible(false);
+				txtCatNew.setVisible(false);
+				btnAddMedida.setVisible(false);
+				tableDescProductos.getItems().removeAll();
+				tableDescProductos.getItems().clear();
+				tableDescProductos.setVisible(false);
+				btnGuardarCategoria.setVisible(false);
+				try {
+					cargaProductos(p2);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				productosIngresados.setVisible(true);
+				
+			}	
 			
 		});
 		
@@ -425,11 +564,11 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 
         Group rootIngreso = new Group();
         
-        Image imgCarga = new Image("application/madmenmag-fondo-verano-agua.jpg"); 
-		ImageView imgView = new ImageView(imgCarga);
+        
+		
 		BorderPane bp  = new BorderPane();
 		
-		bp.setCenter(imgView);
+		bp.setCenter(b.fondoPantalla());
 		rootIngreso.getChildren().addAll(bp,
 										 scenetitle,
 										 lblDe,
@@ -445,6 +584,7 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 										 comboProductosCat,
 										 lblSubProd,
 										 comboProCatDescripcion
+										 
 										 );
 		
 		rootIngreso.getChildren().addAll(	lblNProducto,
@@ -459,7 +599,8 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 											txtStock,
 											txtValorPorcentual,
 											btnPrecio,
-											txtPrecioVta
+											txtPrecioVta,
+											productosIngresados
 										);
 		
 		Scene escenaProductos = null;
@@ -520,13 +661,19 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 		System.out.println("==================================================");
 		System.out.println(" Agregando productos al comboSubCategoria...");
 		System.out.println("==================================================");
-		
+		System.out.println("1");
 		try {
+			System.out.println("2");
+			subCategoriaProductos=null;
 			subCategoriaProductos = new ProductosBO().extraeProdCatSub(idCategoria);
 			//comboProCatDescripcion.setItems(null);
+			
+			System.out.println("3");
 			if (subCategoriaProductos != null && !subCategoriaProductos.isEmpty())
-			{
+			{	System.out.println("4");
 				ContenidoDesc.clear();
+				System.out.println("5");
+				
 				for (productosDescripcionDTO obje : subCategoriaProductos) 
 				{
 					
@@ -658,14 +805,14 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 		scenetitle.setY(40);
 		//scenetitle.setFont(new Font("Arial",20));
         
-		Label lblDescripcion = new Label("Ingrese el producto y presione enter");
+		Label lblDescripcion = new Label("Ingrese el producto");
 		lblDescripcion.setLayoutX(160);
 		lblDescripcion.setLayoutY(60);
-		lblDescripcion.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+		lblDescripcion.setFont(Font.font("Tahoma", FontWeight.NORMAL, 18));
 		txtDescripcion = new TextField();
 		txtDescripcion.setLayoutX(160);
 		txtDescripcion.setLayoutY(90);
-		txtDescripcion.setPrefSize(330, 25);
+		txtDescripcion.setPrefSize(150, 25);
 		
 		/*INICIO
 		 CARGA DE PRODUCTOS A LA TABLA*/
@@ -750,6 +897,176 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 	}
 	/*** FIN CONSULTA DE PRODUCTOS ***/
 	
+	/*** se añadio esta clase para cuando el usuario desee agregar un producto ***/
+	public void consultaProductoCliente() 
+	{
+		Stage VentanaConsulta = new Stage();
+		VentanaConsulta.setTitle("Principal");
+		
+		Label lblDescripcion = new Label("Ingrese el producto");
+		lblDescripcion.setLayoutX(20);
+		lblDescripcion.setLayoutY(60);
+		lblDescripcion.setFont(Font.font("Tahoma", FontWeight.NORMAL, 18));
+		txtDescripcion = new TextField();
+		txtDescripcion.setLayoutX(200);
+		txtDescripcion.setLayoutY(60);
+		txtDescripcion.setPrefSize(200, 25);
+		
+		/*INICIO
+		 CARGA DE PRODUCTOS A LA TABLA*/
+		txtDescripcion.setOnKeyPressed(new EventHandler<KeyEvent>() 
+		{
+			@Override
+			public void handle(KeyEvent ke) 
+			{
+				if (ke.getCode().equals(KeyCode.ENTER)) 
+				{
+					try{
+						tableProductos.getItems().removeAll();
+						tableProductos.getItems().clear();
+						System.out.println("================================================================================");
+						System.out.println(" CARGA DE PRODUCTOS A LA TABLA");
+						System.out.println("================================================================================");
+						//cargaProductoTabla(txtConsulta.getText().toString());
+						/*Metodo que traera de base todos los productos existentes [INICIO]*/
+						String strCondicion = "";
+						strCondicion = txtDescripcion.getText().toString().trim();
+						cargaProductoTabla(strCondicion);
+					}catch(Exception exs)
+					{
+						System.out.println("====================================");
+					}
+						/*Metodo que traera de base todos los productos existentes [FIN]*/
+					//}
+							
+				}
+			}
+		});
+		/*FIN
+		 CARGA DE PRODUCTOS A LA TABLA*/
+		botones b = new botones();
+        Group rootConsulta = new Group();
+        BorderPane bp  = new BorderPane();
+		bp.setCenter(b.fondoPantalla());
+		
+		/*** ***/
+		idProducto.setCellValueFactory(new PropertyValueFactory<>("IdProducto"));
+		idProducto.setMinWidth(10);
+		nomProducto.setCellValueFactory(new PropertyValueFactory<>("NombreProducto"));
+		nomProducto.setMinWidth(80);
+		descProducto.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+		descProducto.setMinWidth(100);
+		valorCompra.setCellValueFactory(new PropertyValueFactory<>("valorCompra"));
+		valorCompra.setMinWidth(60);
+		disponibles.setCellValueFactory(new PropertyValueFactory<>("Stock"));
+		disponibles.setMinWidth(40);
+		valorVenta.setCellValueFactory(new PropertyValueFactory<>("valorVenta"));
+		valorVenta.setMinWidth(60);
+		categoria.setCellValueFactory(new PropertyValueFactory<>("categoria"));
+		categoria.setMinWidth(40);
+		subcategoria.setCellValueFactory(new PropertyValueFactory<>("subcategoria"));
+		subcategoria.setMinWidth(40);
+		productosIngresados.getColumns().addAll(idProducto,
+												categoria,
+												subcategoria,
+												nomProducto,
+												descProducto,
+												valorCompra,
+												disponibles);
+		productosIngresados.setLayoutX(40);
+		productosIngresados.setLayoutY(110);
+		productosIngresados.setPrefSize(580, 220);
+		productosIngresados.setVisible(true);
+		Label lblProd = new Label("Número productos");
+		lblProd.setLayoutX(30);
+		lblProd.setLayoutY(350);
+		lblProd.setVisible(false);
+		TextField numProductos = new TextField();
+		numProductos.setVisible(false);
+		Button btnEnvia = new Button("Agregar a factura");
+		productosIngresados.setOnMouseClicked( event -> {
+			if( event.getClickCount() == 2  || event.getClickCount() == 1 ) 
+		    {
+				try
+				{
+					System.out.println("1 o 2 click");
+					lblProd.setVisible(true);
+					numProductos.setVisible(true);
+					numProductos.setLayoutX(150);
+					numProductos.setLayoutY(350);
+					numProductos.setPrefSize(50, 20);
+					numProductos.textProperty().addListener(new ChangeListener<String>() {
+			            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+			                if (!newValue.matches("\\d{0,7}([\\.]\\d{0,0})?")) {
+			                	numProductos.setText(oldValue);
+			                	
+			                }
+			            }
+			        });
+					botones btna = new botones();
+					
+					btnEnvia.setLayoutX(200);
+					btnEnvia.setLayoutY(350);
+					btnEnvia.setGraphic(btna.botonAgregar());
+					btnEnvia.setOnAction(new EventHandler<ActionEvent>() {
+						public void handle(ActionEvent event) {
+							System.out.println("=======================================================");
+							System.out.println("Enviando a la factura...");
+							System.out.println("=======================================================");
+							int prodIngreso = 0;
+							prodIngreso = Integer.valueOf(numProductos.getText().toString());
+							int stock = 0; 
+							stock= Integer.valueOf(productosIngresados.getSelectionModel().getSelectedItem().getStock());
+							System.out.println("=Stock "+stock);
+							if ( prodIngreso > 0 && prodIngreso < stock )
+							{	
+								System.out.println("OK cumple...");
+							}
+							else 
+							{
+								String srtError="El número de productos a comprar es erróneo, por favor verifique";
+								alertasMensajes alerta = new alertasMensajes();
+								alerta.alertaGeneral(srtError);
+							}
+						}
+							
+					});
+					
+				}
+				catch(Exception exs)
+				{
+					//btnAdd.setDisable(true);
+					System.out.println("Error");
+				}
+			}
+			}
+			);
+		/*** ***/
+		
+		btnExit = new Button("Ir al menú ");
+		btnExit.setLayoutX(520);
+		btnExit.setLayoutY(360);
+		btnExit.setOnAction(this);
+		
+		rootConsulta.getChildren().addAll(bp,
+										  lblDescripcion,
+										  txtDescripcion,
+										  productosIngresados,
+										  lblProd,
+										  numProductos,
+										  btnEnvia,
+										  btnExit);
+		Scene escenaProductos = null;
+		escenaProductos = new Scene(rootConsulta, 640, 450);
+		VentanaConsulta.setTitle("Productos");
+		VentanaConsulta.setScene(escenaProductos);
+		VentanaConsulta.setResizable(false);
+		
+		VentanaConsulta.show();
+		
+	}
+	/*** fin de cclase***/
+	
 	/*** MODIFICACION DE PRODUCTOS***/
 	public void updateProductos(Stage ventanaParam) 
 	{
@@ -796,32 +1113,68 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 	
 	/*** FIN MODIFICACION DE PRODUCTOS***/
 	
-
-	public void cargaProductoTabla(String strProducto) throws SQLException
+	public void cargaProductos(String strProducto) throws SQLException
 	{
 		try {
-			tableProductos.getItems().removeAll();
-			tableProductos.getItems().clear();
-			productos = new ProductosBO().extraeProductos(strProducto);
-			if (productos != null && !productos.isEmpty())
+			productosIngresados.getItems().removeAll();
+			productosIngresados.getItems().clear();
+			listaProductos = new ProductosBO().traeProductos(strProducto);
+			if (listaProductos != null && !listaProductos.isEmpty())
 			{
 				
-				for (ProductosDTO obje : productos) 
+				for (productoDTO obje : listaProductos) 
 				{
 					
 					if (obje != null) 
 					{
-						tablaFacturaDet mapeoTabla = new tablaFacturaDet();
-						mapeoTabla.setCantidad(obje.getIdProducto());
-						mapeoTabla.setDescripcion(obje.getDescripcion());
-						mapeoTabla.setValorUnitario(obje.getValorUnitario());
-						mapeoTabla.setStock(obje.getStock());
-						tableProductos.getItems().add(mapeoTabla);
+						productoDTO llena = new productoDTO();
+						llena.setIdProducto(obje.getIdProducto());
+						llena.setNombreProducto(obje.getNombreProducto());
+						llena.setDescripcion(obje.getNombreProducto() + " - " +  obje.getDescripcion());
+						llena.setValorCompra(obje.getValorCompra());
+						llena.setStock(obje.getStock());
+						llena.setValorVenta(obje.getValorVenta());
+						productosIngresados.getItems().add(llena);
+					}
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	public void cargaProductoTabla(String strProducto) throws SQLException
+	{
+		try {
+			productosIngresados.getItems().removeAll();
+			productosIngresados.getItems().clear();
+			productos = new ProductosBO().extraeProductos(strProducto);
+			
+			if (productos != null && !productos.isEmpty())
+			{
+				
+				for (productoDTO obje : productos) 
+				{
+					
+					if (obje != null) 
+					{
+						productoDTO objeto = new productoDTO();
+						objeto.setIdProducto(obje.getIdProducto());
+						objeto.setNombreProducto(obje.getNombreProducto());
+						objeto.setDescripcion(obje.getDescripcion());
+						objeto.setValorCompra(obje.getValorCompra());
+						objeto.setStock(obje.getStock());
+						objeto.setCategoria(obje.getCategoria());
+						objeto.setSubcategoria(obje.getSubcategoria());
+						productosIngresados.getItems().add(objeto);
 					}
 				}
 			}else
 			{	
-				String srtError="Producto no existe en stock, Se procederá a ingresarlo : ";
+				String srtError="Producto no existe en stock ";
 				alertasMensajes alerta = new alertasMensajes();
 				alerta.alertaGeneral(srtError);
 			}
@@ -833,7 +1186,7 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 	}
 	
 	
-	public void insertaProducto(String nomProd, String Descirpcion, float fltValorUni, int intStock, float fltPrecioVta)
+	public void insertaProducto(String prodEsp,String nomProd, String Descirpcion, float fltValorUni, int intStock, float fltPrecioVta)
 	{
 		System.out.println("================================================================================");
 		System.out.println(" Ingreso de productos...");
@@ -841,7 +1194,7 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 		ProductosBO objInsertar = new ProductosBO();
 		int resInsert=0;
 		try {
-			resInsert = objInsertar.insertaProductos(nomProd, Descirpcion,  fltValorUni, intStock, fltPrecioVta);
+			resInsert = objInsertar.insertaProductos(prodEsp,nomProd, Descirpcion,  fltValorUni, intStock, fltPrecioVta);
 			if ( resInsert == 1)
 			{	
 				System.out.println("Resultado del query: "+resInsert);
@@ -855,6 +1208,9 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 			System.out.println("No entro");
 		}
 	}
+	
+	
+	
 	
 	public void handle(ActionEvent event) 
 	{
@@ -894,6 +1250,7 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 				System.out.println("==================================================");
 		    	System.out.println(" creando categorías...");
 		    	System.out.println("==================================================");
+		    	System.out.println(" Correcion primera..." +productoGeneral+ " - "+productoEspecifico);
 		    	
 		    	if (!txtNProducto.getText().toString().isEmpty() && !txtDescripcion.getText().toString().isEmpty() && !txtPrecioCompra.getText().toString().isEmpty()
 		    			&& 	!txtStock.getText().toString().isEmpty() && !txtPrecioVta.getText().toString().isEmpty())
@@ -906,7 +1263,7 @@ public class productosPrincipal implements EventHandler<ActionEvent>
 			    	fltPrecioVta = Float.parseFloat(txtPrecioVta.getText().toString().trim());
 			    	Stock=Integer.parseInt(txtStock.getText().toString().trim());	
 			    	System.out.println("Antes");
-			    	insertaProducto(txtNProducto.getText().toString().trim(),txtDescripcion.getText().toString().trim(), fltPrecioCompra, Stock,fltPrecioVta );
+			    	insertaProducto(productoEspecifico,txtNProducto.getText().toString().trim(),txtDescripcion.getText().toString().trim(), fltPrecioCompra, Stock,fltPrecioVta );
 			    }
 		    	else 
 		    	{

@@ -119,7 +119,7 @@ public class clientesPrincipal  implements EventHandler<ActionEvent>
 			
 			tableClientes.setLayoutX(30);
 			tableClientes.setLayoutY(100);
-			tableClientes.setPrefSize(620, 220);
+			tableClientes.setPrefSize(600, 220);
 		    /**/
 			cargarClientesTabla();
 			tableClientes.setOnMouseClicked( event -> {
@@ -144,10 +144,9 @@ public class clientesPrincipal  implements EventHandler<ActionEvent>
 				);
 	        Group rootIngreso = new Group();
 	        
-	        Image imgCarga = new Image("application/madmenmag-fondo-verano-agua.jpg"); 
-			ImageView imgView = new ImageView(imgCarga);
+	        
 			BorderPane bp  = new BorderPane();
-			bp.setCenter(imgView);
+			bp.setCenter(b.fondoPantalla());
 			rootIngreso.getChildren().addAll(bp,scenetitle,lblProd,txtIdentificacion, btnBuscar,tableClientes,btnExit,btnAdd,btnUpdate);
 			Scene escenaProductos = null;
 			escenaProductos = new Scene(rootIngreso, 670, 430);

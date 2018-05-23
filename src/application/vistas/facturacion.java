@@ -17,6 +17,7 @@ import application.com.DTOS.ProductosDTO;
 import application.extras.Numeros_a_Letras;
 import application.extras.botones;
 import application.tablas.tablaFacturaDet;
+import application.vistas.productos.productosPrincipal;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -54,7 +55,7 @@ public class facturacion implements EventHandler<ActionEvent>
 	
 	public TextField txtRuc,txtCliente,txtDireccion,txtApellidos,txtTelefono,txtCorreo,txtStock;
 	public TextField txtConsulta,txtCantidad,txtSubtotal,txtIva,txtIvaDoce,txtTotal,txtCantidadString;
-	public Button btnAdd,btnExit;
+	public Button btnAdd,btnExit,btnAddProducto;
 	public float totalFacturar = 0.2f;
 	public ObservableList<String> Contenido= 
 		    FXCollections.observableArrayList (
@@ -169,6 +170,13 @@ public class facturacion implements EventHandler<ActionEvent>
 		Label lblConsulta = new Label("INGRESE PRODUCTO:");
 		lblConsulta.setLayoutX(20);
 		lblConsulta.setLayoutY(180);
+		 
+		btnAddProducto = new Button("Agregar producto");
+		btnAddProducto.setLayoutX(20);
+		btnAddProducto.setLayoutY(180);
+		btnAddProducto.setFont(new Font("Arial",15));
+		btnAddProducto.setPrefSize(150, 30);
+		btnAddProducto.setOnAction(this);
 		
 		
 		comboProductos.setLayoutX(40);
@@ -353,12 +361,26 @@ public class facturacion implements EventHandler<ActionEvent>
 		
         Group root = new Group();
         
-        Image imgCarga = new Image("application/1.jpg"); 
-		ImageView imgView = new ImageView(imgCarga);
+       /* Label hi= new Label("AVBDFEFgrfdg");
+        Label hi2= new Label("AVBDFEFgrfdg");
+        Button btnE = new Button("Regresar");
+        Group rootA = new Group();
+        rootA.getChildren().addAll(hi, hi2,btnE);*/
 		BorderPane bp  = new BorderPane();
-		bp.setCenter(imgView);
+		//bp.setTop(rootA);
+		bp.setCenter(bot.fondoPantalla());
         /**/
-        root.getChildren().addAll(bp,lblDireccion,lblTelefono,lblCorreo,comboProductos,lblConsulta,txtConsulta,lblCantidad,txtCantidad,lblCantidadString,txtCantidadString);
+        root.getChildren().addAll(bp,
+        						  lblDireccion,
+        						  lblTelefono,
+        						  lblCorreo,
+        						  //comboProductos,
+        						  btnAddProducto,
+        						  //txtConsulta,
+        						  lblCantidad,
+        						  txtCantidad,
+        						  lblCantidadString,
+        						  txtCantidadString);
         root.getChildren().addAll(scenetitle, lblRuc,txtRuc,lblCliente,txtCliente,lblApellidos,txtApellidos,txtDireccion,txtTelefono,txtCorreo,lblFecha,txtFecha,tableFacturacion,lblSubtotal,lblIvaCero,lblIvaDoce,lblTotal,txtSubtotal,txtIva,txtIvaDoce,txtTotal,btnAdd,btnExit);
 		Scene escenaConsulta = null;
 		escenaConsulta = new Scene(root, 600, 600);
@@ -456,7 +478,7 @@ public class facturacion implements EventHandler<ActionEvent>
 		System.out.println(" Agregando productos al combo..."+strProducto);
 		System.out.println("==================================================");
 		try {
-			productos = new ProductosBO().extraeProductos(strProducto);
+			/*productos = new ProductosBO().extraeProductos(strProducto);
 			if (productos != null && !productos.isEmpty())
 			{
 				
@@ -476,10 +498,10 @@ public class facturacion implements EventHandler<ActionEvent>
 				alertasMensajes alerta = new alertasMensajes();
 				alerta.alertaGeneral(srtError);
 				System.out.println("NO HAY DATOS");
-			}
+			}*/
 			
 			
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -693,6 +715,15 @@ public class facturacion implements EventHandler<ActionEvent>
 		    	ventanaActual.close();
 		    	Principal menuInicio = new Principal();
 		    	menuInicio.panelPrincipal();
+		    	
+		   }
+		else if ( event.getSource() == btnAddProducto ) 
+		   {
+				System.out.println("==================================================");
+		    	System.out.println("	Agregar producto...");
+		    	System.out.println("==================================================");
+		    	productosPrincipal productos = new productosPrincipal(); 
+		    	productos.consultaProductoCliente();
 		    	
 		   }
 		

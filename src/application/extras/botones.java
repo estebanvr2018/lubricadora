@@ -12,6 +12,13 @@ public class botones
 		return imgVie;
 	}
 	
+	public ImageView botonBuscarMax()
+	{
+		Image image = new Image("application/images/buscar.png",30,30,true,true);
+		ImageView imgVie = new ImageView(image);
+		return imgVie;
+	}
+	
 	public ImageView botonAgregarLista()
 	{
 		Image image = new Image("application/images/guardarGeneral.png",15,15,true,true);
@@ -87,5 +94,39 @@ public class botones
 		Image image = new Image("application/images/calcula.jpg",15,15,true,true);
 		ImageView imgVie = new ImageView(image);
 		return imgVie;
+	}
+	
+	public ImageView fondoPantalla()
+	{
+	Image imgCarga = new Image("application/images/fondo.jpg"); 
+	ImageView imgView = new ImageView(imgCarga);
+	return imgView;
+	}
+	
+	public ImageView ClientesP()
+	{
+	Image imgCarga = new Image("application/images/clientes.png",30,30,true,true); 
+	ImageView imgView = new ImageView(imgCarga);
+	return imgView;
+	}
+	
+	public ImageView UsuariosP()
+	{
+	Image imgCarga = new Image("application/images/usuario.jpg",30,30,true,true); 
+	ImageView imgView = new ImageView(imgCarga);
+	return imgView;
+	}
+	
+	public ImageView productosP()
+	{
+	Image imgCarga = new Image("application/images/producto.png",30,30,true,true); 
+	ImageView imgView = new ImageView(imgCarga);
+	return imgView;
+	}
+	public ImageView facturaP()
+	{
+	Image imgCarga = new Image("application/images/facturacion.png",30,30,true,true); 
+	ImageView imgView = new ImageView(imgCarga);
+	return imgView;
 	}
 }
