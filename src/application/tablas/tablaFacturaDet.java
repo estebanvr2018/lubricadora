@@ -3,6 +3,27 @@ package application.tablas;
 
 public class tablaFacturaDet 
 {
+	public int IdFacturaDtl;
+	public int IdFactura;
+	public int IdProducto;
+	public int getIdFacturaDtl() {
+		return IdFacturaDtl;
+	}
+	public void setIdFacturaDtl(int idFacturaDtl) {
+		IdFacturaDtl = idFacturaDtl;
+	}
+	public int getIdFactura() {
+		return IdFactura;
+	}
+	public void setIdFactura(int idFactura) {
+		IdFactura = idFactura;
+	}
+	public int getIdProducto() {
+		return IdProducto;
+	}
+	public void setIdProducto(int idProducto) {
+		IdProducto = idProducto;
+	}
 	private int Cantidad;
 	private String Descripcion;
 	private float ValorUnitario;

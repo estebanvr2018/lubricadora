@@ -722,8 +722,8 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 				//panelConsulta();
 				//modificarProducto addProductos = new modificarProducto();
 				//addProductos.panelProductos();
-				pruebasInsert pruebas= new pruebasInsert();
-				pruebas.ingresoProductos(VentanaT);
+				productosPrincipal add = new productosPrincipal();
+				add.consultaProductoCliente();
 				
 		 }
 		

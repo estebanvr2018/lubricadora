@@ -73,15 +73,15 @@ public class ProductosBO {
 		return lsProductosDTO;
 	}
 	
-	public tablaFacturaDet valoresTabla(int intCantidad, String strDescripcion, float Precio)
+	public FacturaDtlDTO valoresTabla(int intCantidad, String strDescripcion, float Precio)
 	{
 		float total=0;
 		total= intCantidad * Precio;
-		tablaFacturaDet retorno = new tablaFacturaDet();
+		FacturaDtlDTO retorno = new FacturaDtlDTO();
 		retorno.setCantidad(intCantidad);
 		retorno.setDescripcion(strDescripcion);
-		retorno.setValorUnitario(Precio);
-		retorno.setPrecio(total);
+		retorno.setValor(Precio);
+		retorno.setTotal(total);
 		return retorno;
 	}
 	

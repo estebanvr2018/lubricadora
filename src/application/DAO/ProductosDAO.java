@@ -123,7 +123,7 @@ public class ProductosDAO {
 				//objProductosDTO.setIdProductoDescri(rs.getInt(2));
 				objProductosDTO.setNombreProducto(rs.getString(2));
 				objProductosDTO.setDescripcion(rs.getString(3));
-				objProductosDTO.setValorCompra(rs.getFloat(4));
+				objProductosDTO.setValorVenta(rs.getFloat(4)); //.setValorCompra(rs.getFloat(4));
 				objProductosDTO.setStock(rs.getInt(5));
 				//objProductosDTO.setValorVenta(rs.getFloat(7));
 				//objProductosDTO.setFechaIngreso(rs.getTimestamp(8));

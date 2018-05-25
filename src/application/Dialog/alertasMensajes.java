@@ -49,5 +49,19 @@ public class alertasMensajes
 		diAlerta.initStyle(StageStyle.UTILITY);
 		diAlerta.showAndWait();
 	}
+	
+	public int CantidadProductos()
+	{
+		TextInputDialog dialog = new TextInputDialog("");
+		dialog.setTitle("Confirmación");
+		dialog.setHeaderText("Cuantos productos ingresará");
+		dialog.setContentText("Número de productos:");
+		// Traditional way to get the response value.
+		Optional<String> result = dialog.showAndWait();
+		if (result.isPresent()){
+		    System.out.println("Your name: " + result.get());
+		}
+		return 0;
+	}
 
 }
