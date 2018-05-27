@@ -4,12 +4,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import application.DAO.ProductosDAO;
 import application.com.DTOS.*;
 import application.com.conxionMySql.ConexionMySQL;
 import application.tablas.tablaFacturaDet;
+import javafx.scene.input.DataFormat;
 
 public class ProductosBO {
 
@@ -73,15 +75,19 @@ public class ProductosBO {
 		return lsProductosDTO;
 	}
 	
-	public FacturaDtlDTO valoresTabla(int intCantidad, String strDescripcion, float Precio)
+	public FacturaDtlDTO valoresTabla(int idProducto, int intCantidad, String strDescripcion, float Precio)
 	{
-		float total=0;
-		total= intCantidad * Precio;
+		float productoTotal = 0, productoNIVA = 0, iva = 0.2f;
+		iva= ((12 * Precio)/100);
+
+		productoNIVA = Precio - iva;
+		productoTotal = productoNIVA * intCantidad;
 		FacturaDtlDTO retorno = new FacturaDtlDTO();
+		retorno.setIdProducto(idProducto);
 		retorno.setCantidad(intCantidad);
 		retorno.setDescripcion(strDescripcion);
-		retorno.setValor(Precio);
-		retorno.setTotal(total);
+		retorno.setValor(productoNIVA);
+		retorno.setTotal(productoTotal);
 		return retorno;
 	}
 	

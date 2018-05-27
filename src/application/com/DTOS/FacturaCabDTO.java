@@ -4,11 +4,13 @@ package application.com.DTOS;
 
 import java.util.Date;
 
-public class FacturaCabDTO {
+public class FacturaCabDTO 
+{
 
 	/*** CONSTRUCTOR ***/
 	public FacturaCabDTO(int idFactura, String idIdentificacion, Date fechaFactura, float subTotal1, float subTotal2,
-			float ivaCero, float ivaDoce, float valorTotal, Date fechaIngreso, String estado, String usuarioIngreso) {
+			float ivaCero, float ivaDoce, float valorTotal, String ValorTotalLetras, String estado, String usuarioIngreso) 
+	{
 		super();
 		IdFactura = idFactura;
 		IdIdentificacion = idIdentificacion;
@@ -18,23 +20,24 @@ public class FacturaCabDTO {
 		IvaCero = ivaCero;
 		IvaDoce = ivaDoce;
 		ValorTotal = valorTotal;
-		FechaIngreso = fechaIngreso;
+		valorTotalLetras = ValorTotalLetras;
 		Estado = estado;
 		UsuarioIngreso = usuarioIngreso;
 	}
 
 	/*** PARAMETROS  ***/
-	public final int IdFactura;
-	public final String IdIdentificacion;
-	public final Date FechaFactura;
-	public final float SubTotal1;
-	public final float SubTotal2;
-	public final float IvaCero;
-	public final float IvaDoce;
-	public final float ValorTotal;
-	public final Date FechaIngreso;
-	public final String Estado;
-	public final String UsuarioIngreso;
+	public int IdFactura;
+	public String IdIdentificacion;
+	public Date FechaFactura;
+	public float SubTotal1;
+	public float SubTotal2;
+	public float IvaCero;
+	public float IvaDoce;
+	public float ValorTotal;
+	public String valorTotalLetras;
+	public Date FechaIngreso;
+	public String Estado;
+	public String UsuarioIngreso;
 
 	/*** METODOS  ***/ 
 	public int getIdFactura() {

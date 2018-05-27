@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import application.Principal;
 import application.BO.ClientesBO;
+import application.BO.FacturaBO;
 import application.BO.ProductosBO;
 import application.Dialog.alertasMensajes;
 import application.com.DTOS.ClientesDTO;
@@ -32,6 +33,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -50,6 +52,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class facturacion implements EventHandler<ActionEvent> 
@@ -66,9 +69,9 @@ public class facturacion implements EventHandler<ActionEvent>
 	
 	public Stage ventanaActual;
 	
-	public TextField txtRuc,txtCliente,txtDireccion,txtApellidos,txtTelefono,txtCorreo,txtStock;
-	public TextField txtCantidad,txtSubtotal,txtIva,txtIvaDoce,txtTotal,txtCantidadString, txtDescripcion,numProductos;
-	public Button btnAdd,btnExit,btnAddProducto;
+	public TextField txtRuc,txtCliente,txtDireccion,txtApellidos,txtTelefono,txtCorreo;
+	public TextField txtCantidad,txtSubtotal,txtIva,txtIvaDoce,txtTotal,txtCantidadString, txtDescripcion;
+	public Button btnAdd,btnExit,btnAddProducto, btnLimpiar, btnImprimir;
 	public float totalFacturar = 0.2f;
 	public ObservableList<String> Contenido= 
 		    FXCollections.observableArrayList (
@@ -76,9 +79,9 @@ public class facturacion implements EventHandler<ActionEvent>
 		        );;
 	public ComboBox<String> comboProductos= new ComboBox<String>(Contenido);
 	public List<ProductosDTO> productos=null;
-	
 	public List<productoDTO> productosAfactura=null;
 	
+	public boolean bCliente = false;
 	/*** ***/
 	public TableView<productoDTO> productosIngresados = new TableView();
 	public TableColumn<productoDTO, String> idProducto = new TableColumn<>("Cod");
@@ -96,18 +99,32 @@ public class facturacion implements EventHandler<ActionEvent>
 	public void formularioFactura(Stage stgFactura) 
 	{
 		ventanaActual=stgFactura;
-		Text scenetitle = new Text("Facturación");
-		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-		scenetitle.setX(200);
+		Text scenetitle = new Text("FACTURACIÓN");
+		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 25));
+		scenetitle.setFill(Color.BLUE);
+		scenetitle.setX(480);
 		scenetitle.setY(40);
 		//scenetitle.setFont(new Font("Arial",20));
-        
+		botones bot = new botones();
 		Label lblRuc = new Label("Cédula/RUC: ");
 		lblRuc.setLayoutX(20);
 		lblRuc.setLayoutY(60);
 		txtRuc = new TextField();
 		txtRuc.setLayoutX(100);
 		txtRuc.setLayoutY(55);
+		txtRuc.textProperty().addListener(new ChangeListener<String>() {
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d{0,10}?") && !newValue.matches("\\d{0,13}?") ) 
+                {
+                	txtRuc.setText(oldValue);
+                }
+                
+            }
+        });
+	
+                
+                
+                
 		txtRuc.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent ke) {
@@ -128,18 +145,28 @@ public class facturacion implements EventHandler<ActionEvent>
 					}
 					else
 					{	
-						List<ClientesDTO> cliente=null;
-						cliente = consultarCliente(parametro); //OJO OBTENER EL ID INGRESADO
-						
-						if (cliente != null && !cliente.isEmpty()) 
+						if(parametro.length() != 10 && parametro.length() != 13 )
 						{
-							seteaCampos(cliente); 
-							deshabilitaCampos();
+							String srtError="Por favor revise Cédula o Ruc. Para cédula necesita ingresar 10 dígitos, para Ruc necesita ingresar 13 dígitos ...";
+							alertasMensajes alerta = new alertasMensajes();
+							alerta.alertaGeneral(srtError);
 						}
-						else
+						else 
 						{	
-							seteaCamposNCL();
-							habilitaCampos();
+							List<ClientesDTO> cliente=null;
+							cliente = consultarCliente(parametro); //OJO OBTENER EL ID INGRESADO
+							
+							if (cliente != null && !cliente.isEmpty()) 
+							{
+								seteaCampos(cliente); 
+								deshabilitaCampos();
+								bCliente = true;
+							}
+							else
+							{	
+								seteaCamposNCL();
+								habilitaCampos();
+							}
 						}
 					}
 							
@@ -253,12 +280,15 @@ public class facturacion implements EventHandler<ActionEvent>
 		//
 		
 		
-		btnAdd = new Button("FACTURAR");
-		btnAdd.setLayoutX(170);
-		btnAdd.setLayoutY(280);
+		btnAdd = new Button("Facturar", bot.botonFacturaGrande());
+		//btnAdd.setDefaultButton(true);
+		btnAdd.setLayoutX(940);
+		btnAdd.setLayoutY(330);
 		btnAdd.setDisable(true);
-		btnAdd.setFont(new Font("Arial",15));
-		btnAdd.setPrefSize(150, 30);
+		btnAdd.setTextFill(Color.RED);
+		btnAdd.setContentDisplay(ContentDisplay.BOTTOM);
+		//btnAdd.setFont(new Font("Arial",15));
+		btnAdd.setPrefSize(63, 40);
 		btnAdd.setOnAction(this);
 		
 		/*** Nueva tabla***/
@@ -300,8 +330,6 @@ public class facturacion implements EventHandler<ActionEvent>
 			}
 			);
 		/*** Nueva tabla***/
-		
-		botones bot = new botones();
 		btnExit = new Button("Regresar");
 		btnExit.setGraphic(bot.botonRegresar());
 		btnExit.setLayoutX(10);
@@ -310,34 +338,47 @@ public class facturacion implements EventHandler<ActionEvent>
 		btnExit.setOnAction(this);
 		
 		/*** Cabecera de la factura datos del cliente***/
+		Text sceneCliente = new Text("- Datos del cliente");
+		sceneCliente.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
+		sceneCliente.setFill(Color.BLUE);
+		sceneCliente.setX(20);
+		sceneCliente.setY(70);
+		
+		
 		AnchorPane datosClientes = new AnchorPane();
-		datosClientes.getChildren().addAll(scenetitle,
-								   lblRuc,
-								   txtRuc,
-								   lblFecha,
-	        					   txtFecha,
-	        					   lblCliente,
-	        					   txtCliente,
-	        					   lblApellidos,
-	        					   txtApellidos,
-	        					   lblDireccion,
-	        					   txtDireccion,
-	        					   lblTelefono,
-	        					   txtTelefono,
-	        					   lblCorreo,
-	        					   txtCorreo,
-	        					   btnExit
-	        					   );
+		datosClientes.getChildren().addAll(//scenetitle,
+										   lblRuc,
+										   txtRuc,
+										   lblFecha,
+			        					   txtFecha,
+			        					   lblCliente,
+			        					   txtCliente,
+			        					   lblApellidos,
+			        					   txtApellidos,
+			        					   lblDireccion,
+			        					   txtDireccion,
+			        					   lblTelefono,
+			        					   txtTelefono,
+			        					   lblCorreo,
+			        					   txtCorreo,
+			        					   btnExit
+			        					   );
 		datosClientes.setBorder(new Border(new BorderStroke(Color.BLACK, 
 	            BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		datosClientes.setPadding(new Insets(5));
 		datosClientes.setTranslateX(20);
-		datosClientes.setTranslateY(20);
+		datosClientes.setTranslateY(80);
 		datosClientes.setTranslateZ(20);
 		datosClientes.setMaxSize(650, 250);
 		
 		/*** ***/
 		/*** Cabecera de la factura datos del cliente***/
+		Text sceneProductosADD = new Text("- Productos añadidos");
+		sceneProductosADD.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
+		sceneProductosADD.setFill(Color.BLUE);
+		sceneProductosADD.setX(20);
+		sceneProductosADD.setY(290);
+		
 		AnchorPane datosListaFactura = new AnchorPane();
 		datosListaFactura.getChildren().addAll(
 											   //tableFacturacion,
@@ -351,14 +392,14 @@ public class facturacion implements EventHandler<ActionEvent>
 											   txtSubtotal,
 											   txtIva,
 											   txtIvaDoce,	
-											   txtTotal,
-											   btnAdd
+											   txtTotal
+											   //btnAdd
 	        					   			);
 		datosListaFactura.setBorder(new Border(new BorderStroke(Color.DARKGREEN, 
 	            BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		datosListaFactura.setPadding(new Insets(5));
 		datosListaFactura.setTranslateX(20);
-		datosListaFactura.setTranslateY(220);
+		datosListaFactura.setTranslateY(300);
 		datosListaFactura.setTranslateZ(20);
 		datosListaFactura.setMaxSize(650, 250);
 		
@@ -440,8 +481,14 @@ public class facturacion implements EventHandler<ActionEvent>
 							valorVenta = productosIngresados.getSelectionModel().getSelectedItem().getValorVenta();
 							ProductosBO llenaCampo = new ProductosBO();
 							FacturaDtlDTO mapeoTabla = new FacturaDtlDTO();
-							mapeoTabla=llenaCampo.valoresTabla(numProd, Descripcion,valorVenta);
+							mapeoTabla=llenaCampo.valoresTabla(idProducto, numProd, Descripcion,valorVenta);
 							   productosFacturar.getItems().add(mapeoTabla);
+							   if ( productosFacturar.getItems().size() > 0 )
+								{
+									btnAdd.setDisable(false);
+								}
+								else
+									btnAdd.setDisable(true);
 							   //productosIngresados.getItems().removeAll();
 							   //productosIngresados.getItems().clear();
 							   sumaTotal();		
@@ -527,6 +574,11 @@ public class facturacion implements EventHandler<ActionEvent>
 		
 		//btnAddProducto.setFont(new Font("Arial",15));
 		//btnAddProducto.setPrefSize(150, 30);
+		Text sceneProductos = new Text("- Búsqueda de productos");
+		sceneProductos.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
+		sceneProductos.setFill(Color.BLUE);
+		sceneProductos.setX(580);
+		sceneProductos.setY(70);
 		
 		AnchorPane datosProductos = new AnchorPane();
 		datosProductos.getChildren().addAll(productosIngresados,
@@ -541,30 +593,153 @@ public class facturacion implements EventHandler<ActionEvent>
 	            BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		datosProductos.setPadding(new Insets(5));
 		datosProductos.setTranslateX(580);
-		datosProductos.setTranslateY(20);
+		datosProductos.setTranslateY(80);
 		datosProductos.setTranslateZ(20);
 		datosClientes.setMaxSize(450, 250);
 		/*** ***/
-		
+		btnLimpiar = new Button("Limpiar", bot.botonLimpiar());
+		//btnAdd.setDefaultButton(true);
+		btnLimpiar.setLayoutX(940);
+		btnLimpiar.setLayoutY(400);
+		btnLimpiar.setDisable(false);
+		btnLimpiar.setTextFill(Color.RED);
+		btnLimpiar.setContentDisplay(ContentDisplay.BOTTOM);
+		//btnAdd.setFont(new Font("Arial",15));
+		btnLimpiar.setPrefSize(63, 40);
+		btnLimpiar.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				System.out.println("=======================================================");
+				System.out.println(" limpiando formulario...");
+				System.out.println("=======================================================");
+				
+					productosIngresados.getItems().removeAll();
+					productosIngresados.getItems().clear();
+					productosFacturar.getItems().removeAll();
+					productosFacturar.getItems().clear();
+					txtRuc.setText("");
+					txtCliente.setText("");
+					txtDireccion.setText("");
+					txtApellidos.setText("");
+					txtTelefono.setText("");
+					txtCorreo.setText("");
+					txtCantidad.setText("");
+					txtSubtotal.setText("");
+					txtIva.setText("");
+					txtIvaDoce.setText("");
+					txtTotal.setText("");
+					txtCantidadString.setText("");
+					txtDescripcion.setText("");
+					
+			}
+				
+		});
+		btnImprimir = new Button("Imprimir", bot.botonImprimir());
+		//btnAdd.setDefaultButton(true);
+		btnImprimir.setLayoutX(940);
+		btnImprimir.setLayoutY(470);
+		btnImprimir.setDisable(false);
+		btnImprimir.setTextFill(Color.RED);
+		btnImprimir.setContentDisplay(ContentDisplay.BOTTOM);
+		//btnAdd.setFont(new Font("Arial",15));
+		btnImprimir.setPrefSize(63, 40);
+		btnImprimir.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				System.out.println("=======================================================");
+				System.out.println(" Imprimiendo formulario...");
+				System.out.println("=======================================================");
+				
+			}
+		});
+		/*** ***/
         root.getChildren().addAll(bp,
+        						  scenetitle,
+        						  sceneCliente,
+        						  sceneProductosADD,
+        						  sceneProductos,
         						  datosClientes,
         						  datosListaFactura,
-        						  datosProductos
+        						  datosProductos,
+        						  btnAdd,
+        						  btnLimpiar,
+        						  btnImprimir
         						  );
         root.getChildren().addAll(
         						  //tableFacturacion,
         						  
         						  );
 		Scene escenaConsulta = null;
-		escenaConsulta = new Scene(root, 1025, 600);
+		escenaConsulta = new Scene(root, 1040, 700);
 		escenaConsulta.setFill(Color.TRANSPARENT);
 		ventanaActual.setTitle("Control de ventas");
 		ventanaActual.setScene(escenaConsulta);
+		ventanaActual.getIcons().add(bot.iconoLaren());
 		//ventanaActual.setResizable(false);
 		ventanaActual.show();
 
 	}
 	
+	/*** Metodo para insertar el cliente ***/
+	public int insertaClienteBD(String strId, String strNombre, String strApellidos,String strDireccion,String strTelefono,String strCorreo)
+	 {
+		System.out.println("================================================================================");
+		System.out.println(" Ingreso de cliente...");
+		System.out.println("================================================================================");
+		ClientesBO objInsertar = new ClientesBO();
+		int resInsert=0;
+		try 
+		{	System.out.println(" 1");
+			resInsert = objInsertar.insertaCliente(strId, strNombre, strApellidos,strDireccion,strTelefono,strCorreo);
+			System.out.println(" 2: "+resInsert);
+			if ( resInsert == 1)
+			{	
+				System.out.println("Cliente insertado"+resInsert);
+				
+			}
+			else 
+			{
+				String srtError="No se pudo ingresar el Cliente";
+				alertasMensajes alerta = new alertasMensajes();
+				alerta.alertaGeneral(srtError);
+			}
+			return resInsert;
+		} catch (SQLException e) {
+			
+			return resInsert;
+		}
+	}
+	/*** Metodo para insertar el cliente ***/
+	
+	/*** Metodo para insertar facturaCabecera ***/
+	public int insertaCabFact(String intIdentificacion, float fltSutbtotal, float fltSutbtotalReq, 
+							float fltIvaC, float fltIvaCDoce, float valorTotal, String valorTotalLetras)
+	 {
+		System.out.println("================================================================================");
+		System.out.println(" Ingreso de cliente...");
+		System.out.println("================================================================================");
+		FacturaBO objInsertar = new FacturaBO();
+		int resInsert=0;
+		try 
+		{	System.out.println(" 1");
+			resInsert = objInsertar.insertaCabeceraFactura(intIdentificacion, fltSutbtotal, fltSutbtotalReq, fltIvaC, fltIvaCDoce, valorTotal, valorTotalLetras);
+			System.out.println(" 2: "+resInsert);
+			if ( resInsert != -1)
+			{	
+				System.out.println("Factura cabecera insertada"+resInsert);
+				
+			}
+			else 
+			{
+				String srtError="No se pudo ingresar la Factura Cabecera";
+				alertasMensajes alerta = new alertasMensajes();
+				alerta.alertaGeneral(srtError);
+			}
+			return resInsert;
+		} catch (SQLException e) {
+			
+			return resInsert;
+		}
+	}
+	/*** Metodo para insertar facturaCabecera ***/
 	
 	public boolean verificaCampos(String strNombres, String srtDireccion, String strApellidos, String strTelefono)
 	{
@@ -603,12 +778,6 @@ public class facturacion implements EventHandler<ActionEvent>
 	
 	
 	
-	
-	/*** ***/
-
-	/*** ***/
-	
-	
 	public void cargaProductoTabla(String strProducto)
 	{
 		String strCondicion=null;
@@ -645,7 +814,13 @@ public class facturacion implements EventHandler<ActionEvent>
 		System.out.println(" Eliminando producto ...");
 		System.out.println("==================================================");
 		productosFacturar.getItems().remove(objProducto);
-		
+		System.out.println("productosFacturar "+productosFacturar.getItems().size());
+		if ( productosFacturar.getItems().size() == 0 )
+		{
+			btnAdd.setDisable(true);
+		}
+		else
+			btnAdd.setDisable(false);
 	}
 	
 	public void traeProductos(String strProducto)
@@ -731,7 +906,7 @@ public class facturacion implements EventHandler<ActionEvent>
 		txtIva.setText("0");
 		//Calculo del IVA 12% 
 		float flIva=0;
-		flIva=(totalFacturar*12)/100;
+		flIva=((totalFacturar*100)/88)-totalFacturar;
 		String txtFacturaIvaDoce=Float.toString(flIva);
 		txtIvaDoce.setText(txtFacturaIvaDoce);
 		//total
@@ -754,12 +929,51 @@ public class facturacion implements EventHandler<ActionEvent>
 		txtDireccion.setEditable(true);
 		txtApellidos.setEditable(true);
 		txtTelefono.setEditable(true);
+		txtCorreo.setEditable(true);
 		txtCliente.setEditable(true);
 		
 		
 		txtCantidad.setEditable(true);
 		btnAdd.setDisable(false);
 	}
+	
+	public void recorrerProductosFactura(int idFacturaCab)
+	{
+		/*** ***/
+		// int idFactCab, int idProducto, int cantidad, float valor
+		/*** ***/
+		FacturaBO objInsertar = new FacturaBO();
+		int resInsert=0;
+		try 
+		{
+		for (int i = 0; i < productosFacturar.getItems().size(); i++)
+		{
+			int cantidad = 0, idProducto = 0;
+			float valorUnitario = 0;
+			resInsert=0;
+			idProducto = productosFacturar.getItems().get(i).getIdProducto();
+			cantidad = productosFacturar.getItems().get(i).getCantidad();
+			valorUnitario = productosFacturar.getItems().get(i).getValor();
+			resInsert = objInsertar.insertaDetalleFactura(idFacturaCab, idProducto, cantidad , valorUnitario);
+			System.out.println(" 2: "+resInsert);
+			if ( resInsert == 1)
+			{	
+				System.out.println("Factura detalle insertada"+resInsert);
+				
+			}
+			else 
+			{
+				String srtError="No se pudo ingresar el producto " +productosFacturar.getItems().get(i).getDescripcion()+ "a la factura";
+				alertasMensajes alerta = new alertasMensajes();
+				alerta.alertaGeneral(srtError);
+			}
+		}
+		} catch (SQLException e) {
+			
+			System.out.println("");
+		}
+	}	
+	
 	public void deshabilitaCampos() 
 	{
 		txtCliente.setEditable(false);	
@@ -767,7 +981,7 @@ public class facturacion implements EventHandler<ActionEvent>
 		txtApellidos.setEditable(false);
 		txtTelefono.setEditable(false);
 		txtCliente.setEditable(false);
-	
+		txtCorreo.setEditable(false);
 		txtCantidad.setEditable(true);
 		btnAdd.setDisable(true);
 	}
@@ -857,7 +1071,33 @@ public class facturacion implements EventHandler<ActionEvent>
 						 System.out.println("==================================================");
 				    	 System.out.println("Creando factura...");
 				    	 System.out.println("==================================================");
-				        } 
+				         /*** Primero ingreso el usuario si no existe ***/
+				    	 List<ClientesDTO> cliente=null;
+						 cliente = consultarCliente(txtRuc.getText().toString().trim()); 
+						    float Subtotal=0, ivaCero = 0, ivaDoce=0, totalVenta=0;
+							Subtotal = Float.parseFloat(txtSubtotal.getText().toString().trim());
+							ivaCero = Float.parseFloat(txtIva.getText().toString().trim());
+							ivaDoce = Float.parseFloat(txtIvaDoce.getText().toString().trim());
+							totalVenta = Float.parseFloat(txtTotal.getText().toString().trim());	
+							if (cliente != null && !cliente.isEmpty()) 
+							{
+								int ingresoFactCab = 0;
+								ingresoFactCab = insertaCabFact(txtRuc.getText().toString(), Subtotal, 0, ivaCero, ivaDoce, totalVenta, txtCantidadString.getText().toString());
+								System.out.println(" Id de la factura: "+ingresoFactCab);
+								recorrerProductosFactura(ingresoFactCab);
+							}
+							else
+							{	
+								int ingresoCliente = 0;
+								ingresoCliente = insertaClienteBD(txtRuc.getText().toString(), txtCliente.getText().toString(), txtApellidos.getText().toString(),txtDireccion.getText().toString(), txtTelefono.getText().toString(),txtCorreo.getText().toString()  );
+								System.out.println("Resultado de ingresar el cliente: "+ingresoCliente);
+								int ingresoFactCab = 0;
+								ingresoFactCab = insertaCabFact(txtRuc.getText().toString(), Subtotal, 0, ivaCero, ivaDoce, totalVenta, txtCantidadString.getText().toString());
+								System.out.println(" Id de la factura: "+ingresoFactCab);
+								recorrerProductosFactura(ingresoFactCab);
+							}
+				    	 /*** Primero ingreso el usuario si no existe ***/
+						} 
 						else if (option.get() == ButtonType.CANCEL) 
 						{
 						  System.out.println("==================================================");
@@ -901,6 +1141,7 @@ public class facturacion implements EventHandler<ActionEvent>
 		    	productoAdd = productos.consultaProductoCliente();
 		    	System.out.println("Que trae desde el prodcuto"+ productoAdd.getDescripcion());
 		   }
+			
 		
 		
 	}	

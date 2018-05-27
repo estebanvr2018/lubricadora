@@ -114,7 +114,6 @@ public class ProductosDAO {
 			ps.setString(3, "%" + strProducto + "%");
 			ps.setString(4, "%" + strProducto + "%");
 			
-			System.out.println(ps.toString());
 			rs = ps.executeQuery();
 			
 			while (rs.next()) {

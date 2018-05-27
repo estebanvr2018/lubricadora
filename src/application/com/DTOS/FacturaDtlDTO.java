@@ -9,8 +9,14 @@ public class FacturaDtlDTO {
 	public int IdProducto;
 	public int Cantidad;
 	public float Valor;
+	public String Estado;
+	public String UsuarioIngreso;
+	
 	public String Descripcion;
 	public float total;
+	public Date FechaCreacion;
+
+	
 	public void setIdFacturaDtl(int idFacturaDtl) {
 		IdFacturaDtl = idFacturaDtl;
 	}
@@ -35,9 +41,6 @@ public class FacturaDtlDTO {
 	public void setUsuarioIngreso(String usuarioIngreso) {
 		UsuarioIngreso = usuarioIngreso;
 	}
-	public Date FechaCreacion;
-	public String Estado;
-	public String UsuarioIngreso;
 	
 	public float getTotal() {
 		return total;

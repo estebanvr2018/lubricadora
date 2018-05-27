@@ -129,4 +129,37 @@ public class botones
 	ImageView imgView = new ImageView(imgCarga);
 	return imgView;
 	}
+	public ImageView botonFacturaGrande()
+	{
+		Image image = new Image("application/images/facturaGrande.png",30,30,true, true);
+		ImageView imgVie = new ImageView(image);
+		return imgVie;
+	}
+	public ImageView botonLimpiar()
+	{
+		Image image = new Image("application/images/limpiar.png",30,30,true, true);
+		ImageView imgVie = new ImageView(image);
+		return imgVie;
+	}
+	
+	public ImageView botonLaren()
+	{
+		Image image = new Image("application/images/lmlaren.jpg",30,30,true, true);
+		ImageView imgVie = new ImageView(image);
+		return imgVie;
+	}
+	
+	public ImageView botonImprimir()
+	{
+		Image image = new Image("application/images/imprimir.png",30,30,true, true);
+		ImageView imgVie = new ImageView(image);
+		return imgVie;
+	}
+	
+	public Image iconoLaren()
+	{
+		Image image = new Image("application/images/lmlaren.jpg",30,30,true, true);
+		ImageView imgVie = new ImageView(image);
+		return image;
+	}
 }
