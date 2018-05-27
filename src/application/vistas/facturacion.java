@@ -955,10 +955,9 @@ public class facturacion implements EventHandler<ActionEvent>
 			cantidad = productosFacturar.getItems().get(i).getCantidad();
 			valorUnitario = productosFacturar.getItems().get(i).getValor();
 			resInsert = objInsertar.insertaDetalleFactura(idFacturaCab, idProducto, cantidad , valorUnitario);
-			System.out.println(" 2: "+resInsert);
 			if ( resInsert == 1)
 			{	
-				System.out.println("Factura detalle insertada"+resInsert);
+				System.out.println("Factura detalle insertada");
 				
 			}
 			else 
