@@ -7,23 +7,19 @@ import java.sql.SQLException;
 import java.util.List;
 
 import application.DAO.FacturaDAO;
-import application.DAO.ProductosDAO;
 import application.com.DTOS.FacturaCabDTO;
-import application.com.DTOS.ProductosDTO;
 import application.com.conxionMySql.ConexionMySQL;
 
-public class FacturaBO 
-{
-	public int insertaCabeceraFactura( String intIdentificacion, float fltSutbtotal, float fltSutbtotalReq, 
-										float fltIvaC, float fltIvaCDoce, float valorTotal, String valorTotalLetras) throws SQLException
-	{
+public class FacturaBO {
+	public int insertaCabeceraFactura(String intIdentificacion, float fltSutbtotal, float fltSutbtotalReq,
+			float fltIvaC, float fltIvaCDoce, float valorTotal, String valorTotalLetras) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
-		int insertQuery=0;
-		try 
-		{
+		int insertQuery = 0;
+		try {
 			FacturaDAO facturar = new FacturaDAO();
-			insertQuery = facturar.insertaFacturaCab(objConnection, intIdentificacion, fltSutbtotal, fltSutbtotalReq, fltIvaC, fltIvaCDoce, valorTotal, valorTotalLetras) ;
-			
+			insertQuery = facturar.insertaFacturaCab(objConnection, intIdentificacion, fltSutbtotal, fltSutbtotalReq,
+					fltIvaC, fltIvaCDoce, valorTotal, valorTotalLetras);
+
 			return insertQuery;
 		} catch (Exception e) {
 			StringWriter errores = new StringWriter();
@@ -35,27 +31,93 @@ public class FacturaBO
 		}
 		return insertQuery;
 	}
-	
-	
-	public int insertaDetalleFactura( int idFactCab, int idProducto, int cantidad, float valor) throws SQLException
-	{
+
+	public int insertaDetalleFactura(int idFactCab, int idProducto, int cantidad, float valor) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
-		int insertQuery=0;
-		try 
-		{
-		FacturaDAO facturar = new FacturaDAO();
-		insertQuery = facturar.insertaFacturaDet(objConnection, idFactCab, idProducto, cantidad, valor);
-		
-		return insertQuery;
+		int insertQuery = 0;
+		try {
+			FacturaDAO facturar = new FacturaDAO();
+			insertQuery = facturar.insertaFacturaDet(objConnection, idFactCab, idProducto, cantidad, valor);
+
+			return insertQuery;
 		} catch (Exception e) {
-		StringWriter errores = new StringWriter();
-		e.printStackTrace(new PrintWriter(errores));
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
 		} finally {
-		if (objConnection != null) {
-		objConnection.close();
-		}
+			if (objConnection != null) {
+				objConnection.close();
+			}
 		}
 		return insertQuery;
+	}
+
+	public int actualizaStockProducto(int idProducto, int cantidad) throws SQLException {
+		Connection objConnection = new ConexionMySQL().conexion();
+		int insertQuery = 0;
+		try {
+			FacturaDAO facturar = new FacturaDAO();
+			insertQuery = facturar.actualizaStockProductos(objConnection, idProducto, cantidad);
+			return insertQuery;
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+		} finally {
+			if (objConnection != null) {
+				objConnection.close();
+			}
+		}
+		return insertQuery;
+	}
+
+	public List<FacturaCabDTO> consultaFacturas() throws SQLException {
+		Connection objConnection = new ConexionMySQL().conexion();
+		List<FacturaCabDTO> lstFacturas = null;
+		try {
+			lstFacturas = new FacturaDAO().consultaFacturas(objConnection);
+
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+		} finally {
+			if (objConnection != null) {
+				objConnection.close();
+			}
+		}
+		return lstFacturas;
+	}
+
+	public List<FacturaCabDTO> buscaFacturas(String strValor) throws SQLException {
+		Connection objConnection = new ConexionMySQL().conexion();
+		List<FacturaCabDTO> lstFacturas = null;
+		try {
+			lstFacturas = new FacturaDAO().buscaFacturas(objConnection, strValor);
+
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+		} finally {
+			if (objConnection != null) {
+				objConnection.close();
+			}
+		}
+		return lstFacturas;
+	}
+	
+	public List<FacturaCabDTO> buscaFacturasReporteGeneral(String strFechaInicio, String strFechaFin) throws SQLException {
+		Connection objConnection = new ConexionMySQL().conexion();
+		List<FacturaCabDTO> lstFacturas = null;
+		try {
+			lstFacturas = new FacturaDAO().buscaFacturasReporteGeneral(objConnection, strFechaInicio,strFechaFin);
+
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+		} finally {
+			if (objConnection != null) {
+				objConnection.close();
+			}
+		}
+		return lstFacturas;
 	}
 
 }

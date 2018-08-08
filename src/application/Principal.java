@@ -15,9 +15,11 @@ import application.vistas.facturaGenera;
 import application.vistas.facturacion;
 import application.vistas.productos.UsuariosPrincipal;
 import application.vistas.productos.clientesPrincipal;
-import application.vistas.productos.facturaPrincipal;
+import application.vistas.productos.comprasPrincipal;
+import application.vistas.productos.consultaFacturas;
+import application.vistas.productos.factReporteGeneral;
 import application.vistas.productos.productosPrincipal;
-import application.vistas.productos.pruebasInsert;
+import application.vistas.productos.proveedoresPrincipal;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -34,22 +36,13 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
@@ -58,28 +51,29 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import reportes.ProductoReporte;
 
 public class Principal extends Application implements EventHandler<ActionEvent> {
 	Button btnLogin;
 	Button btnExit;
 	Button btnAgregar;
-	MenuItem facturacionMenuItem, bodegaMenuItem, exMenuItem,pruebasCombos;
-	MenuItem ingresoProductoMenuItem,consultaProductoMenuItem, updateProductoMenuItem;
-	MenuItem ingresoClientesMenuItem,consultaClientesMenuItem, updateClientesMenuItem;
-	MenuItem facturasMenuItem, factMaxMenuItem;
+	MenuItem facturacionMenuItem, bodegaMenuItem, exMenuItem, pruebasCombos;
+	MenuItem ingresoProductoMenuItem, reporteProductoMenuItem, CompraProductoMenuItem ;
+	MenuItem ingresoClientesMenuItem;
+	MenuItem facturasMenuItem, factConsulta, factReporteGeneral;
 	MenuItem cargaUserMenuItem;
+	MenuItem provMenuItem;
 	boolean primera = false;
 	boolean segunda = false;
 	boolean boolFact = false;
 	Stage VentanaT;
-	
+
 	public TableView<ProductosDTO> table = new TableView();
 	public TableView<ProductosDTO> tableT = new TableView();
 	public TableView<ProductosDTO> tableFacturacion = new TableView();
@@ -94,17 +88,20 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 
 	@Override
 	public void start(Stage primaryStage) {
-
+		botones bot = new botones();
 		primaryStage.setTitle("Login");
 		GridPane grid = new GridPane();
-		grid.setBorder(new Border(new BorderStroke(Color.BLACK, 
-	            BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		grid.setBorder(new Border(
+				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(new Insets(25, 25, 25, 25));
 		Text scenetitle = new Text("Bienvenido");
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+		BorderPane bp = new BorderPane();
+		bp.setCenter(bot.fondoPantalla());
+		//grid.add(bp, 0, 0, 0, 0);
 		grid.add(scenetitle, 0, 0, 2, 1);
 		Label userName = new Label("Usuario:");
 		grid.add(userName, 0, 1);
@@ -117,21 +114,22 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		botones b = new botones();
 		btnLogin = new Button("Entrar");
 		btnLogin.setGraphic(b.botonSuccess());
-		//btnAdd.setFont(new Font("Arial",15));
+		// btnAdd.setFont(new Font("Arial",15));
 		btnLogin.setPrefSize(100, 30);
 		btnLogin.setOnAction(this);
 		btnExit = new Button("Salir");
 		btnExit.setGraphic(b.botonError());
-		//btnAdd.setFont(new Font("Arial",15));
+		// btnAdd.setFont(new Font("Arial",15));
 		btnExit.setPrefSize(100, 30);
 		btnExit.setOnAction(this);
 		HBox hButton = new HBox(10);
 		hButton.setAlignment(Pos.BOTTOM_CENTER);
 		hButton.getChildren().addAll(btnLogin, btnExit);
 		grid.add(hButton, 1, 4);
-		
+
 		Scene scene = new Scene(grid, 410, 310);
 		btnLogin.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("=======================================================");
 				System.out.println("Entrando al menu principal...");
@@ -140,15 +138,16 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 				primaryStage.close();
 				panelPrincipal();
 			}
-				
+
 		});
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		primaryStage.setResizable(false);
+		
+		primaryStage.getIcons().add(bot.iconoLaren());
 	}
 
-	public void alertaGeneral(String strMensaje)
-	{
+	public void alertaGeneral(String strMensaje) {
 		Alert diAlerta = new Alert(AlertType.WARNING);
 		diAlerta.setTitle("Alerta");
 		diAlerta.setHeaderText(null);
@@ -156,130 +155,135 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		diAlerta.initStyle(StageStyle.UTILITY);
 		diAlerta.showAndWait();
 	}
-	public void panelPrincipal() 
-	{
-	    VentanaT = new Stage();
+
+	public void panelPrincipal() {
+		VentanaT = new Stage();
 		VentanaT.setTitle("Principal");
 		Group raiz = new Group();
 		MenuBar menuBar = new MenuBar();
 		menuBar.prefWidthProperty().bind(VentanaT.widthProperty());
 		botones b = new botones();
-		BorderPane bp  = new BorderPane();
-		//bp.setTop(rootA);
+		BorderPane bp = new BorderPane();
+		
 		bp.setCenter(b.fondoPantalla());
-		
-		
-		raiz.getChildren().addAll(bp,menuBar);
-		
+
+		raiz.getChildren().addAll(bp, menuBar);
+
 		Menu fileMenu = new Menu("_Inicio");
 		fileMenu.setGraphic(b.botonBuscarMax());
-		facturacionMenuItem = new MenuItem("Facturación");
-		facturacionMenuItem.setOnAction(this);
 		
-		facturacionMenuItem.setGraphic(b.botonBuscar());
-		/*btnBuscar = new Button("Buscar");
-		btnBuscar.setGraphic(b.botonBuscar());
-		*/
-		bodegaMenuItem = new MenuItem("Compras");
-		bodegaMenuItem.setOnAction(this);
 		exMenuItem = new MenuItem("Salir");
 		exMenuItem.setOnAction(this);
-		pruebasCombos= new MenuItem("Combos");
-		pruebasCombos.setOnAction(this);
-		consultaProductoMenuItem = new MenuItem("Consulta de producto");
-		consultaProductoMenuItem.setOnAction(this);
+		
+		fileMenu.getItems().add(exMenuItem);
+		
 		Menu filePoliticas = new Menu("_Productos");
 		filePoliticas.setGraphic(b.productosP());
 		ingresoProductoMenuItem = new MenuItem("Ingreso de productos");
 		ingresoProductoMenuItem.setOnAction(this);
-		updateProductoMenuItem = new MenuItem("Modificar producto");
-		updateProductoMenuItem.setOnAction(this);
-		fileMenu.getItems().addAll(facturacionMenuItem, bodegaMenuItem, new SeparatorMenuItem(),
-				pruebasCombos,exMenuItem);
-		filePoliticas.getItems().addAll(ingresoProductoMenuItem, consultaProductoMenuItem,updateProductoMenuItem);
+		reporteProductoMenuItem = new MenuItem("Reporte producto");
+		reporteProductoMenuItem.setOnAction(this);
+		CompraProductoMenuItem = new MenuItem("Compras productos");
+		CompraProductoMenuItem.setOnAction(this);
+		
+		filePoliticas.getItems().addAll(ingresoProductoMenuItem, reporteProductoMenuItem, CompraProductoMenuItem);
+
+		/*** Proveedores***/
+		Menu fileProveedores = new Menu("_Proveedores");
+		fileProveedores.setGraphic(b.productosP());
+		provMenuItem = new MenuItem("Consulta de proveedores");
+		provMenuItem.setOnAction(this);
+		
+		fileProveedores.getItems().add(provMenuItem);
+		/*** FIN proveedores ***/
 		
 		/*** Clientes ***/
-		ingresoClientesMenuItem= new MenuItem("Ingreso de clientes");
+		ingresoClientesMenuItem = new MenuItem("Ingreso de clientes");
 		ingresoClientesMenuItem.setOnAction(this);
-		consultaClientesMenuItem= new MenuItem("Consulta de clientes");
-		consultaClientesMenuItem.setOnAction(this);
-		updateClientesMenuItem= new MenuItem("Actualizar cliente");
-		updateClientesMenuItem.setOnAction(this);
 		Menu fileClientes = new Menu("_Clientes");
 		fileClientes.setGraphic(b.ClientesP());
-		fileClientes.getItems().addAll(ingresoClientesMenuItem, consultaClientesMenuItem,updateClientesMenuItem);
-		
+		fileClientes.getItems().add(ingresoClientesMenuItem);
+
 		/*** FIN clientes ***/
-		
-		/*** INI Facturas***/
+
+		/*** INI Facturas ***/
 		Menu fileFacturas = new Menu("_Facturación");
-		fileFacturas.setGraphic(b.facturaP());
+		fileFacturas.setGraphic(b.botonFacturaGrande());
 		facturasMenuItem = new MenuItem("Facturar");
 		facturasMenuItem.setOnAction(this);
+
+		factConsulta = new MenuItem("Consulta de facturas");
+		factConsulta.setOnAction(this);
 		
-		factMaxMenuItem = new MenuItem("Sumarizado de facturas");
-		factMaxMenuItem.setOnAction(this);
-		fileFacturas.getItems().addAll(facturasMenuItem,factMaxMenuItem);
-		/*** FIN facturas***/
+		factReporteGeneral = new MenuItem("Reporte Facturas General");
+		factReporteGeneral.setOnAction(this);
 		
-		/*** INI usuarios***/
+
+		fileFacturas.getItems().addAll(facturasMenuItem, factConsulta, factReporteGeneral);
+		/*** FIN facturas ***/
+
+		/*** INI usuarios ***/
 		Menu fileUsuarios = new Menu("_Usuarios");
 		cargaUserMenuItem = new MenuItem("Sumarizado de usuarios");
 		cargaUserMenuItem.setOnAction(this);
 		fileUsuarios.setGraphic(b.UsuariosP());
 		fileUsuarios.getItems().add(cargaUserMenuItem);
-		/*** FIN usuarios***/
-		
-		menuBar.getMenus().addAll(fileMenu, filePoliticas, fileClientes, fileFacturas,fileUsuarios);
-		
-		Scene escena = new Scene(raiz, 600, 400);
+		/*** FIN usuarios ***/
+
+		menuBar.getMenus().addAll(fileMenu, filePoliticas, fileClientes, fileFacturas, fileUsuarios, fileProveedores);
+
+		Scene escena = new Scene(raiz, 800, 400);
 		VentanaT.setScene(escena);
+		VentanaT.setResizable(false);
+		VentanaT.setX(50);
+		VentanaT.setY(20);
 		VentanaT.show();
 	}
 
 	@SuppressWarnings("unchecked")
-	public void panelFactura() 
-	{
-		
+	public void panelFactura() {
+
 		Text scenetitle = new Text("Facturación");
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 		scenetitle.setX(250);
 		scenetitle.setY(40);
-		//scenetitle.setFont(new Font("Arial",20));
-        
+		// scenetitle.setFont(new Font("Arial",20));
+
 		Label lblRuc = new Label("CEDULA/RUC: ");
 		lblRuc.setLayoutX(20);
 		lblRuc.setLayoutY(60);
 		TextField txtRuc = new TextField();
 		txtRuc.setLayoutX(100);
 		txtRuc.setLayoutY(60);
-		/* Metodo que detecta ingreso de cedula o ruc y al presionar llamará a un prc*/
+		/*
+		 * Metodo que detecta ingreso de cedula o ruc y al presionar llamará a
+		 * un prc
+		 */
 		txtRuc.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent ke) {
-				if (ke.getCode().equals(KeyCode.ENTER)) 
-				{
+				if (ke.getCode().equals(KeyCode.ENTER)) {
 					tableT.getItems().removeAll();
 					tableT.getItems().clear();
-					System.out.println("================================================================================");
+					System.out.println(
+							"================================================================================");
 					System.out.println(" Búsqueda en la base de datos");
-					System.out.println("================================================================================");
-					
-					String parametro=txtRuc.getText().toString();
-					if ( parametro.length() == 0 )
-					{	
-					String srtError="Debe poner algo para buscar...";
-					alertaGeneral(srtError);
-					}
-					else
-					consultarCliente(parametro); //OJO OBTENER EL ID INGRESADO
+					System.out.println(
+							"================================================================================");
+
+					String parametro = txtRuc.getText().toString();
+					if (parametro.length() == 0) {
+						String srtError = "Debe poner algo para buscar...";
+						alertaGeneral(srtError);
+					} else
+						consultarCliente(parametro); // OJO OBTENER EL ID
+														// INGRESADO
 					segunda = true;
-					
-							
+
 				}
 			}
 		});
-		
+
 		Label lblCliente = new Label("NOMBRES: ");
 		lblCliente.setLayoutX(20);
 		lblCliente.setLayoutY(90);
@@ -301,7 +305,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		Date date = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		txtFecha.setText(dateFormat.format(date).toString());
-		
+
 		Label lblDireccion = new Label("DIRECCIÓN: ");
 		lblDireccion.setLayoutX(20);
 		lblDireccion.setLayoutY(120);
@@ -314,7 +318,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		TextField txtTelefono = new TextField();
 		txtTelefono.setLayoutX(380);
 		txtTelefono.setLayoutY(120);
-		
+
 		Label lblCorreo = new Label("CORREO: ");
 		lblCorreo.setLayoutX(20);
 		lblCorreo.setLayoutY(150);
@@ -322,7 +326,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		txtCorreo.setLayoutX(100);
 		txtCorreo.setLayoutY(150);
 		txtCorreo.setPrefSize(200, 25);
-		
+
 		idTable.setCellValueFactory(new PropertyValueFactory<>("Codigo"));
 		Nombre.setCellValueFactory(new PropertyValueFactory<>("Nombre"));
 		Desc.setCellValueFactory(new PropertyValueFactory<>("Descripcion"));
@@ -334,21 +338,25 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		/**/
 		if (!boolFact)
 			tableFacturacion.getColumns().addAll(idTable, Nombre, Desc, Precio);
-		
+
 		tableFacturacion.setLayoutX(40);
 		tableFacturacion.setLayoutY(150);
 		tableFacturacion.setPrefSize(510, 200);
-        Group root = new Group();
-        root.getChildren().addAll(lblDireccion,txtDireccion,lblTelefono,txtTelefono,lblCorreo,txtCorreo);
-        root.getChildren().addAll(scenetitle, lblRuc,txtRuc,lblCliente,txtCliente,lblApellidos,txtApellidos,lblFecha,txtFecha);
+		Group root = new Group();
+		root.getChildren().addAll(lblDireccion, txtDireccion, lblTelefono, txtTelefono, lblCorreo, txtCorreo);
+		root.getChildren().addAll(scenetitle, lblRuc, txtRuc, lblCliente, txtCliente, lblApellidos, txtApellidos,
+				lblFecha, txtFecha);
 		Scene escenaConsulta = null;
-		escenaConsulta = new Scene(root, 600, 500);
-		//escenaConsulta.setFill(null);
+		escenaConsulta = new Scene(root, 800, 500);
+		// escenaConsulta.setFill(null);
 		Stage VentanaConsultas;
 		VentanaConsultas = new Stage();
+		
 		VentanaConsultas.setTitle("Control de ventas");
 		VentanaConsultas.setScene(escenaConsulta);
+		VentanaConsultas.setResizable(false);
 		VentanaConsultas.show();
+		
 
 	}
 
@@ -381,29 +389,29 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		tableT.getItems().removeAll();
 		tableT.getItems().clear();
 		/**/
-		if (!segunda)tableT.getColumns().addAll(tableId, tableNomp, tableDesc, tableStock);
+		if (!segunda)
+			tableT.getColumns().addAll(tableId, tableNomp, tableDesc, tableStock);
 		txtDescripcion.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent ke) {
-				if (ke.getCode().equals(KeyCode.ENTER)) 
-				{
+				if (ke.getCode().equals(KeyCode.ENTER)) {
 					tableT.getItems().removeAll();
 					tableT.getItems().clear();
-					System.out.println("================================================================================");
+					System.out.println(
+							"================================================================================");
 					System.out.println(" Búsqueda en la base de datos");
-					System.out.println("================================================================================");
-					
-					String parametro=txtDescripcion.getText().toString().toUpperCase();
-					if ( parametro.length() == 0 )
-					{	
-					String srtError="Debe poner algo para buscar...";
-					alertaGeneral(srtError);
-					}
-					else
-					consultarProducto(parametro); //OJO OBTENER EL ID INGRESADO
+					System.out.println(
+							"================================================================================");
+
+					String parametro = txtDescripcion.getText().toString().toUpperCase();
+					if (parametro.length() == 0) {
+						String srtError = "Debe poner algo para buscar...";
+						alertaGeneral(srtError);
+					} else
+						consultarProducto(parametro); // OJO OBTENER EL ID
+														// INGRESADO
 					segunda = true;
-					
-							
+
 				}
 			}
 		});
@@ -528,6 +536,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		VentanaCompras.setScene(escena);
 		VentanaCompras.show();
 		btnExit.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("=======================================================");
 				System.out.println("Borrando todos los registros de la tabla...");
@@ -547,30 +556,27 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		System.out.println("==================================================");
 		System.out.println("Agregando a la lista...");
 		System.out.println("==================================================");
-		// productosDTO producto= new productosDTO(idProducto,cantidad,precio,total);
+		// productosDTO producto= new
+		// productosDTO(idProducto,cantidad,precio,total);
 		// table.getItems().add(producto);
 	}
 
-	public void consultarCliente(String strIdentificacion) 
-	{
-		try 
-		{
+	public void consultarCliente(String strIdentificacion) {
+		try {
 			System.out.println("==================================================");
 			System.out.println("Consultando a la lista...");
 			System.out.println("==================================================");
-			
+
 			List<ClientesDTO> lista = new ClientesBO().consultaCliente(strIdentificacion);
-			System.out.println("que trae"+lista.size()+strIdentificacion);
-			if (lista != null && !lista.isEmpty())
-			{
+			System.out.println("que trae" + lista.size() + strIdentificacion);
+			if (lista != null && !lista.isEmpty()) {
 				for (ClientesDTO obj : lista) {
 					if (obj != null) {
-					System.out.println(obj.getDireccion());	
+						System.out.println(obj.getDireccion());
 					}
 				}
-			}else 
-			{
-				//MOSTAR MENSAJE POR PANTALLA
+			} else {
+				// MOSTAR MENSAJE POR PANTALLA
 				System.out.println("NO HAY DATOS");
 			}
 		} catch (SQLException ex) {
@@ -578,26 +584,22 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		}
 
 	}
-	
-	public void consultarProducto(String strCodigo) 
-	{
-		try 
-		{
+
+	public void consultarProducto(String strCodigo) {
+		try {
 			System.out.println("==================================================");
 			System.out.println("Consultando a la lista...");
 			System.out.println("==================================================");
-			
+
 			List<ProductosDTO> lista = new ProductosBO().listarProductosXCodigo(strCodigo);
-			if (lista != null && !lista.isEmpty())
-			{
+			if (lista != null && !lista.isEmpty()) {
 				for (ProductosDTO obj : lista) {
 					if (obj != null) {
 						tableT.getItems().add(obj);
 					}
 				}
-			}else 
-			{
-				//MOSTAR MENSAJE POR PANTALLA
+			} else {
+				// MOSTAR MENSAJE POR PANTALLA
 				System.out.println("NO HAY DATOS");
 			}
 		} catch (SQLException ex) {
@@ -613,120 +615,117 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 			System.out.println("Logueandose...");
 			System.out.println("==================================================");
 			panelPrincipal();
+
 		} else if (event.getSource() == btnExit) {
 			System.out.println("==================================================");
 			System.out.println("Saliendo...");
 			System.out.println("==================================================");
 			System.exit(0);
-		}
 
-		else if (event.getSource() == facturacionMenuItem) {
+		} else if (event.getSource() == facturacionMenuItem) {
 			System.out.println("==================================================");
 			System.out.println("Facturacion...");
 			System.out.println("==================================================");
 			facturacion fact = new facturacion();
 			facturaGenera a = new facturaGenera();
 			a.formularioFactura(VentanaT);
-			//panelFactura();
-			//fact.formularioFactura();
+			// panelFactura();
+			// fact.formularioFactura();
 			boolFact = true;
+
 		} else if (event.getSource() == bodegaMenuItem) {
 			System.out.println("==================================================");
 			System.out.println("Compras...");
 			System.out.println("==================================================");
 			panelCompras();
+
 		} else if (event.getSource() == exMenuItem) {
 			System.out.println("==================================================");
 			System.out.println("Saliendo...");
 			System.out.println("==================================================");
 			System.exit(0);
-		} else if (event.getSource() == consultaProductoMenuItem) {
+
+		} else if (event.getSource() == ingresoProductoMenuItem) {
 			System.out.println("==================================================");
-			System.out.println("Consulta de producto.");
+			System.out.println("Ingreso de producto.");
 			System.out.println("==================================================");
-			//panelConsulta();
-			productosPrincipal consulta = new productosPrincipal();
-			consulta.consultaProductos(VentanaT);
+			productosPrincipal ingreso = new productosPrincipal();
+			ingreso.ingresoProductos(VentanaT);
+
+		}  else if (event.getSource() == reporteProductoMenuItem) {
+			System.out.println("==================================================");
+			System.out.println("Reporte de producto.");
+			System.out.println("==================================================");
+			// panelConsulta();
+			ProductoReporte consulta = new ProductoReporte();
+			consulta.vistaProductoReporte(VentanaT);
+
+		} else if (event.getSource() == ingresoClientesMenuItem) {
+			System.out.println("==================================================");
+			System.out.println("Ingreso de Clientes.");
+			System.out.println("==================================================");
+			clientesPrincipal clientes = new clientesPrincipal();
+			clientes.ingresoClientes(VentanaT);
+
+		}  else if (event.getSource() == facturasMenuItem) {
+			System.out.println("==================================================");
+			System.out.println("Creacion de facturas.");
+			System.out.println("==================================================");
+			facturacion factura = new facturacion();
+			factura.formularioFactura(VentanaT);
+
+		} else if (event.getSource() == factConsulta) {
+			System.out.println("==================================================");
+			System.out.println("Consulta facturas.");
+			System.out.println("==================================================");
+			consultaFacturas objConsultaFactura = new consultaFacturas();
+			objConsultaFactura.consultaFacturas(VentanaT);
+			
+		} else if (event.getSource() == factReporteGeneral) {
+			System.out.println("==================================================");
+			System.out.println("Reporte de Facturas General.");
+			System.out.println("==================================================");
+			factReporteGeneral objfactReporteGeneral = new factReporteGeneral();
+			objfactReporteGeneral.ventanaReporte(VentanaT);
+			
+		} else if (event.getSource() == cargaUserMenuItem) {
+			System.out.println("==================================================");
+			System.out.println("carga Usuarios.");
+			System.out.println("==================================================");
+			UsuariosPrincipal usuario = new UsuariosPrincipal();
+			usuario.ingresoUsuarios(VentanaT);
+
+		} else if (event.getSource() == pruebasCombos) {
+			System.out.println("==================================================");
+			System.out.println("COmbos");
+			System.out.println("==================================================");
+			// panelConsulta();
+			// modificarProducto addProductos = new modificarProducto();
+			// addProductos.panelProductos();
+			productosPrincipal add = new productosPrincipal();
+			add.consultaProductoCliente();
+
 		}
-		 else if (event.getSource() == ingresoProductoMenuItem) {
-				System.out.println("==================================================");
-				System.out.println("Ingreso de producto.");
-				System.out.println("==================================================");
-				productosPrincipal ingreso = new productosPrincipal();
-				ingreso.ingresoProductos(VentanaT);
-				
-			}
-		 else if (event.getSource() == updateProductoMenuItem) 
-		 {
-				System.out.println("==================================================");
-				System.out.println("Modificacion de producto.");
-				System.out.println("==================================================");
-				//panelConsulta();
-				//modificarProducto addProductos = new modificarProducto();
-				//addProductos.panelProductos();
-				productosPrincipal modificacion = new productosPrincipal();
-				modificacion.updateProductos(VentanaT);
-		 }
+		else if (event.getSource() == provMenuItem) {
+			System.out.println("==================================================");
+			System.out.println("Menu de proveedores.");
+			System.out.println("==================================================");
+			proveedoresPrincipal proveedores = new proveedoresPrincipal();
+			proveedores.ingresoProveedores(VentanaT);
+
+		} 
+		else if (event.getSource() == CompraProductoMenuItem)
+		{
+			System.out.println("==================================================");
+			System.out.println("Menu de compras de productos.");
+			System.out.println("==================================================");
+			comprasPrincipal compras = new comprasPrincipal();
+			compras.comprasPrin(VentanaT);
+			
+
+		} 
 		
-		else if (event.getSource() == consultaClientesMenuItem) {
-				System.out.println("==================================================");
-				System.out.println("Consulta de Clientes.");
-				System.out.println("==================================================");
-				
-			}
-			 else if (event.getSource() == ingresoClientesMenuItem) {
-					System.out.println("==================================================");
-					System.out.println("Ingreso de Clientes.");
-					System.out.println("==================================================");
-					clientesPrincipal clientes = new clientesPrincipal();
-					clientes.ingresoClientes(VentanaT);
-					
-				}
-			 else if (event.getSource() == updateClientesMenuItem) 
-			 {
-					System.out.println("==================================================");
-					System.out.println("Modificacion de Clientes.");
-					System.out.println("==================================================");
-				
-			 }
-			 else if (event.getSource() == facturasMenuItem) 
-			 {
-					System.out.println("==================================================");
-					System.out.println("Creacion de facturas.");
-					System.out.println("==================================================");
-					facturacion factura = new facturacion();
-					factura.formularioFactura(VentanaT);
-			 }
-			 else if (event.getSource() == factMaxMenuItem ) 
-			 {
-					System.out.println("==================================================");
-					System.out.println("Sumarizado de facturas.");
-					System.out.println("==================================================");
-					facturaPrincipal factura = new facturaPrincipal();
-					factura.consultaFacturas(VentanaT);
-			 }
-			 else if (event.getSource() == cargaUserMenuItem) 
-			 {
-					System.out.println("==================================================");
-					System.out.println("carga Usuarios.");
-					System.out.println("==================================================");
-					UsuariosPrincipal usuario = new UsuariosPrincipal();
-					usuario.ingresoUsuarios(VentanaT);
-			 }
-		
-		 else if (event.getSource() == pruebasCombos)
-		 {
-				System.out.println("==================================================");
-				System.out.println("COmbos");
-				System.out.println("==================================================");
-				//panelConsulta();
-				//modificarProducto addProductos = new modificarProducto();
-				//addProductos.panelProductos();
-				productosPrincipal add = new productosPrincipal();
-				add.consultaProductoCliente();
-				
-		 }
-		
+
 	}
 
 	public static void main(String[] args) {

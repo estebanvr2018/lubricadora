@@ -1,44 +1,28 @@
 package application.com.DTOS;
 
-
 import java.util.Date;
 
 public class ClientesDTO {
 
-	/*** CONSTRUCTOR  ***/ 
-	/*public ClientesDTO(String idIdentificacion, String tipoIdentificacion, String nombres, String primerApellido,
-			String segundoApellido, String direccion, String telefono, Date fechaIngreso, String estado,
-			String usuarioIngreso) {
-		super();
-		IdIdentificacion = idIdentificacion;
-		TipoIdentificacion = tipoIdentificacion;
-		Nombres = nombres;
-		PrimerApellido = primerApellido;
-		SegundoApellido = segundoApellido;
-		Direccion = direccion;
-		Telefono = telefono;
-		FechaIngreso = fechaIngreso;
-		Estado = estado;
-		UsuarioIngreso = usuarioIngreso;
-	}*/
+	/*** PARAMETROS ***/
+	public String IdIdentificacion;
+	public String TipoIdentificacion;
+	public String Nombres;
+	public String PrimerApellido;
+	public String SegundoApellido;
+	public String Direccion;
+	public String Telefono;
+	public Date FechaIngreso;
 
-	/*** PARAMETROS  ***/ 
-	public  String IdIdentificacion;
-	public  String TipoIdentificacion;
-	public  String Nombres;
-	public  String PrimerApellido;
-	public  String SegundoApellido;
-	public  String Direccion;
-	public  String Telefono;
-	public  Date FechaIngreso;
-	
-	public  String Estado;
-	public  String UsuarioIngreso;
-	
+	public String Estado;
+	public String UsuarioIngreso;
+
 	/*** NUEVO PARAMETRO ***/
 	public String correo;
-	public  Date FechaActualizada;
-	
+	public Date FechaActualizada;
+
+	/*** METODOS ***/
+
 	public Date getFechaActualizada() {
 		return FechaActualizada;
 	}
@@ -55,7 +39,6 @@ public class ClientesDTO {
 		this.correo = correo;
 	}
 
-	/*** METODOS  ***/ 
 	public String getIdIdentificacion() {
 		return IdIdentificacion;
 	}

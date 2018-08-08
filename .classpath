@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="estilos"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/apache-tomcat-7.0.62/lib/mysql-connector-java-5.1.23-bin.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/esteban/workspaces Juno/LarenFinal/jar/AbsoluteLayout.jar"/>
+	<classpathentry kind="lib" path="C:/Users/esteban/workspaces Juno/LarenFinal/jar/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/esteban/workspaces Juno/LarenFinal/jar/commons-digester-2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/esteban/workspaces Juno/LarenFinal/jar/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/esteban/workspaces Juno/LarenFinal/jar/groovy-2.4.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/esteban/workspaces Juno/LarenFinal/jar/itextpdf-5.5.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/esteban/workspaces Juno/LarenFinal/jar/itext-pdfa-5.5.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/esteban/workspaces Juno/LarenFinal/jar/jasperreports-6.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/esteban/workspaces Juno/LarenFinal/jar/mysql-connector-java-5.1.46.jar"/>
+	<classpathentry kind="lib" path="C:/Users/esteban/workspaces Juno/LarenFinal/jar/naming-common-4.1.31.jar"/>
+	<classpathentry kind="lib" path="C:/Users/esteban/workspaces Juno/LarenFinal/jar/poi-3.9.jar"/>
+	<classpathentry kind="lib" path="D:/esteban/Desktop/proyecto lubricadora/aquafx-0.1.jar"/>
+	<classpathentry kind="lib" path="D:/esteban/Desktop/proyecto lubricadora/aquafx-0.1-javadoc.jar"/>
+	<classpathentry kind="lib" path="D:/esteban/Desktop/proyecto lubricadora/aquafx-0.1-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

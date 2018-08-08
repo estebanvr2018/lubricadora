@@ -1,39 +1,35 @@
 package application.com.DTOS;
 
-import java.util.Date;
-
 public class ParametrosDTO {
 
-	/*** CONSTRUCTOR  ***/ 
-	public ParametrosDTO(String idParametro, String valor, String descripcion, Date fechaIngreso) {
-		super();
-		IdParametro = idParametro;
-		Valor = valor;
-		Descripcion = descripcion;
-		FechaIngreso = fechaIngreso;
-	}
+	/*** PARAMETROS ***/
+	public String IdParametro;
+	public String Valor;
+	public String Descripcion;
 
-	/*** PARAMETROS  ***/ 
-	public final String IdParametro;
-	public final String Valor;
-	public final String Descripcion;
-	public final Date FechaIngreso;
-
-	/*** METODOS  ***/ 
+	/*** METODOS ***/
 	public String getIdParametro() {
 		return IdParametro;
+	}
+
+	public void setIdParametro(String idParametro) {
+		IdParametro = idParametro;
 	}
 
 	public String getValor() {
 		return Valor;
 	}
 
+	public void setValor(String valor) {
+		Valor = valor;
+	}
+
 	public String getDescripcion() {
 		return Descripcion;
 	}
 
-	public Date getFechaIngreso() {
-		return FechaIngreso;
+	public void setDescripcion(String descripcion) {
+		Descripcion = descripcion;
 	}
 
 }
