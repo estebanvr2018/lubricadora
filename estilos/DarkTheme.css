@@ -1,0 +1,226 @@
+
+/*.text { 
+ -fx-font-smoothing-type: lcd;
+  -fx-font-family: "Segoe UI Semibold";
+ -fx-fill: black;
+ -fx-font-size: 11pt;
+} 
+.text-id { 
+ -fx-font-smoothing-type: lcd;
+ -fx-font-family: "Segoe UI Semibold";
+ -fx-fill: black;
+ -fx-font-size: 11pt;
+}*/
+#menu-bar{/*color que se pone al ponerme sobre el label */
+    -fx-font-size: 14pt;
+    -fx-font-family: "Segoe UI Light";
+    -fx-text-fill: white  ;/* Color de texto del menuitem*/
+    -fx-font-weight: bold;
+    -fx-opacity: 2;
+}
+
+#Precio
+{
+	 -fx-text-fill: green;
+	 -fx-border-color: red;
+	  -fx-font-smoothing-type: lcd;
+	 -fx-opacity: 1;
+	 -fx-font-size: 12pt;
+}
+.pane {
+    -fx-border-color: blue;
+    -fx-border-insets: 5;
+    -fx-border-width: 3;
+    -fx-border-style: solid;
+    -fx-font-weight: bold;
+}
+
+.background {
+    -fx-background-color: red;
+}
+#colorMarco {
+	-fx-border-color: black;
+   /* -fx-border-insets: 5;
+    -fx-border-width: 3;*/
+    -fx-border-style: solid;
+}
+
+#texto {
+    -fx-font-size: 20pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: black;
+    -fx-opacity: 1;
+}
+#titulo2 {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: black;
+    -fx-opacity: 1;
+}
+
+#radioButton {
+    -fx-font-size: 11pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: green;
+    -fx-opacity:0.9;
+}
+
+.label {
+    -fx-font-size: 11pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: black;
+    -fx-opacity: 0.6;
+}
+
+.label-bright {
+    -fx-font-size: 11pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: black;
+    -fx-opacity: 1;
+}
+
+.label-header {
+    -fx-font-size: 11pt;
+    -fx-font-family: "Segoe UI Light";
+    -fx-text-fill: black;
+    -fx-opacity: 1;
+}
+
+.table-view {
+    -fx-base: #D7D3D9;/*contenido */
+    -fx-control-inner-background: #D7D3D9;/*scrollview */
+    -fx-background-color: #D7D3D9 ;/*fondo de tabla */
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-padding: 5;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-size: 20;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: transparent;
+    -fx-font-weight: bold;
+    -fx-border-color: 
+        transparent
+        transparent
+        derive(-fx-base, 80%) 
+        transparent;
+    -fx-border-insets: 0 10 1 0;
+}
+
+.table-view .column-header .label {
+    -fx-font-size: 12pt;
+    -fx-font-family: "Segoe UI Light";
+    -fx-text-fill: #1d64e0;/*#32AEDA;color del titulo de las columnas .column-header */
+    -fx-alignment: center-left;
+    -fx-opacity: 1;
+}
+
+.table-view:focused .table-row-cell:filled:focused:selected {
+    -fx-background-color: -fx-focus-color;
+}
+
+.split-pane:horizontal > .split-pane-divider {
+    -fx-border-color: transparent red transparent red;
+    -fx-background-color: transparent, derive(black,20%);
+}
+
+.split-pane {
+    -fx-padding: 1 0 0 0;
+}
+
+.menu-bar {
+    -fx-background-color:#4590CF;/*  derive(#4590CF,20%);color principal menu item */
+	-fx-padding: 0 ;
+    -fx-background-insets: 0 ;
+    -fx-background-radius: 0 ;
+    
+}
+
+
+/* */
+.context-menu {
+    -fx-background-color: derive(#6b92b2,30%);/*color ssecundario del menu item */
+    -fx-font-weight: bold;/*111 */
+    -fx-font-smoothing-type: lcd;
+}
+
+.menu-bar .label {/*color que se pone al ponerme sobre el label */
+    -fx-font-size: 14pt;
+    -fx-font-family: "Arial black";
+    -fx-text-fill: cyan  ;/* Color de texto del menuitem*/
+    -fx-font-weight: bold;
+    
+}
+
+.menu .left-container {/*no identificado */
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-base,75%) 0%, -fx-outer-border 90%),
+        linear-gradient(to bottom, derive(-fx-base,46.9%) 2%, derive(-fx-base,-2.1%) 95%);
+    -fx-text-fill: red;
+    
+}
+
+.text-field {
+    -fx-font-size: 11pt;
+    -fx-font-family: "Segoe UI Semibold";
+}
+
+.button {
+    -fx-padding: 5 22 5 22;   
+    /*-fx-border-color: yellow; bordes*/
+    -fx-border-width: 2;
+    -fx-background-radius: 0;
+    -fx-background-color: #63B4F7 ;/*fondo */
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 10pt;
+    -fx-text-fill: #d8d8d8;
+    -fx-font-weight: bold;
+    -fx-background-insets: 0 0 0 0, 0, 1, 2;
+}
+
+.button:hover {
+    -fx-background-color: #0389F9; /*al situarme sobre el boton se pone de este color  */
+}
+
+.button:pressed, .button:default:hover:pressed {/*cuando pulso el boton el fondo se pone azul y el texto se pone rojo */
+  -fx-background-color: blue;
+  -fx-text-fill: red;
+}
+
+.button:focused {/*cuando pulso el boton el marco se pone amarillo y orange */
+    -fx-border-color: #6499D5  , #6499D5  ;
+    -fx-border-width: 1, 1;
+    -fx-border-style: solid, segments(1, 1);
+    -fx-border-radius: 0, 0;
+    -fx-border-insets: 1 1 1 1, 0;
+}
+
+.button:disabled, .button:default:disabled {/*cuando el boton esta desabilitado se pone de este color */
+    -fx-opacity: 0.4;
+    -fx-background-color: #5A94D5  ;
+    -fx-text-fill: #5A94D5  ;
+}
+
+.button:default {
+    -fx-background-color: -fx-focus-color;
+    -fx-text-fill: #ffffff;
+}
+
+.button:default:hover {
+    -fx-background-color: derive(-fx-focus-color,30%);
+}
+.hbox
+{
+	-fx-text-fill: yellow;/*no se esta usando */
+}
+
+.radioButton {
+    -fx-font-size: 11pt;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: green;
+    -fx-opacity:0.8;
+}

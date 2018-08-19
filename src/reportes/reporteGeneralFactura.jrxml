@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteGeneralFactura" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="29a3a9b6-fb08-4deb-8824-7b03c23ccb5c">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#FFFF00">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#FFFFBF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#FFFF00">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#FFFFBF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="data" uuid="b45828e0-b04d-4cdd-a6c0-4373521ab62e">
+		<parameter name="fecha_inicio" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="fecha_fin" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<queryString>
+			<![CDATA[SELECT F.ID_FACTURA AS NUMERO_FACTURA,
+       (CASE
+         WHEN c.tipo_identificacion = 'CED' THEN
+          'CEDULA'
+         ELSE
+          'RUC'
+       END) as tipo_identificacion,
+       F.ID_IDENTIFICACION AS CEDULA,
+       (CASE
+         WHEN C.NOMBRES = 'C. final' THEN
+          'CLIENTE FINAL'
+         ELSE
+          (concat(C.NOMBRES, ' ', C.primer_apellido))
+       END) AS NOMBRE_COMPLETO,
+       concat('$', F.sub_total_1) AS SUB_TOTAL,
+       concat('$', F.iva_doce) AS IVA_TOTAL,
+       concat('$', F.VALOR_TOTAL) AS VALOR_TOTAL,
+       DATE_FORMAT(F.FECHA_FACTURA, '%d/%m/%Y') AS FECHA_FACTURA
+  FROM TB_FACTURA_CAB F, TB_CLIENTES C
+ WHERE F.ID_IDENTIFICACION = C.ID_IDENTIFICACION
+   AND CAST(F.FECHA_FACTURA AS DATE) >=$P{fecha_inicio}
+   AND CAST(F.FECHA_FACTURA AS DATE) <=$P{fecha_fin}]]>
+		</queryString>
+		<field name="NUMERO_FACTURA" class="java.lang.Long"/>
+		<field name="tipo_identificacion" class="java.lang.String"/>
+		<field name="CEDULA" class="java.lang.String"/>
+		<field name="NOMBRE_COMPLETO" class="java.lang.String"/>
+		<field name="SUB_TOTAL" class="java.lang.String"/>
+		<field name="IVA_TOTAL" class="java.lang.String"/>
+		<field name="VALOR_TOTAL" class="java.lang.String"/>
+		<field name="FECHA_FACTURA" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="fecha_inicio" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_fin" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select now();]]>
+	</queryString>
+	<field name="now()" class="java.sql.Timestamp"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="50" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="74113cc2-c675-4cd9-930c-eb69da5e38fa" x="20" y="0" width="520" height="50"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Aharoni" size="28" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[REPORTE GENERAL DE FACTURAS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<componentElement>
+				<reportElement uuid="80380638-aa24-4a35-8a01-e57ad5b1b2ae" key="table 1" x="33" y="17" width="487" height="78"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="data" uuid="98a79432-0448-419b-8cdc-69303a2226fe">
+						<datasetParameter name="fecha_inicio">
+							<datasetParameterExpression><![CDATA[$P{fecha_inicio}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="fecha_fin">
+							<datasetParameterExpression><![CDATA[$P{fecha_fin}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column uuid="f401e08b-9951-4b7c-ba79-aea247a5fcf4" width="90">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="41438771-ee11-450a-b37b-32fe905d1238" x="0" y="0" width="90" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="13" isBold="true"/>
+								</textElement>
+								<text><![CDATA[FACTURA #]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="60512d9f-bba9-4282-b33e-271e7fc56367" x="0" y="0" width="90" height="20"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{NUMERO_FACTURA}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="1d06d168-14d6-44b3-9aca-439a252c1a6d" width="172">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="096fadd0-e03e-4fac-928d-986847f6b0f5" x="0" y="0" width="172" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="13" isBold="true"/>
+								</textElement>
+								<text><![CDATA[TIPO IDENTIFICACION]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="c4c1c58f-ec1c-4ac1-8bb4-e60a4f69e02d" x="0" y="0" width="172" height="20"/>
+								<textElement textAlignment="Center"/>
+								<textFieldExpression><![CDATA[$F{tipo_identificacion}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="cfe59cae-5770-43fb-95d2-8818d1f014f9" width="132">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="096fadd0-e03e-4fac-928d-986847f6b0f5" x="0" y="0" width="132" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="13" isBold="true"/>
+								</textElement>
+								<text><![CDATA[IDENTIFICACION]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="2ad556d9-03d8-427d-b899-0d72ab9d3e9d" x="0" y="0" width="118" height="20"/>
+								<textElement textAlignment="Center"/>
+								<textFieldExpression><![CDATA[$F{CEDULA}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="3d15decb-fe65-422c-bad6-9469aacff6d4" width="159">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="4d3b8f25-78d2-4957-8ebe-45b1876a311c" x="0" y="0" width="159" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="13" isBold="true"/>
+								</textElement>
+								<text><![CDATA[NOMBRE DEL CLIENTE]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="6fef13ba-0b9e-44a8-9787-9e81e89ee86d" x="0" y="0" width="159" height="20"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{NOMBRE_COMPLETO}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="bfba15ce-c5e1-4597-816e-c13515aec067" width="90">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="b9d66709-ac60-4bab-a7c5-21197a27c718" x="0" y="0" width="90" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="13" isBold="true"/>
+								</textElement>
+								<text><![CDATA[SUB_TOTAL]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="5752c272-0da2-4051-b3ac-a1f603ab48d8" x="0" y="0" width="90" height="20"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{SUB_TOTAL}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="983d35d9-5166-4d42-9408-749a5b44873e" width="90">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="faf2fef5-9418-4c32-afc2-af8cb743e470" x="0" y="0" width="90" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="13" isBold="true"/>
+								</textElement>
+								<text><![CDATA[IVA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="010c9cca-079e-4d71-a86d-4655269bfc8d" x="0" y="0" width="90" height="20"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{IVA_TOTAL}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="b8a3d46a-00c0-4aa6-9866-13a1d176d1ed" width="111">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="87a589a2-19ea-41bd-8725-0abc5a66e754" x="0" y="0" width="111" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="13" isBold="true"/>
+								</textElement>
+								<text><![CDATA[VALOR TOTAL]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="607c3296-65c1-45a9-9d6d-1a8611d9fea4" x="0" y="0" width="111" height="20"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{VALOR_TOTAL}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="e3e16172-3774-4a7b-9141-cdeb1072a4c5" width="123">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="045c5f12-2447-4b19-91cc-c30ce2f69988" x="0" y="0" width="123" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="13" isBold="true"/>
+								</textElement>
+								<text><![CDATA[FECHA FACTURA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="96284133-b921-47d8-94f5-647b56dcd4c8" x="0" y="0" width="123" height="20"/>
+								<textElement textAlignment="Center"/>
+								<textFieldExpression><![CDATA[$F{FECHA_FACTURA}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>

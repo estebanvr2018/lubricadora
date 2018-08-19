@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Reporte_Producto" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24510faa-03fe-4e8f-a9cc-b28df7ea0103">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#FFD700">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#FFFBE6">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TH" mode="Opaque" backcolor="#FFD700">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_CH" mode="Opaque" backcolor="#FFFBE6">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="datos" uuid="31c9b9b3-0cdd-412b-ad22-41b54dbcf034">
+		<parameter name="filtro_data" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[SELECT P.ID_PRODUCTO    AS PRODUCTO,
+       C.DESCRIPCION    AS CATEGORIA,
+       D.DESCRIPCION    AS SUB_CATEGORIA,
+       P.NOMBREPRODUCTO AS NOMBRE,
+       P.DESCRIPCION    AS DESCRIPCION_PRODUCTO,
+       CONCAT('$ ',P.VALOR_COMPRA)   AS VALOR_COMPRA,
+       CONCAT('$ ',P.VALOR_VENTA)    AS VALOR_VENTA,
+       P.STOCK          AS TOTAL_STOCK,
+       DATE_FORMAT(P.FECHA_INGRESO,'%d-%m-%Y') AS FECHA_INGRESO
+  FROM TB_PRODUCTO_CAT C, TB_PRODUCTO_DESCRIP D, TB_PRODUCTO P
+ WHERE C.ID_PRODUCTO_CAT = D.ID_PRODUCTO_CAT
+   AND D.ID_PROD_DES = P.ID_PROD_DES
+   AND P.ID_PRODUCTO IN
+       (SELECT DISTINCT (A.ID_PRODUCTO)
+          FROM (SELECT P.ID_PRODUCTO
+                  FROM TB_PRODUCTO P
+                 WHERE P.NOMBREPRODUCTO LIKE CONCAT('%',$P{filtro_data},'%')
+                    OR P.DESCRIPCION LIKE CONCAT('%',$P{filtro_data},'%')
+                UNION ALL
+                SELECT P.ID_PRODUCTO
+                  FROM TB_PRODUCTO_DESCRIP D, TB_PRODUCTO P
+                 WHERE D.ID_PROD_DES = P.ID_PROD_DES
+                   AND D.DESCRIPCION LIKE CONCAT('%',$P{filtro_data},'%')
+                UNION ALL
+                SELECT P.ID_PRODUCTO
+                  FROM TB_PRODUCTO_CAT     C,
+                       TB_PRODUCTO_DESCRIP D,
+                       TB_PRODUCTO         P
+                 WHERE C.ID_PRODUCTO_CAT = D.ID_PRODUCTO_CAT
+                   AND D.ID_PROD_DES = P.ID_PROD_DES
+                   AND C.DESCRIPCION LIKE CONCAT('%',$P{filtro_data},'%')) A)
+ ORDER BY P.ID_PRODUCTO;]]>
+		</queryString>
+		<field name="PRODUCTO" class="java.lang.Integer"/>
+		<field name="CATEGORIA" class="java.lang.String"/>
+		<field name="SUB_CATEGORIA" class="java.lang.String"/>
+		<field name="NOMBRE" class="java.lang.String"/>
+		<field name="DESCRIPCION_PRODUCTO" class="java.lang.String"/>
+		<field name="VALOR_COMPRA" class="java.lang.String"/>
+		<field name="VALOR_VENTA" class="java.lang.String"/>
+		<field name="TOTAL_STOCK" class="java.lang.Integer"/>
+		<field name="FECHA_INGRESO" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="filtro" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select now();]]>
+	</queryString>
+	<field name="now()" class="java.sql.Timestamp"/>
+	<variable name="filtro" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="752b8779-9a23-49f6-bd76-6db1204e0d25" x="22" y="0" width="533" height="45" forecolor="#0000FF"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Aharoni" size="26" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE PRODUCTOS]]></text>
+			</staticText>
+			<elementGroup/>
+		</band>
+	</title>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<componentElement>
+				<reportElement uuid="ab761342-4d3a-41f7-9c7e-7d86e5892a23" key="table 2" style="table 2" x="36" y="14" width="506" height="100"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="datos" uuid="f1e6dcfb-a472-43a5-b63b-b46eaab85087">
+						<datasetParameter name="filtro_data">
+							<datasetParameterExpression><![CDATA[$P{filtro}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column uuid="7f9bd768-5bf5-41e7-812f-59cf5b86f11c" width="32">
+						<jr:columnHeader style="table 2_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="1e134714-089a-4931-bda8-a2636cb0da9b" x="0" y="0" width="32" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="11" isBold="true" isItalic="false"/>
+								</textElement>
+								<text><![CDATA[COD]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="a4bd1cca-97c9-4b53-9e6a-9f215ecc8c3d" x="0" y="0" width="32" height="20"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{PRODUCTO}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="956fd785-0b3d-494c-a54b-4da7f12eb929" width="121">
+						<jr:columnHeader style="table 2_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="e50844bb-ac30-41a8-b209-1ca960dd7be1" x="0" y="0" width="121" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="11" isBold="true"/>
+								</textElement>
+								<text><![CDATA[CATEGORIA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="a3581ef2-1794-4f70-9e0d-df3ec57741e1" x="0" y="0" width="121" height="20"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{CATEGORIA}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="1d43ffea-54f0-477a-a256-a970ea370fea" width="130">
+						<jr:columnHeader style="table 1_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="fbcc40da-9098-4b52-8ac2-4e9a94434c8a" x="0" y="0" width="130" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="11" isBold="true"/>
+								</textElement>
+								<text><![CDATA[SUB_CATEGORIA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="596d5e92-3a84-4418-a8bb-9d8b26d33698" x="0" y="0" width="130" height="20"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{SUB_CATEGORIA}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="6ba02c9f-6d1f-4f18-901f-3ba2c5252079" width="130">
+						<jr:columnHeader style="table 2_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="abd1f55f-3be7-424b-a794-160e2e3aa747" x="0" y="0" width="130" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="11"/>
+								</textElement>
+								<text><![CDATA[NOMBRE]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="0b44eb95-e7b3-46cf-a4ca-70410a7db2bf" x="0" y="0" width="130" height="20"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{NOMBRE}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="ad412ed4-3790-490a-9061-5da0d2697df1" width="173">
+						<jr:columnHeader style="table 2_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="965757ad-c455-4051-823f-314f900aa2eb" x="0" y="0" width="173" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="11"/>
+								</textElement>
+								<text><![CDATA[DESCRIPCION_PRODUCTO]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="61014cd7-2f09-4d6f-b8aa-97d10e7563f6" x="0" y="0" width="173" height="20"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{DESCRIPCION_PRODUCTO}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="823504aa-25a9-4a7e-ae96-9a286a0d076c" width="132">
+						<jr:columnHeader style="table 2_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="2e4f6218-a19b-466e-b9b9-033419bdd478" x="0" y="0" width="132" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="11" isBold="true"/>
+								</textElement>
+								<text><![CDATA[VALOR_COMPRA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="d32817f3-2100-4e41-9d25-1394cc1bbf6a" x="0" y="0" width="132" height="20"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{VALOR_COMPRA}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="ea0e020b-69a6-4e6c-986b-6600e09cd1f5" width="114">
+						<jr:columnHeader style="table 2_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="93542fe6-5cc1-4947-bf10-23bb6f07a850" x="0" y="0" width="114" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="11" isBold="true"/>
+								</textElement>
+								<text><![CDATA[VALOR_VENTA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="bafbcab0-e6c4-4dbd-8a59-0ba91a019edf" x="0" y="0" width="114" height="20"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{VALOR_VENTA}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="bd746d37-c114-42a2-b826-d5d3fe038db2" width="121">
+						<jr:columnHeader style="table 2_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="7064a3dc-e2e5-4a30-a64e-b9b42b328475" x="0" y="0" width="121" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="11"/>
+								</textElement>
+								<text><![CDATA[TOTAL_STOCK]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="82bce209-e26a-4243-9bfc-7d709816f2f8" x="0" y="0" width="121" height="20"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{TOTAL_STOCK}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="fbe1617a-9e39-4fd9-b3e8-cf2104d74db5" width="125">
+						<jr:columnHeader style="table 2_TH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement uuid="f85ee004-e77a-46a2-98ab-456eb34ad650" x="0" y="0" width="125" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Aharoni" size="11" isBold="true"/>
+								</textElement>
+								<text><![CDATA[FECHA_INGRESO]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="8fbab97b-7546-448e-bbc6-f7cce8e72abe" x="0" y="0" width="125" height="20"/>
+								<textElement textAlignment="Center"/>
+								<textFieldExpression><![CDATA[$F{FECHA_INGRESO}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

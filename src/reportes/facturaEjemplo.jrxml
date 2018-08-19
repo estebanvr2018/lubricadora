@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaEjemplo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d9b52c58-1a51-4a51-8c24-84b2df05af34">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F5F5F5">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+			<bottomPen lineWidth="0.5" lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#FFBFBF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+			<bottomPen lineWidth="0.5" lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+			<bottomPen lineWidth="0.5" lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F5F5F5">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+			<bottomPen lineWidth="0.5" lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#FFBFBF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+			<bottomPen lineWidth="0.5" lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+			<bottomPen lineWidth="0.5" lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<style name="table 2">
+		<box>
+			<topPen lineWidth="1.0" lineColor="#FFFFFF"/>
+			<bottomPen lineWidth="1.0" lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<style name="table 2_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+			<bottomPen lineWidth="0.5" lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<style name="table 2_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+			<bottomPen lineWidth="0.5" lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#FFFFFF"/>
+			<bottomPen lineWidth="0.5" lineColor="#FFFFFF"/>
+		</box>
+	</style>
+	<subDataset name="data" uuid="2f98db55-16ed-44fd-9794-2ad5e3223542">
+		<parameter name="id_factura_data" class="java.lang.Integer">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<queryString>
+			<![CDATA[select d.cantidad, CONCAT(c.descripcion,' ',s.descripcion,' ',p.nombreProducto) as descripcion ,d.valor as valor_unitario, round(d.valor*d.cantidad,2) as total
+from tb_factura_dtl d , tb_producto p , tb_producto_descrip s, tb_producto_cat c
+where d.id_factura = $P{id_factura_data}
+and d.id_producto = p.id_producto
+and p.id_prod_des = s.id_prod_des
+and s.id_producto_cat = c.id_producto_cat;]]>
+		</queryString>
+		<field name="cantidad" class="java.lang.Integer"/>
+		<field name="descripcion" class="java.lang.String"/>
+		<field name="valor_unitario" class="java.lang.Float"/>
+		<field name="total" class="java.lang.Double"/>
+	</subDataset>
+	<parameter name="id_factura" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT CONCAT(c.nombres,' ',c.primer_apellido,' ',c.segundo_apellido) AS cliente,
+    DATE_FORMAT(f.fecha_factura, '%d/%m/%Y') as fecha_factura,
+    c.id_identificacion,
+    c.direccion,
+    c.telefono,
+    f.valor_total_letras,
+    f.sub_total_1,
+    f.iva_cero,
+    f.iva_doce,
+    f.valor_total
+FROM tb_factura_cab f,
+     tb_clientes c
+WHERE f.id_factura = $P{id_factura}
+AND f.id_identificacion = c.id_identificacion;]]>
+	</queryString>
+	<field name="cliente" class="java.lang.String"/>
+	<field name="fecha_factura" class="java.lang.String"/>
+	<field name="id_identificacion" class="java.lang.String"/>
+	<field name="direccion" class="java.lang.String"/>
+	<field name="telefono" class="java.lang.String"/>
+	<field name="valor_total_letras" class="java.lang.String"/>
+	<field name="sub_total_1" class="java.lang.Float"/>
+	<field name="iva_cero" class="java.lang.Float"/>
+	<field name="iva_doce" class="java.lang.Float"/>
+	<field name="valor_total" class="java.lang.Float"/>
+	<variable name="fecha_factura_1" class="java.lang.Integer" resetType="Page" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{fecha_factura}]]></variableExpression>
+	</variable>
+	<variable name="cliente_1" class="java.lang.Integer" resetType="Page" calculation="DistinctCount">
+		<variableExpression><![CDATA[$F{cliente}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="33" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="16" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="63" splitType="Stretch">
+			<textField>
+				<reportElement uuid="f1f9e3c3-017d-48e1-93c6-5039c14eba58" x="16" y="21" width="267" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{id_identificacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="754f8f00-ae3b-41f3-8648-b61c7569e29e" x="16" y="41" width="173" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="10c295a6-cf66-498f-8bc0-dce2f5c46d11" x="210" y="41" width="73" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="73a27e40-41c4-4c86-93b8-4f27e79811ac" x="16" y="1" width="173" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="77f1d9da-7cd8-44ba-85dc-a7ee8a949090" x="210" y="0" width="73" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_factura}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<componentElement>
+				<reportElement uuid="93320854-72b5-4762-aa1e-ab3b49cca16d" key="table 2" style="table 2" x="16" y="12" width="267" height="98"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="data" uuid="ea87b869-8ead-4a94-9d45-25b9c50c1b11">
+						<datasetParameter name="id_factura_data">
+							<datasetParameterExpression><![CDATA[$P{id_factura}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column uuid="8218a83d-02a4-42be-951f-3f973c1fcd36" width="19">
+						<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="d073f722-78b5-43a7-a3e9-996fb3672e94" x="0" y="0" width="19" height="20"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="f694b37d-be22-44fb-b216-de848045ec17" width="91">
+						<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="212c716b-a33a-401d-af4e-f7e56761e32f" x="0" y="0" width="90" height="20"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="faaae2a2-e1f4-4ed5-bc6a-345857adddf3" width="63">
+						<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="601a5e60-18ed-4472-a898-8156f3db8b16" x="0" y="0" width="63" height="20"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{valor_unitario}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="bfd206fd-d5db-49f9-bf84-14d1e45113c4" width="53">
+						<jr:detailCell style="table 2_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="ba454167-0f5c-4d02-8dc1-9a19d934ed30" x="0" y="0" width="53" height="20"/>
+								<textElement textAlignment="Right"/>
+								<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="80" splitType="Stretch">
+			<textField>
+				<reportElement uuid="57a5dfc8-5b82-4d12-adbb-c9ed70a46732" x="210" y="40" width="73" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{iva_doce}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cf62fa88-d094-4fbd-9e7d-b8f02a41ea08" x="210" y="60" width="73" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{valor_total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bc461c24-19ae-4981-bcd6-0e812538ca49" x="210" y="20" width="73" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{iva_cero}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f3998558-8897-4aa2-a340-6724fff30507" x="210" y="0" width="73" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{sub_total_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ceec1268-e123-481b-9890-200ec6b98f41" x="16" y="0" width="173" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{valor_total_letras}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
