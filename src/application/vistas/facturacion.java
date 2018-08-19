@@ -57,6 +57,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import reportes.FacturacionReporte;
 
@@ -100,12 +101,14 @@ public class facturacion implements EventHandler<ActionEvent> {
 	/*** ***/
 
 	public void formularioFactura(Stage stgFactura) {
-		ventanaActual = stgFactura;
-		Text scenetitle = new Text("FACTURACIÓN");
-		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 25));
-		scenetitle.setFill(Color.WHITE);
-		scenetitle.setX(480);
-		scenetitle.setY(40);
+		//ventanaActual = stgFactura;
+		ventanaActual = new Stage();
+
+		Label scenetitle = new Label(" - FACTURACIÓN -");
+		scenetitle.setLayoutX(480);
+		scenetitle.setLayoutY(15);
+		scenetitle.setId("texto");
+		
 		txtRuc = new TextField();
 		// scenetitle.setFont(new Font("Arial",20));
 		// Group
@@ -115,12 +118,13 @@ public class facturacion implements EventHandler<ActionEvent> {
 		ToggleGroup group = new ToggleGroup();
 
 		botones bot = new botones();
-		Label lblRuc = new Label("Cédula/RUC: ");
+		Label lblRuc = new Label("Cédula/Ruc");
 		lblRuc.setLayoutX(20);
 		lblRuc.setLayoutY(60);
 
 		txtRuc.setLayoutX(100);
 		txtRuc.setLayoutY(55);
+		txtRuc.setPrefSize(150, 10);
 		txtRuc.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -186,6 +190,7 @@ public class facturacion implements EventHandler<ActionEvent> {
 		TextField txtFecha = new TextField();
 		txtFecha.setLayoutX(380);
 		txtFecha.setLayoutY(55);
+		txtFecha.setPrefSize(150, 10);
 		Date date = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		System.out.println("Fecha actual: " + dateFormat.format(date));
@@ -193,50 +198,50 @@ public class facturacion implements EventHandler<ActionEvent> {
 
 		Label lblCliente = new Label("Nombres ");
 		lblCliente.setLayoutX(20);
-		lblCliente.setLayoutY(90);
+		lblCliente.setLayoutY(100);
 		lblCliente.setPrefSize(100, 10);
 		txtCliente = new TextField();
 		txtCliente.setEditable(false);
 		txtCliente.setLayoutX(100);
-		txtCliente.setLayoutY(85);
+		txtCliente.setLayoutY(95);
 		txtCliente.setPrefSize(150, 10);
 		Label lblApellidos = new Label("Apellidos ");
 		lblApellidos.setLayoutX(300);
-		lblApellidos.setLayoutY(90);
+		lblApellidos.setLayoutY(100);
 
 		txtApellidos = new TextField();
 		txtApellidos.setLayoutX(380);
-		txtApellidos.setLayoutY(85);
+		txtApellidos.setLayoutY(95);
 		txtApellidos.setPrefSize(150, 10);
 		txtApellidos.setEditable(false);
 
 		Label lblDireccion = new Label("Dirección: ");
 		lblDireccion.setLayoutX(20);
-		lblDireccion.setLayoutY(120);
+		lblDireccion.setLayoutY(140);
 		txtDireccion = new TextField();
 		txtDireccion.setEditable(false);
 		txtDireccion.setLayoutX(100);
-		txtDireccion.setLayoutY(115);
+		txtDireccion.setLayoutY(135);
 		txtDireccion.setPrefSize(150, 10);
 
 		Label lblTelefono = new Label("Teléfono: ");
 		lblTelefono.setLayoutX(300);
-		lblTelefono.setLayoutY(120);
+		lblTelefono.setLayoutY(140);
 		txtTelefono = new TextField();
 		txtTelefono.setEditable(false);
 		txtTelefono.setLayoutX(380);
-		txtTelefono.setLayoutY(115);
+		txtTelefono.setLayoutY(135);
 		txtTelefono.setPrefSize(150, 20);
 
 		Label lblCorreo = new Label("Correo: ");
 		lblCorreo.setLayoutX(20);
-		lblCorreo.setLayoutY(150);
+		lblCorreo.setLayoutY(180);
 		txtCorreo = new TextField();
 		txtCorreo.setLayoutX(100);
-		txtCorreo.setLayoutY(145);
+		txtCorreo.setLayoutY(175);
 		// txtCorreo.setPrefSize(200, 20);
 		txtCorreo.setEditable(false);
-		txtCorreo.setPrefSize(150, 10);
+		txtCorreo.setPrefSize(230, 10);
 
 		/**/
 		Label lblCantidadString = new Label("Son");
@@ -250,39 +255,40 @@ public class facturacion implements EventHandler<ActionEvent> {
 
 		Label lblSubtotal = new Label("Subtotal");
 		lblSubtotal.setLayoutX(400);
-		lblSubtotal.setLayoutY(230);
+		lblSubtotal.setLayoutY(200);
 		txtSubtotal = new TextField();
 		txtSubtotal.setLayoutX(460);
-		txtSubtotal.setLayoutY(225);
+		txtSubtotal.setLayoutY(195);
 		txtSubtotal.setPrefSize(70, 25);
 		txtSubtotal.setEditable(false);
 
-		Label lblIvaCero = new Label("IVA 0%");
+		Label lblIvaCero = new Label("Iva 0%");
 		lblIvaCero.setLayoutX(400);
-		lblIvaCero.setLayoutY(260);
+		lblIvaCero.setLayoutY(235);
 		txtIva = new TextField();
 		txtIva.setLayoutX(460);
-		txtIva.setLayoutY(255);
+		txtIva.setLayoutY(230);
 		txtIva.setPrefSize(70, 25);
 		txtIva.setEditable(false);
 
-		Label lblIvaDoce = new Label("IVA 12%");
+		Label lblIvaDoce = new Label("Iva 12%");
 		lblIvaDoce.setLayoutX(400);
-		lblIvaDoce.setLayoutY(290);
+		lblIvaDoce.setLayoutY(270);
 		txtIvaDoce = new TextField();
 		txtIvaDoce.setLayoutX(460);
-		txtIvaDoce.setLayoutY(285);
-		txtIvaDoce.setPrefSize(70, 25);
+		txtIvaDoce.setLayoutY(265);
+		txtIvaDoce.setPrefSize(70, 15);
 		txtIvaDoce.setEditable(false);
 
 		Label lblTotal = new Label("TOTAL");
 		lblTotal.setLayoutX(400);
-		lblTotal.setLayoutY(320);
+		lblTotal.setLayoutY(305);
 		txtTotal = new TextField();
 		txtTotal.setLayoutX(460);
-		txtTotal.setLayoutY(315);
-		txtTotal.setPrefSize(70, 25);
+		txtTotal.setLayoutY(300);
+		txtTotal.setPrefSize(70, 15);
 		txtTotal.setEditable(false);
+		txtTotal.setId("Precio");
 		inilicializaCampos();
 		//
 		group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
@@ -291,7 +297,6 @@ public class facturacion implements EventHandler<ActionEvent> {
 				// Has selection.
 				if (group.getSelectedToggle() != null) {
 					RadioButton button = (RadioButton) group.getSelectedToggle();
-					System.out.println("Button: " + button.getText());
 					labelInfo.setText(button.getText());
 					if (button.getText().toString() == "C. Final") {
 						System.out.println("Consumidor final ");
@@ -313,11 +318,11 @@ public class facturacion implements EventHandler<ActionEvent> {
 		RadioButton button1 = new RadioButton("C. Final");
 		button1.setToggleGroup(group);
 		button1.setSelected(true);
-
+		button1.setId("radioButton");
 		// Radio 2: Female.
 		RadioButton button2 = new RadioButton("Ced o Ruc");
 		button2.setToggleGroup(group);
-
+		button2.setId("radioButton");
 		HBox radioButtonCliente = new HBox();
 		radioButtonCliente.setPadding(new Insets(10));
 		radioButtonCliente.setSpacing(5);
@@ -328,13 +333,13 @@ public class facturacion implements EventHandler<ActionEvent> {
 
 		btnAdd = new Button("Facturar", bot.botonFacturaGrande());
 		// btnAdd.setDefaultButton(true);
-		btnAdd.setLayoutX(940);
-		btnAdd.setLayoutY(330);
+		btnAdd.setLayoutX(960);
+		btnAdd.setLayoutY(340);
 		btnAdd.setDisable(true);
 		btnAdd.setTextFill(Color.RED);
 		btnAdd.setContentDisplay(ContentDisplay.BOTTOM);
 		// btnAdd.setFont(new Font("Arial",15));
-		btnAdd.setPrefSize(63, 40);
+		btnAdd.setPrefSize(140, 40);
 		btnAdd.setOnAction(this);
 
 		/*** Nueva tabla ***/
@@ -346,15 +351,15 @@ public class facturacion implements EventHandler<ActionEvent> {
 		cantidadProducto.setStyle("-fx-alignment: CENTER;");
 		descripcionProducto.setStyle("-fx-alignment: CENTER;");
 		valorUnitario.setStyle("-fx-alignment: CENTER;");
-		cantidadProducto.setMinWidth(50);
+		cantidadProducto.setMinWidth(22);
 		descripcionProducto.setMinWidth(200);
-		valorUnitario.setMinWidth(150);
-		valorTotal.setMinWidth(50);
+		valorUnitario.setMinWidth(130);
+		valorTotal.setMinWidth(130);
 
 		productosFacturar.getColumns().addAll(cantidadProducto, descripcionProducto, valorUnitario, valorTotal);
 		productosFacturar.setLayoutX(10);
-		productosFacturar.setLayoutY(20);
-		productosFacturar.setPrefSize(520, 200);
+		productosFacturar.setLayoutY(35);
+		productosFacturar.setPrefSize(520, 150);
 		productosFacturar.setOnMouseClicked(event -> {
 			if (event.getClickCount() == 2) {
 				try {
@@ -376,50 +381,46 @@ public class facturacion implements EventHandler<ActionEvent> {
 		btnExit.setGraphic(bot.botonRegresar());
 		btnExit.setLayoutX(890);
 		btnExit.setLayoutY(600);
-		btnExit.setPrefSize(100, 25);
+		btnExit.setPrefSize(150, 25);
 		btnExit.setOnAction(this);
 
 		/*** Cabecera de la factura datos del cliente ***/
-		Text sceneCliente = new Text("- Datos del cliente");
-		sceneCliente.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
-		sceneCliente.setFill(Color.WHITE);
-		sceneCliente.setX(20);
-		sceneCliente.setY(70);
-
+		Label sceneCliente = new Label("- Datos del cliente - ");
+		sceneCliente.setLayoutX(20);
+		sceneCliente.setLayoutY(5);
+		sceneCliente.setId("titulo2");
 		AnchorPane datosClientes = new AnchorPane();
 		datosClientes.getChildren().addAll(// scenetitle,
-				lblRuc, txtRuc, lblFecha, txtFecha, lblCliente, txtCliente, lblApellidos, txtApellidos, lblDireccion,
+				sceneCliente,lblRuc, txtRuc, lblFecha, txtFecha, lblCliente, txtCliente, lblApellidos, txtApellidos, lblDireccion,
 				txtDireccion, lblTelefono, txtTelefono, lblCorreo, txtCorreo, radioButtonCliente);
-		datosClientes.setBorder(new Border(
+		/*datosClientes.setBorder(new Border(
 				new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		datosClientes.setPadding(new Insets(5));*/
 		datosClientes.setPadding(new Insets(5));
 		datosClientes.setTranslateX(20);
-		datosClientes.setTranslateY(80);
+		datosClientes.setTranslateY(60);
 		datosClientes.setTranslateZ(20);
 		datosClientes.setMaxSize(650, 250);
-
+		datosClientes.setId("colorMarco");
 		/*** ***/
 		/*** Cabecera de la factura datos del cliente ***/
-		Text sceneProductosADD = new Text("- Productos añadidos");
-		sceneProductosADD.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
-		sceneProductosADD.setFill(Color.WHITE);
-		sceneProductosADD.setX(20);
-		sceneProductosADD.setY(290);
+		Label sceneProductosADD = new Label("- Productos añadidos -");
+		sceneProductosADD.setLayoutX(20);
+		sceneProductosADD.setLayoutY(5);
+		sceneProductosADD.setId("titulo2");
 		AnchorPane datosListaFactura = new AnchorPane();
-		datosListaFactura.getChildren().addAll(
+		datosListaFactura.getChildren().addAll(sceneProductosADD,
 				// tableFacturacion,
 				productosFacturar, lblCantidadString, txtCantidadString, lblSubtotal, lblIvaCero, lblIvaDoce, lblTotal,
 				txtSubtotal, txtIva, txtIvaDoce, txtTotal
 		// btnAdd
 		);
-		datosListaFactura.setBorder(new Border(
-				new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		datosListaFactura.setPadding(new Insets(5));
 		datosListaFactura.setTranslateX(20);
 		datosListaFactura.setTranslateY(300);
 		datosListaFactura.setTranslateZ(20);
 		datosListaFactura.setMaxSize(650, 250);
-
+		datosListaFactura.setId("colorMarco");
 		/*** ***/
 
 		Group root = new Group();
@@ -445,21 +446,21 @@ public class facturacion implements EventHandler<ActionEvent> {
 		subcategoria.setMinWidth(40);
 		productosIngresados.getColumns().addAll(
 				// idProducto,
-				// categoria,
+				 categoria,
 				subcategoria, nomProducto, descProducto, valorVenta, disponibles);
 		productosIngresados.setLayoutX(10);
-		productosIngresados.setLayoutY(50);
-		productosIngresados.setPrefSize(400, 150);
+		productosIngresados.setLayoutY(85);
+		productosIngresados.setPrefSize(500, 150);
 		productosIngresados.setVisible(true);
 		/*** ***/
 
 		Label lblCantidad = new Label("Cantidad");
-		lblCantidad.setLayoutX(290);
-		lblCantidad.setLayoutY(20);
+		lblCantidad.setLayoutX(370);
+		lblCantidad.setLayoutY(40);
 		txtCantidad = new TextField();
-		txtCantidad.setLayoutX(340);
-		txtCantidad.setLayoutY(15);
-		txtCantidad.setPrefSize(35, 25);
+		txtCantidad.setLayoutX(440);
+		txtCantidad.setLayoutY(35);
+		txtCantidad.setPrefSize(45, 25);
 		txtCantidad.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -543,15 +544,15 @@ public class facturacion implements EventHandler<ActionEvent> {
 		/*** ***/
 		Label lblDescripcionPro = new Label("Producto");
 		lblDescripcionPro.setLayoutX(25);
-		lblDescripcionPro.setLayoutY(20);
+		lblDescripcionPro.setLayoutY(40);
 
 		txtDescripcion = new TextField();
 		txtDescripcion.setLayoutX(95);
-		txtDescripcion.setLayoutY(15);
-
+		txtDescripcion.setLayoutY(35);
+		txtDescripcion.setPrefSize(160, 25);
 		btnAddProducto = new Button();
-		btnAddProducto.setLayoutX(250);
-		btnAddProducto.setLayoutY(15);
+		btnAddProducto.setLayoutX(270);
+		btnAddProducto.setLayoutY(35);
 		btnAddProducto.setGraphic(bot.botonBuscar());
 		btnAddProducto.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -604,34 +605,32 @@ public class facturacion implements EventHandler<ActionEvent> {
 
 		// btnAddProducto.setFont(new Font("Arial",15));
 		// btnAddProducto.setPrefSize(150, 30);
-		Text sceneProductos = new Text("- Búsqueda de productos");
-		sceneProductos.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
-		sceneProductos.setFill(Color.BLUE);
-		sceneProductos.setX(580);
-		sceneProductos.setY(70);
-
+		Label sceneProductos = new Label("- Busqueda de productos -");
+		sceneProductos.setLayoutX(20);
+		sceneProductos.setLayoutY(5);
+		sceneProductos.setId("titulo2");
 		AnchorPane datosProductos = new AnchorPane();
-		datosProductos.getChildren().addAll(productosIngresados, lblDescripcionPro, txtDescripcion, btnAddProducto,
+		datosProductos.getChildren().addAll(sceneProductos,productosIngresados, lblDescripcionPro, txtDescripcion, btnAddProducto,
 				lblCantidad, txtCantidad
 
 		);
-		datosProductos.setBorder(new Border(
-				new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		
 		datosProductos.setPadding(new Insets(5));
 		datosProductos.setTranslateX(580);
-		datosProductos.setTranslateY(80);
+		datosProductos.setTranslateY(60);
 		datosProductos.setTranslateZ(20);
-		datosClientes.setMaxSize(450, 250);
+		datosProductos.setMaxSize(450, 250);
+		datosProductos.setId("colorMarco");
 		/*** ***/
 		btnLimpiar = new Button("Limpiar", bot.botonLimpiarPNG());
 		// btnAdd.setDefaultButton(true);
-		btnLimpiar.setLayoutX(940);
-		btnLimpiar.setLayoutY(400);
+		btnLimpiar.setLayoutX(960);
+		btnLimpiar.setLayoutY(430);
 		btnLimpiar.setDisable(false);
 		btnLimpiar.setTextFill(Color.RED);
 		btnLimpiar.setContentDisplay(ContentDisplay.BOTTOM);
 		// btnAdd.setFont(new Font("Arial",15));
-		btnLimpiar.setPrefSize(63, 40);
+		btnLimpiar.setPrefSize(140, 40);
 		btnLimpiar.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -664,13 +663,13 @@ public class facturacion implements EventHandler<ActionEvent> {
 		});
 		btnImprimir = new Button("Imprimir", bot.botonImprimir());
 		// btnAdd.setDefaultButton(true);
-		btnImprimir.setLayoutX(940);
-		btnImprimir.setLayoutY(470);
+		btnImprimir.setLayoutX(960);
+		btnImprimir.setLayoutY(520);
 		btnImprimir.setDisable(false);
 		btnImprimir.setTextFill(Color.RED);
 		btnImprimir.setContentDisplay(ContentDisplay.BOTTOM);
 		// btnAdd.setFont(new Font("Arial",15));
-		btnImprimir.setPrefSize(63, 40);
+		btnImprimir.setPrefSize(140, 40);
 		btnImprimir.setDisable(true);
 		btnImprimir.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -702,20 +701,20 @@ public class facturacion implements EventHandler<ActionEvent> {
 			}
 		});
 		/*** ***/
-		root.getChildren().addAll(bp, scenetitle, sceneCliente, sceneProductosADD, sceneProductos, datosClientes,
+		root.getChildren().addAll(bp, scenetitle, datosClientes,
 				datosListaFactura, datosProductos, btnAdd, btnLimpiar, btnImprimir,btnExit);
 		root.getChildren().addAll(
 		// tableFacturacion,
 
 		);
 		Scene escenaConsulta = null;
-		escenaConsulta = new Scene(root, 1040, 700);
+		escenaConsulta = new Scene(root, 1150, 670);
 		escenaConsulta.setFill(Color.TRANSPARENT);
 		escenaConsulta.getStylesheets().add("DarkTheme.css");
 		ventanaActual.setTitle("Control de ventas");
 		ventanaActual.setScene(escenaConsulta);
 		ventanaActual.getIcons().add(bot.iconoLaren());
-		// ventanaActual.setResizable(false);
+		ventanaActual.initModality(Modality.APPLICATION_MODAL);
 		ventanaActual.show();
 
 	}
@@ -1280,8 +1279,8 @@ public class facturacion implements EventHandler<ActionEvent> {
 			System.out.println("==================================================");
 			ventanaActual.toBack();
 			ventanaActual.close();
-			Principal menuInicio = new Principal();
-			menuInicio.panelPrincipal();
+			//Principal menuInicio = new Principal();
+			//menuInicio.panelPrincipal();
 
 		} else if (event.getSource() == btnAddProducto) {
 			System.out.println("==================================================");

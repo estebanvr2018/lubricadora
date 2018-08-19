@@ -74,9 +74,11 @@ public class ProductosBO {
 	public List<productoDTO> traeProductosProveedor(String strProducto) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
 		List<productoDTO> lsProductosDTO = null;
-
+		
 		try {
+			
 			lsProductosDTO = new ProductosDAO().traeProdProveedor(objConnection, strProducto);
+			
 
 		} catch (Exception e) {
 			StringWriter errores = new StringWriter();
@@ -318,4 +320,44 @@ public class ProductosBO {
 		return lsProductosDTO;
 	}
 
+	
+	
+	public int existeCategoriaProd(String descripcionProd) throws SQLException {
+		Connection objConnection = new ConexionMySQL().conexion();
+		int insertQuery = 0;
+		try {
+			insertQuery = new ProductosDAO().existeCategoria(objConnection, descripcionProd); //.insertaProductoCategoria(objConnection, descripcionProd);
+			return insertQuery;
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+		} finally {
+			if (objConnection != null) {
+				objConnection.close();
+			}
+		}
+		return insertQuery;
+	}
+	
+	
+	
+	
+	public int existeSubCatProductos(String descripcionProd, String descripcion) throws SQLException {
+		Connection objConnection = new ConexionMySQL().conexion();
+		int insertQuery = 0;
+		try {
+			insertQuery = new ProductosDAO().existeSubcategoria(objConnection, descripcionProd, descripcion); //.existeCategoria(objConnection, descripcionProd); //.insertaPrCSoloSubcategoria(objConnection, SubCate, descripcionProd);
+			return insertQuery;
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+		} finally {
+			if (objConnection != null) {
+				objConnection.close();
+			}
+		}
+		return insertQuery;
+	}
+	
+	
 }

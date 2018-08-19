@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
+
 import application.BO.ClientesBO;
 import application.Dialog.alertasMensajes;
 import application.com.DTOS.ClientesDTO;
@@ -17,6 +19,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -39,12 +42,18 @@ public class clientesIU implements EventHandler<ActionEvent> {
 	public float totalFacturar = 0.2f;
 	public ObservableList<String> Contenido = FXCollections.observableArrayList("Seleccione un producto");;
 	public ComboBox<String> comboProductos = new ComboBox<String>(Contenido);
+	
+	/**/
+	Optional<ButtonType> optionRetorno=null;
+	/**/
 
-	public void insertaCliente(String identificacion) {
-		Text scenetitle = new Text("Datos del cliente");
-		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-		scenetitle.setX(180);
-		scenetitle.setY(40);
+	public Optional<ButtonType> insertaCliente(String identificacion) 
+	{
+		Label scenetitle = new Label(" - Datos del nuevo cliente -");
+		//scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+		scenetitle.setLayoutX(100);
+		scenetitle.setLayoutY(10);
+		scenetitle.setId("texto");
 		// scenetitle.setFont(new Font("Arial",20));
 
 		Label lblRuc = new Label("Cédula/Ruc ");
@@ -134,35 +143,73 @@ public class clientesIU implements EventHandler<ActionEvent> {
 		txtFechaI.setLayoutY(215);
 		txtFechaI.setPrefSize(160, 35);
 
-		/*
-		 * Date dateI = new Date(); DateFormat dateFormatI = new
-		 * SimpleDateFormat("dd/MM/yyyy"); System.out.println("Fecha actual: "
-		 * +dateFormatI.format(dateI));
-		 * txtFechaI.setText(dateFormatI.format(dateI).toString());
-		 * txtFechaI.setEditable(false);
-		 */
-
-		/*
-		 * Label lblFechaActua = new Label("Fecha");
-		 * lblFechaActua.setLayoutX(300); lblFechaActua.setLayoutY(180);
-		 * TextField txtFechaAct = new TextField(); txtFechaAct.setLayoutX(380);
-		 * txtFechaAct.setLayoutY(175);
-		 * 
-		 * Date dateU = new Date(); DateFormat dateFormatU = new
-		 * SimpleDateFormat("dd/MM/yyyy"); System.out.println("Fecha actual: "
-		 * +dateFormatU.format(dateU));
-		 * txtFechaAct.setText(dateFormatU.format(dateU).toString());
-		 * txtFechaAct.setEditable(false);
-		 */
 		botones b = new botones();
 
-		btnAdd = new Button("Guardar");
+		Button btnAdd = new Button("Guardar");
 		btnAdd.setLayoutX(110);
 		btnAdd.setLayoutY(270);
 		btnAdd.setGraphic(b.botonGuardar());
 		// btnAdd.setFont(new Font("Arial",15));
 		btnAdd.setPrefSize(150, 30);
-		btnAdd.setOnAction(this);
+		btnAdd.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) 
+			{
+				System.out.println("==================================================");
+				System.out.println(" Crear nuevo cliente...");
+				System.out.println("==================================================");
+				boolean verifica = false;
+				verifica = verificaCampos(txtCliente.getText().toString().trim(), txtApellidos.getText().toString().trim(),
+						txtDireccion.getText().toString().trim(), txtTelefono.getText().toString().trim(),
+						txtCorreo.getText().toString().trim());
+				System.out.println("Verifica: " + verifica);
+				alertasMensajes alertas = new alertasMensajes();
+				if (!verifica) 
+				{
+					ClientesBO objInsertar = new ClientesBO();
+					int existeCliente = 0;
+					try {
+						existeCliente = objInsertar.verificaCliente(txtRuc.getText().toString().trim());
+						if ( existeCliente == 0 )
+						{	
+								int resultadoInsert = insertaClienteBD(txtRuc.getText().toString().trim(), txtCliente.getText().toString().trim(),
+										txtApellidos.getText().toString().trim(), txtDireccion.getText().toString().trim(),
+										txtTelefono.getText().toString().trim(), txtCorreo.getText().toString().trim());
+								
+								
+								if ( resultadoInsert == 1 )
+								{
+									
+									optionRetorno = alertas.opcionConfirmacion("Confirmación", "Se ha guardado el cliente con la identificación " +txtRuc.getText().toString());
+									VentanaConsultas.close();
+								}	
+								else 
+								{
+									
+									String  strMensaje="No se ha guardado el cliente, por favor vuelva a intentarlo";
+									alertas.alertaError(strMensaje);
+									VentanaConsultas.close();
+								}			   
+						}
+						else 
+						{
+							String mesj = "Ya existe un cliente registrado con la identificación "+ txtRuc.getText().toString().trim() +" , por favor revise ...";
+							 alertas.alertaOK(mesj);
+							 VentanaConsultas.close();
+						}	
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+							
+				}
+		
+	
+		
+			}});
+		/**/
+		
 
 		btnCancelar = new Button("Cancelar");
 		btnCancelar.setLayoutX(280);
@@ -180,8 +227,8 @@ public class clientesIU implements EventHandler<ActionEvent> {
 		root.getChildren().addAll(bp, lblDireccion, lblTelefono, lblCorreo, lblFechaIngreso);
 		root.getChildren().addAll(scenetitle, lblRuc, txtRuc, lblCliente, txtCliente, lblApellidos, txtApellidos,
 				txtDireccion, txtTelefono, txtCorreo, lblFecha, txtFecha, txtFechaI, btnAdd, btnCancelar);
-		Scene escenaConsulta = null;
-		escenaConsulta = new Scene(root, 510, 320);
+		//Scene escenaConsulta = null;
+		Scene escenaConsulta = new Scene(root, 510, 320);
 		escenaConsulta.getStylesheets().add("DarkTheme.css");
 		// escenaConsulta.setFill(null);
 		VentanaConsultas = new Stage();
@@ -195,38 +242,44 @@ public class clientesIU implements EventHandler<ActionEvent> {
 			}
 
 		});
+		VentanaConsultas = new Stage();
 		VentanaConsultas.setTitle("Ficha de datos");
 		VentanaConsultas.setScene(escenaConsulta);
 		VentanaConsultas.setResizable(false);
+		VentanaConsultas.getIcons().add(b.iconoLaren());
 		VentanaConsultas.initModality(Modality.APPLICATION_MODAL);
 		VentanaConsultas.showAndWait();
-
+		return optionRetorno;
 	}
 
-	/*** INI modifica cliente ***/
-	public void modificaCliente(ClientesDTO objCliente) {
+	/*** INI modifica cliente 
+	 * @return ***/
+	public Optional<ButtonType> modificaCliente(ClientesDTO objCliente) {
 		
-		Text scenetitle = new Text("Datos del cliente");
-		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-		scenetitle.setX(180);
-		scenetitle.setY(40);
-		scenetitle.setFill(Color.WHITE);
+		Label scenetitle = new Label(" - Datos del cliente - ");
+		//scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+		scenetitle.setLayoutX(150);
+		scenetitle.setLayoutY(10);
+		scenetitle.setId("texto");
+		//scenetitle.setFill(Color.WHITE);
 		// scenetitle.setFont(new Font("Arial",20));
 
-		Label lblRuc = new Label("CEDULA/RUC: ");
+		Label lblRuc = new Label("Cédula/Ruc");
 		lblRuc.setLayoutX(20);
 		lblRuc.setLayoutY(60);
 		txtRuc = new TextField();
 		txtRuc.setLayoutX(100);
 		txtRuc.setLayoutY(55);
+		txtRuc.setPrefSize(150, 25);
 		txtRuc.setEditable(false);
 
-		Label lblFecha = new Label("FECHA: ");
+		Label lblFecha = new Label("Fecha");
 		lblFecha.setLayoutX(270);
 		lblFecha.setLayoutY(60);
 		TextField txtFecha = new TextField();
 		txtFecha.setLayoutX(350);
 		txtFecha.setLayoutY(55);
+		txtFecha.setPrefSize(150, 25);
 		Date date = new Date();
 
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -234,48 +287,53 @@ public class clientesIU implements EventHandler<ActionEvent> {
 		txtFecha.setText(dateFormat.format(date).toString());
 		txtFecha.setEditable(false);
 
-		Label lblCliente = new Label("NOMBRES: ");
+		Label lblCliente = new Label("Nombres");
 		lblCliente.setLayoutX(20);
-		lblCliente.setLayoutY(90);
+		lblCliente.setLayoutY(100);
 		txtCliente = new TextField();
 		txtCliente.setLayoutX(100);
-		txtCliente.setLayoutY(85);
-		Label lblApellidos = new Label("APELLIDOS: ");
+		txtCliente.setLayoutY(95);
+		txtCliente.setPrefSize(150, 25);
+		Label lblApellidos = new Label("Apellidos");
 		lblApellidos.setLayoutX(270);
-		lblApellidos.setLayoutY(90);
+		lblApellidos.setLayoutY(100);
 		txtApellidos = new TextField();
 		txtApellidos.setLayoutX(350);
-		txtApellidos.setLayoutY(85);
+		txtApellidos.setLayoutY(95);
+		txtApellidos.setPrefSize(150, 25);
 
-		Label lblDireccion = new Label("DIRECCIÓN: ");
+		Label lblDireccion = new Label("Dirección");
 		lblDireccion.setLayoutX(20);
-		lblDireccion.setLayoutY(120);
+		lblDireccion.setLayoutY(140);
 		txtDireccion = new TextField();
 		txtDireccion.setLayoutX(100);
-		txtDireccion.setLayoutY(115);
+		txtDireccion.setLayoutY(135);
+		txtDireccion.setPrefSize(150, 25);
 
-		Label lblTelefono = new Label("TELÉFONO: ");
+		Label lblTelefono = new Label("Teléfono");
 		lblTelefono.setLayoutX(270);
-		lblTelefono.setLayoutY(120);
+		lblTelefono.setLayoutY(140);
 		txtTelefono = new TextField();
 		txtTelefono.setLayoutX(350);
-		txtTelefono.setLayoutY(115);
+		txtTelefono.setLayoutY(135);
+		txtTelefono.setPrefSize(150, 25);
 
-		Label lblCorreo = new Label("CORREO: ");
+		Label lblCorreo = new Label("Correo");
 		lblCorreo.setLayoutX(20);
-		lblCorreo.setLayoutY(150);
+		lblCorreo.setLayoutY(180);
 		txtCorreo = new TextField();
 		txtCorreo.setLayoutX(100);
-		txtCorreo.setLayoutY(145);
+		txtCorreo.setLayoutY(175);
 		txtCorreo.setPrefSize(400, 25);
 
 		Label lblFechaIngreso = new Label("Fecha Ing.");
 		lblFechaIngreso.setLayoutX(20);
-		lblFechaIngreso.setLayoutY(180);
+		lblFechaIngreso.setLayoutY(220);
 		txtFechaI = new TextField();
 		txtFechaI.setLayoutX(100);
-		txtFechaI.setLayoutY(175);
+		txtFechaI.setLayoutY(215);
 		txtFechaI.setEditable(false);
+		txtFechaI.setPrefSize(150, 25);
 
 		/*** carga campos al formulario ***/
 		cargaCamposU(objCliente);
@@ -283,32 +341,60 @@ public class clientesIU implements EventHandler<ActionEvent> {
 
 		botones b = new botones();
 
-		btnUpdate = new Button("Actualizar");
-		btnUpdate.setLayoutX(170);
-		btnUpdate.setLayoutY(230);
+		Button btnUpdate = new Button("Actualizar");
+		btnUpdate.setLayoutX(120);
+		btnUpdate.setLayoutY(300);
 		btnUpdate.setGraphic(b.botonGuardar());
-		btnUpdate.setPrefSize(100, 30);
+		btnUpdate.setPrefSize(140, 30);
 		btnUpdate.setOnAction(this);
+		
+		/**/
+		btnUpdate.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) 
+			{
+				System.out.println("==================================================");
+				System.out.println(" Actualizar registro...");
+				System.out.println("==================================================");
+				int resultadoInsert = actualizaClienteBD(txtRuc.getText().toString().trim(), txtCliente.getText().toString().trim(),
+						txtApellidos.getText().toString().trim(), txtDireccion.getText().toString().trim(),
+						txtTelefono.getText().toString().trim(), txtCorreo.getText().toString().trim());
+				alertasMensajes alertas = new alertasMensajes();
+				if ( resultadoInsert == 1 )
+				{
+					
+					optionRetorno = alertas.opcionConfirmacion("Confirmación", "Se ha actualizado la información el cliente");
+					VentanaConsultas.close();
+				}	
+				else 
+				{
+					
+					String  strMensaje="No se ha actualizado la información del cliente, por favor vuelva a intentarlo";
+					alertas.alertaError(strMensaje);
+					VentanaConsultas.close();
+				   
+				}	
+			}});
+		/**/
 
 		btnCancelar = new Button("Cancelar");
 		btnCancelar.setLayoutX(280);
-		btnCancelar.setLayoutY(230);
+		btnCancelar.setLayoutY(300);
 		btnCancelar.setGraphic(b.botonError());
-		btnCancelar.setPrefSize(100, 30);
+		btnCancelar.setPrefSize(140, 30);
 		btnCancelar.setOnAction(this);
 
 		Group root = new Group();
 
-		Image imgCarga = new Image("application/1.jpg");
-		ImageView imgView = new ImageView(imgCarga);
 		BorderPane bp = new BorderPane();
-		bp.setCenter(imgView);
+		botones bot = new botones();
+		bp.setCenter(bot.fondoPantalla());
 		/**/
 		root.getChildren().addAll(bp, lblDireccion, lblTelefono, lblCorreo, lblFechaIngreso);
 		root.getChildren().addAll(scenetitle, lblRuc, txtRuc, lblCliente, txtCliente, lblApellidos, txtApellidos,
 				txtDireccion, txtTelefono, txtCorreo, lblFecha, txtFecha, txtFechaI, btnUpdate, btnCancelar);
 		Scene escenaConsulta = null;
-		escenaConsulta = new Scene(root, 510, 300);
+		escenaConsulta = new Scene(root, 510, 380);
 		escenaConsulta.getStylesheets().add("DarkTheme.css");
 		VentanaConsultas = new Stage();
 		btnCancelar.setOnAction(new EventHandler<ActionEvent>() {
@@ -323,10 +409,11 @@ public class clientesIU implements EventHandler<ActionEvent> {
 		});
 		VentanaConsultas.setTitle("Ficha de datos");
 		VentanaConsultas.setScene(escenaConsulta);
+		VentanaConsultas.getIcons().add(b.iconoLaren());
 		VentanaConsultas.setResizable(false);
 		VentanaConsultas.initModality(Modality.APPLICATION_MODAL);
 		VentanaConsultas.showAndWait();
-
+		return optionRetorno;
 	}
 
 	public void cargaCampos(ClientesDTO clientes) {
@@ -405,57 +492,58 @@ public class clientesIU implements EventHandler<ActionEvent> {
 		return blData;
 	}
 
-	public void insertaClienteBD(String strId, String strNombre, String strApellidos, String strDireccion,
+	public int insertaClienteBD(String strId, String strNombre, String strApellidos, String strDireccion,
 			String strTelefono, String strCorreo) {
 		System.out.println("================================================================================");
 		System.out.println(" Ingreso de cliente...");
 		System.out.println("================================================================================");
 		ClientesBO objInsertar = new ClientesBO();
 		int resInsert = 0;
-		try {
-			System.out.println(" 1");
+		try 
+		{
 			resInsert = objInsertar.insertaCliente(strId, strNombre, strApellidos, strDireccion, strTelefono,
 					strCorreo);
-			System.out.println(" 2: " + resInsert);
 			if (resInsert == 1) {
 				System.out.println("Resultado del query: " + resInsert);
-				alertasMensajes alertas = new alertasMensajes();
+				/*alertasMensajes alertas = new alertasMensajes();
 				String strMensaje = "Se ha insertado el cliente:" + strId;
 				alertas.alertaOK(strMensaje);
 				VentanaConsultas.toBack();
-				VentanaConsultas.close();
+				VentanaConsultas.close();*/
+				return resInsert;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return resInsert;
 	}
 
-	public void actualizaClienteBD(String strId, String strNombre, String strApellidos, String strDireccion,
+	public int actualizaClienteBD(String strId, String strNombre, String strApellidos, String strDireccion,
 			String strTelefono, String strCorreo) {
 		System.out.println("================================================================================");
 		System.out.println(" update de cliente...");
 		System.out.println("================================================================================");
 		ClientesBO objInsertar = new ClientesBO();
 		int resInsert = 0;
-		try {
-			System.out.println(" 1");
+		try 
+		{
 			resInsert = objInsertar.actualizaCliente(strId, strNombre, strApellidos, strDireccion, strTelefono,
 					strCorreo);
-			System.out.println(" 2: " + resInsert);
 			if (resInsert == 1) {
 				System.out.println("Resultado del query: " + resInsert);
-				alertasMensajes alertas = new alertasMensajes();
+				/*alertasMensajes alertas = new alertasMensajes();
 				String strMensaje = "Se ha actualizado el cliente:";
 				alertas.alertaOK(strMensaje);
 				VentanaConsultas.toBack();
-				VentanaConsultas.close();
-
+				VentanaConsultas.close();*/
+				return resInsert;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return resInsert;
 	}
 
 	/*** ***/

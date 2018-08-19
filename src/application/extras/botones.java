@@ -28,45 +28,51 @@ public class botones {
 		return imgVie;
 	}
 	
+	public ImageView botonAgregarProducto() {
+		Image image = new Image("application/images/agregarProducto.png", 25, 25, true, true);
+		ImageView imgVie = new ImageView(image);
+		return imgVie;
+	}
+	
 
 	public ImageView botonModifyPro() {
-		Image image = new Image("application/images/modificarProducto.jpg", 35, 35, true, true);
+		Image image = new Image("application/images/modificarProducto.png", 25, 25, true, true);
 		ImageView imgVie = new ImageView(image);
 		return imgVie;
 	}
 
 	public ImageView botonAgregar() {
-		Image image = new Image("application/images/agregar.jpg", 25, 25, true, true);
+		Image image = new Image("application/images/agregar.png", 25, 25, true, true);
 		ImageView imgVie = new ImageView(image);
 		return imgVie;
 	}
 
 	public ImageView botonActualizar() {
-		Image image = new Image("application/images/editar.jpg", 25, 25, true, true);
+		Image image = new Image("application/images/editar.png", 25, 25, true, true);
 		ImageView imgVie = new ImageView(image);
 		return imgVie;
 	}
 
 	public ImageView botonLimpiarJPG() {
-		Image image = new Image("application/images/limpiar.jpg", 25, 25, true, true);
+		Image image = new Image("application/images/limpiar.png", 25, 25, true, true);
 		ImageView imgVie = new ImageView(image);
 		return imgVie;
 	}
-
+	//usuario
 	public ImageView botonLimpiarIcono() {
-		Image image = new Image("application/images/limpiar.jpg", 15, 15, true, true);
+		Image image = new Image("application/images/limpiar.png", 15, 15, true, true);
 		ImageView imgVie = new ImageView(image);
 		return imgVie;
 	}
-
+//usuario
 	public ImageView botonEliminar() {
-		Image image = new Image("application/images/eliminar.jpg", 25, 25, true, true);
+		Image image = new Image("application/images/eliminar.png", 25, 25, true, true);
 		ImageView imgVie = new ImageView(image);
 		return imgVie;
 	}
 
 	public ImageView botonError() {
-		Image image = new Image("application/images/error.jpg", 25, 25, true, true);
+		Image image = new Image("application/images/error_sesion.png", 25, 25, true, true);
 		ImageView imgVie = new ImageView(image);
 		return imgVie;
 	}
@@ -84,25 +90,25 @@ public class botones {
 	}
 
 	public ImageView botonSuccess() {
-		Image image = new Image("application/images/okai.jpg", 25, 25, true, true);
+		Image image = new Image("application/images/iniciar-la-sesion.png", 25, 25, true, true);
 		ImageView imgVie = new ImageView(image);
 		return imgVie;
 	}
 
 	public ImageView botonRegresar() {
-		Image image = new Image("application/images/regresar.jpg", 25, 25, true, true);
+		Image image = new Image("application/images/regresar.png", 25, 25, true, true);
 		ImageView imgVie = new ImageView(image);
 		return imgVie;
 	}
 
 	public ImageView botonGuardar() {
-		Image image = new Image("application/images/guardar.jpg", 25, 25, true, true);
+		Image image = new Image("application/images/guardar.png", 25, 25, true, true);
 		ImageView imgVie = new ImageView(image);
 		return imgVie;
 	}
 
 	public ImageView botonCalcular() {
-		Image image = new Image("application/images/calcula.jpg", 15, 15, true, true);
+		Image image = new Image("application/images/calculadora.png", 20, 20, true, true);
 		ImageView imgVie = new ImageView(image);
 		return imgVie;
 	}
@@ -113,7 +119,7 @@ public class botones {
 		return imgView;
 	}
 	public ImageView fondoPantallaSecundario() {
-		Image imgCarga = new Image("application/images/fondoSecundario.jpg",900,800, true , true);
+		Image imgCarga = new Image("application/images/imagenFondo.jpg",1200,1000, true , true);
 		ImageView imgView = new ImageView(imgCarga);
 		return imgView;
 	}
@@ -125,7 +131,7 @@ public class botones {
 	}
 
 	public ImageView UsuariosP() {
-		Image imgCarga = new Image("application/images/usuario.jpg", 30, 30, true, true);
+		Image imgCarga = new Image("application/images/usuarios.png", 30, 30, true, true);
 		ImageView imgView = new ImageView(imgCarga);
 		return imgView;
 	}

@@ -206,4 +206,33 @@ public class ClientesDAO {
 
 	}
 
+	
+	
+	public int existeCLiente(Connection objConnection, String idCliente) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			ps = objConnection.prepareStatement("select count(f.id_identificacion) as cliente from tb_clientes f where f.id_identificacion= ?;");
+			ps.setString(1, idCliente);
+			rs = ps.executeQuery();
+
+			if (rs.next() == true) {
+				return rs.getInt("cliente");
+			} else
+				return rs.getInt("cliente");
+
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+			return 0;
+		} finally {
+			if (rs != null && rs.isClosed()) {
+				rs.close();
+			}
+			if (ps != null && !ps.isClosed()) {
+				ps.close();
+			}
+		}
+	}
 }

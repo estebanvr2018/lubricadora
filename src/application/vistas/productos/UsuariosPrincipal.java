@@ -44,6 +44,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class UsuariosPrincipal implements EventHandler<ActionEvent> {
@@ -62,12 +63,13 @@ public class UsuariosPrincipal implements EventHandler<ActionEvent> {
 
 	public void ingresoUsuarios(Stage ventanaIngreso) {
 		// cargaComboTipo();
-		ventanaActual = ventanaIngreso;
-		Text scenetitle = new Text("Usuarios.");
+		ventanaActual = new Stage();
+		Label scenetitle = new Label("Usuarios");
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-		scenetitle.setX(150);
-		scenetitle.setY(40);
-		scenetitle.setFill(Color.WHITE);
+		scenetitle.setLayoutX(150);
+		scenetitle.setLayoutY(5);
+		scenetitle.setId("texto");
+		
 		Label lblProd = new Label("Usuario");
 		lblProd.setLayoutX(50);
 		lblProd.setLayoutY(60);
@@ -89,14 +91,12 @@ public class UsuariosPrincipal implements EventHandler<ActionEvent> {
 		AnchorPane datosResultantes = new AnchorPane();
 		datosResultantes.getChildren().addAll(scenetitle, lblProd, txtIdentificacion, btnBuscar// tableProductos,								
 		);
-		datosResultantes.setBorder(new Border(
-				new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		datosResultantes.setPadding(new Insets(15));
 		datosResultantes.setTranslateX(20);
-		datosResultantes.setTranslateY(20);
+		datosResultantes.setTranslateY(10);
 		datosResultantes.setTranslateZ(20);
 		datosResultantes.setMaxSize(350, 150);
-		
+		datosResultantes.setId("colorMarco");
 		
 		btnAdd = new Button("Agregar");
 		btnAdd.setGraphic(b.botonAgregar());
@@ -184,22 +184,22 @@ public class UsuariosPrincipal implements EventHandler<ActionEvent> {
 		});
 		
 		
-		Text sceneTable = new Text("Usuarios registrados");
-		sceneTable.setFill(Color.WHITE);
+		Label sceneTable = new Label("Usuarios registrados");
 		sceneTable.setFont(Font.font("Tahoma", FontWeight.NORMAL, 18));
-		sceneTable.setX(130);
-		sceneTable.setY(30);
+		sceneTable.setLayoutX(90);
+		sceneTable.setLayoutY(5);
+		sceneTable.setId("texto");
 		
 		AnchorPane datosTabla = new AnchorPane();
 		datosTabla.getChildren().addAll(sceneTable, tableUsuarios, btnAddT,btnAdd,btnUpdate, btnEliminar, btnClear	// tableProductos,								
 		);
-		datosTabla.setBorder(new Border(
-				new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		
 		datosTabla.setPadding(new Insets(15));
 		datosTabla.setTranslateX(20);
-		datosTabla.setTranslateY(150);
+		datosTabla.setTranslateY(160);
 		datosTabla.setTranslateZ(20);
 		datosTabla.setMaxSize(350, 150);
+		datosTabla.setId("colorMarco");
 		
 		Group rootIngreso = new Group();
 
@@ -215,6 +215,7 @@ public class UsuariosPrincipal implements EventHandler<ActionEvent> {
 		ventanaActual.setScene(escenaProductos);
 		ventanaActual.setResizable(false);
 		ventanaActual.getIcons().add(bot.iconoLaren());
+		ventanaActual.initModality(Modality.APPLICATION_MODAL);
 		/*dialog.initOwner(parentStage);
 		dialog.initModality(Modality.APPLICATION_MODAL); 
 		dialog.showAndWait();*/
@@ -362,8 +363,8 @@ public class UsuariosPrincipal implements EventHandler<ActionEvent> {
 			System.out.println("==================================================");
 			ventanaActual.toBack();
 			ventanaActual.close();
-			Principal menuInicio = new Principal();
-			menuInicio.panelPrincipal();
+			//Principal menuInicio = new Principal();
+			//menuInicio.panelPrincipal();
 
 		} else if (event.getSource() == btnAdd) {
 			System.out.println("==================================================");

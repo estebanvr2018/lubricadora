@@ -109,17 +109,17 @@ public class productosPrincipal implements EventHandler<ActionEvent> {
 		strBanderaControlaMensaje = "S";
 
 		ventanaActual = ventanaIngreso;
-		Text scenetitle = new Text("Sección productos");
-		scenetitle.setFill(Color.BLUE);
+		Label scenetitle = new Label("Sección productos");
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-		scenetitle.setX(200);
-		scenetitle.setY(30);
+		scenetitle.setLayoutX(150);
+		scenetitle.setLayoutY(5);
+		scenetitle.setId("texto");
 		
-		Text scenetitleT = new Text("Detalles");
-		scenetitleT.setFill(Color.BLUE);
+		Label scenetitleT = new Label("Detalles");
 		scenetitleT.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-		scenetitleT.setX(230);
-		scenetitleT.setY(30);
+		scenetitleT.setLayoutX(150);
+		scenetitleT.setLayoutY(5);
+		scenetitleT.setId("texto");
 		// scenetitle.setFont(new Font("Arial",20));
 		/*** Nuevos Cambios para el ingreso del producto ***/
 		botones b = new botones();
@@ -641,13 +641,13 @@ public class productosPrincipal implements EventHandler<ActionEvent> {
 											  
 			
 		);
-		datosPrincipales.setBorder(new Border(
-				new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		
 		datosPrincipales.setPadding(new Insets(5));
 		datosPrincipales.setTranslateX(20);
 		datosPrincipales.setTranslateY(20);
 		datosPrincipales.setTranslateZ(20);
 		datosPrincipales.setMaxSize(750, 200);
+		datosPrincipales.setId("colorMarco");
 		/*** ***/
 		
 		/*** ***/
@@ -674,18 +674,18 @@ public class productosPrincipal implements EventHandler<ActionEvent> {
 											  
 			
 		);
-		datosIngresoProductos.setBorder(new Border(
-				new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		
 		datosIngresoProductos.setPadding(new Insets(5));
 		datosIngresoProductos.setTranslateX(20);
 		datosIngresoProductos.setTranslateY(250);
 		datosIngresoProductos.setTranslateZ(20);
 		datosIngresoProductos.setMaxSize(750, 200);
+		datosIngresoProductos.setId("colorMarco");
 		/*** ***/
 		
-
-		bp.setCenter(b.fondoPantalla());
-		rootIngreso.getChildren().addAll( btnExit, datosPrincipales,datosIngresoProductos
+		botones bot = new botones();
+		bp.setCenter(bot.fondoPantalla());
+		rootIngreso.getChildren().addAll(bp, btnExit, datosPrincipales,datosIngresoProductos
 
 		);
 
@@ -701,7 +701,7 @@ public class productosPrincipal implements EventHandler<ActionEvent> {
 
 		Scene escenaProductos = null;
 		escenaProductos = new Scene(rootIngreso, 630, 700);
-
+		escenaProductos.getStylesheets().add("DarkTheme.css");
 		ventanaActual.setTitle("Ingreso de productos");
 		ventanaActual.setScene(escenaProductos);
 		ventanaActual.setResizable(false);

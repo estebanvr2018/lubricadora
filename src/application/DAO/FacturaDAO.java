@@ -206,10 +206,10 @@ public class FacturaDAO {
 			while (rs.next()) {
 				FacturaCabDTO objFacturaCabDTO = new FacturaCabDTO();
 				objFacturaCabDTO.setIdFactura(rs.getInt(1));
-				System.out.println(rs.getString(2));
+				
 				if (! rs.getString(2).equals("C. final"))
 				{	
-					System.out.println("Entro a c finalk");
+				
 					objFacturaCabDTO.setNombreCliente(rs.getString(2) + " " + rs.getString(3));
 				}
 				else 

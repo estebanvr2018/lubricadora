@@ -59,12 +59,13 @@ public class usuariosUI implements EventHandler<ActionEvent> {
 	public ComboBox<String> comboProductos = new ComboBox<String>(Contenido);
 
 	public Optional<ButtonType> insertaUsuario(String identificacion) {
-		Text scenetitle = new Text("Datos del nuevo usuario");
+		Label scenetitle = new Label("Datos del nuevo usuario");
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-		scenetitle.setX(180);
-		scenetitle.setY(40);
+		scenetitle.setLayoutX(130);
+		scenetitle.setLayoutY(5);
+		scenetitle.setId("texto");
 		// scenetitle.setFont(new Font("Arial",20));
-		scenetitle.setFill(Color.WHITE);
+		
 		Label lblNombres = new Label("Nombres ");
 		lblNombres.setLayoutX(20);
 		lblNombres.setLayoutY(60);
@@ -126,41 +127,63 @@ public class usuariosUI implements EventHandler<ActionEvent> {
 		System.out.println("==================================================");
 		System.out.println(" Crear nuevo Usuario...");
 		System.out.println("==================================================");
-		if (!txtPassword.getText().toString().trim().equals(txtPasswordT.getText().toString().trim())) {
+		if (!txtPassword.getText().toString().trim().equals(txtPasswordT.getText().toString().trim()))
+		{
 			String srtError = "Las contraseñas ingresadas no coinciden, por favor vuelva a introducirlas...";
 			alertasMensajes alerta = new alertasMensajes();
 			alerta.alertaGeneral(srtError);
 			txtPassword.setText("");
 			txtPasswordT.setText("");
 
-		} else
-
+		} 
+		else
+		{	
 			System.out.println("Paso");
 		boolean verifica = false;
 		verifica = verificaCampos(txtNombres.getText().toString().trim(), txtUsuario.getText().toString().trim(),
 				txtPassword.getText().toString().trim(), txtPasswordT.getText().toString().trim());
 		System.out.println("Verifica: " + verifica);
+		alertasMensajes alertas = new alertasMensajes();
 		if (!verifica) 
 		{
-			System.out.println("Entro");
-			int resultadoInsert = insertaUsuarioBD(txtNombres.getText().toString().trim(), txtUsuario.getText().toString().trim(),
-					txtPassword.getText().toString().trim());
-			
-			System.out.println("resultado"+resultadoInsert);
-			if ( resultadoInsert == 1 )
+			int existeUser = 0;
+			UsuariosBO objInsertar = new UsuariosBO();
+			try 
 			{
-				alertasMensajes alertas = new alertasMensajes();
-				optionPrincipal = alertas.opcionConfirmacion("Confirmación", "Se ha insertado el usuario");
-				dialogStage.close();
-			}	
-			else 
-			{
-				System.out.println("No se ha insertado el producto");
-			   
+				existeUser = objInsertar.existeUsuarioRegistrado(txtUsuario.getText().toString().trim());
+				if ( existeUser == 0 )
+				{	
+				System.out.println("Entro");
+				int resultadoInsert = insertaUsuarioBD(txtNombres.getText().toString().trim(), txtUsuario.getText().toString().trim(),
+						txtPassword.getText().toString().trim());
+				
+				System.out.println("resultado"+resultadoInsert);
+				if ( resultadoInsert == 1 )
+				{
+					
+					optionPrincipal = alertas.opcionConfirmacion("Confirmación", "Se ha insertado el usuario");
+					dialogStage.close();
+				}	
+				else 
+				{
+					System.out.println("No se ha insertado el usuario");
+				   
+				}
+				}
+				else 
+				{
+					String mesj = "Ya existe un usuario registrado con el alias de "+ txtUsuario.getText().toString().trim() +" , por favor ingrese otro ...";
+					 alertas.alertaOK(mesj);
+					dialogStage.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			
+			
 		}
-		}});
+		}}});
 		
 		btnCancelar = new Button("Cancelar");
 		btnCancelar.setLayoutX(280);
@@ -209,11 +232,11 @@ public class usuariosUI implements EventHandler<ActionEvent> {
 	/*** INI modifica cliente 
 	 * @return ***/
 	public Optional<ButtonType> modificaUsuario(UsuariosDTO objUsuario) {
-		Text scenetitle = new Text("Datos del usuario");
+		Label scenetitle = new Label("Datos del usuario");
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-		scenetitle.setX(180);
-		scenetitle.setY(40);
-		scenetitle.setFill(Color.WHITE);
+		scenetitle.setLayoutX(180);
+		scenetitle.setLayoutY(5);
+		scenetitle.setId("texto");
 		// scenetitle.setFont(new Font("Arial",20));
 
 		Label lblNombres = new Label("Nombres ");
@@ -224,7 +247,7 @@ public class usuariosUI implements EventHandler<ActionEvent> {
 		txtNombres.setLayoutY(55);
 		txtNombres.setPrefSize(150, 30);
 
-		Label lblFecha = new Label("FECHA ");
+		Label lblFecha = new Label("Fecha");
 		lblFecha.setLayoutX(270);
 		lblFecha.setLayoutY(60);
 		TextField txtFecha = new TextField();

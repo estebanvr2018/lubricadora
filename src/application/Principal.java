@@ -90,6 +90,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 	public void start(Stage primaryStage) {
 		botones bot = new botones();
 		primaryStage.setTitle("Login");
+		
 		GridPane grid = new GridPane();
 		grid.setBorder(new Border(
 				new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
@@ -111,23 +112,27 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		grid.add(pw, 0, 2);
 		PasswordField pwBox = new PasswordField();
 		grid.add(pwBox, 1, 2);
+		
 		botones b = new botones();
 		btnLogin = new Button("Entrar");
 		btnLogin.setGraphic(b.botonSuccess());
 		// btnAdd.setFont(new Font("Arial",15));
-		btnLogin.setPrefSize(100, 30);
+		btnLogin.setPrefSize(140, 30);
 		btnLogin.setOnAction(this);
 		btnExit = new Button("Salir");
 		btnExit.setGraphic(b.botonError());
 		// btnAdd.setFont(new Font("Arial",15));
-		btnExit.setPrefSize(100, 30);
+		btnExit.setPrefSize(140, 30);
 		btnExit.setOnAction(this);
 		HBox hButton = new HBox(10);
 		hButton.setAlignment(Pos.BOTTOM_CENTER);
 		hButton.getChildren().addAll(btnLogin, btnExit);
 		grid.add(hButton, 1, 4);
-
+		
+		
 		Scene scene = new Scene(grid, 410, 310);
+		scene.getStylesheets().add("DarkTheme.css");
+		
 		btnLogin.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -165,7 +170,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		botones b = new botones();
 		BorderPane bp = new BorderPane();
 		
-		bp.setCenter(b.fondoPantalla());
+		bp.setCenter(b.fondoPantallaSecundario());
 
 		raiz.getChildren().addAll(bp, menuBar);
 
@@ -224,7 +229,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 
 		/*** INI usuarios ***/
 		Menu fileUsuarios = new Menu("_Usuarios");
-		cargaUserMenuItem = new MenuItem("Sumarizado de usuarios");
+		cargaUserMenuItem = new MenuItem("Consulta de usuarios");
 		cargaUserMenuItem.setOnAction(this);
 		fileUsuarios.setGraphic(b.UsuariosP());
 		fileUsuarios.getItems().add(cargaUserMenuItem);
@@ -232,11 +237,15 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 
 		menuBar.getMenus().addAll(fileMenu, filePoliticas, fileClientes, fileFacturas, fileUsuarios, fileProveedores);
 
-		Scene escena = new Scene(raiz, 800, 400);
+		Scene escena = new Scene(raiz, 1350, 675);
+		escena.getStylesheets().add("DarkTheme.css");
+		
 		VentanaT.setScene(escena);
 		VentanaT.setResizable(false);
-		VentanaT.setX(50);
-		VentanaT.setY(20);
+		VentanaT.getIcons().add(b.iconoLaren());
+		//VentanaT.setX(5);
+		//VentanaT.setY(5);
+		VentanaT.setMaximized(true);
 		VentanaT.show();
 	}
 

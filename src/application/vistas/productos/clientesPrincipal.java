@@ -2,6 +2,7 @@ package application.vistas.productos;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import application.Principal;
 import application.BO.ClientesBO;
@@ -16,6 +17,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -56,13 +58,15 @@ public class clientesPrincipal implements EventHandler<ActionEvent> {
 
 	public void ingresoClientes(Stage ventanaIngreso) {
 		// cargaComboTipo();
-		ventanaActual = ventanaIngreso;
+		//ventanaActual = ventanaIngreso;
+		ventanaActual = new Stage();
+		//Text scenetitle = new Text("Clientes");
+		Label scenetitle = new Label(" - Búsqueda de clientes - ");
+		//scenetitle.setFill(Color.WHITE);
+		scenetitle.setId("texto");
+		scenetitle.setLayoutX(320);
+		scenetitle.setLayoutY(15);
 		
-		Text scenetitle = new Text("Clientes");
-		scenetitle.setFill(Color.WHITE);
-		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-		scenetitle.setX(320);
-		scenetitle.setY(40);
 		
 		
 		Label lblProd = new Label("Cédula o RUC");
@@ -103,13 +107,15 @@ public class clientesPrincipal implements EventHandler<ActionEvent> {
 		AnchorPane datosBusqueda = new AnchorPane();
 		datosBusqueda.getChildren().addAll(scenetitle,lblProd,txtIdentificacion,btnBuscar, btnClearT// tableProductos,								
 		);
-		datosBusqueda.setBorder(new Border(
-				new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		
+		/*datosBusqueda.setBorder(new Border(
+				new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));*/
 		datosBusqueda.setPadding(new Insets(5));
 		datosBusqueda.setTranslateX(35);
 		datosBusqueda.setTranslateY(40);
 		datosBusqueda.setTranslateZ(20);
 		datosBusqueda.setMaxSize(650, 200);
+		datosBusqueda.setId("colorMarco");
 		
 		btnAdd = new Button("Agregar");
 		btnAdd.setGraphic(b.botonAgregar());
@@ -157,7 +163,7 @@ public class clientesPrincipal implements EventHandler<ActionEvent> {
 		Correo.setCellValueFactory(new PropertyValueFactory<>("correo"));
 
 		Ced.setMinWidth(50);
-		tipoDoc.setMinWidth(30);
+		tipoDoc.setMinWidth(100);
 		Nombre.setMinWidth(130);
 		Apellido.setMinWidth(130);
 		Direccion.setMinWidth(170);
@@ -167,28 +173,29 @@ public class clientesPrincipal implements EventHandler<ActionEvent> {
 		tableClientes.getColumns().addAll(tipoDoc,Ced, Nombre, Apellido, Direccion, Telefono, Correo);
 
 		tableClientes.setLayoutX(20);
-		tableClientes.setLayoutY(50);
+		tableClientes.setLayoutY(60);
 		tableClientes.setPrefSize(980, 260);
 		/**/
 		cargarClientesTabla();
 		
-		Text sceneTable = new Text("Clientes registrados");
-		sceneTable.setFill(Color.WHITE);
-		sceneTable.setFont(Font.font("Tahoma", FontWeight.NORMAL, 18));
-		sceneTable.setX(290);
-		sceneTable.setY(30);
+		Label sceneTable = new Label(" - Clientes registrados - ");
+		//sceneTable.setFill(Color.WHITE);
+		//sceneTable.setFont(Font.font("Tahoma", FontWeight.NORMAL, 18));
+		sceneTable.setLayoutX(320);
+		sceneTable.setLayoutY(15);
+		sceneTable.setId("texto");
 		
 		AnchorPane datosResultantes = new AnchorPane();
 		datosResultantes.getChildren().addAll(sceneTable, tableClientes// tableProductos,								
 		);
-		datosResultantes.setBorder(new Border(
-				new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		/*datosResultantes.setBorder(new Border(
+				new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));*/
 		datosResultantes.setPadding(new Insets(5));
 		datosResultantes.setTranslateX(35);
 		datosResultantes.setTranslateY(170);
 		datosResultantes.setTranslateZ(20);
 		datosResultantes.setMaxSize(1000, 300);
-		
+		datosResultantes.setId("colorMarco");
 		
 		tableClientes.setOnMouseClicked(event -> {
 			if (event.getClickCount() == 2) {
@@ -223,6 +230,7 @@ public class clientesPrincipal implements EventHandler<ActionEvent> {
 		ventanaActual.setScene(escenaProductos);
 		ventanaActual.setResizable(false);
 		ventanaActual.getIcons().add(b.iconoLaren());
+		ventanaActual.initModality(Modality.APPLICATION_MODAL);
 		ventanaActual.show();
 
 	}
@@ -337,8 +345,8 @@ public class clientesPrincipal implements EventHandler<ActionEvent> {
 			System.out.println("==================================================");
 			ventanaActual.toBack();
 			ventanaActual.close();
-			Principal menuInicio = new Principal();
-			menuInicio.panelPrincipal();
+			//Principal menuInicio = new Principal();
+			//menuInicio.panelPrincipal();
 
 		} else if (event.getSource() == btnAdd) {
 			System.out.println("==================================================");
@@ -346,17 +354,47 @@ public class clientesPrincipal implements EventHandler<ActionEvent> {
 			System.out.println("==================================================");
 			// ventanaActual.close();
 			clientesIU insertaCliente = new clientesIU();
-			insertaCliente.insertaCliente(txtIdentificacion.getText().toString().trim());
+			Optional<ButtonType> result = insertaCliente.insertaCliente(txtIdentificacion.getText().toString().trim());
+			try {
+				if (result.get() == ButtonType.OK){
+					limpiaPantalla();
+				} 
+				else
+				{
+					limpiaPantalla();
+				}
+			}
+			catch(Exception e)
+			{
+				System.out.println("Error ");
+			}
+			
 
 		} else if (event.getSource() == btnUpdate) {
 			System.out.println("==================================================");
 			System.out.println("Modificar cliente...");
 			System.out.println("==================================================");
 			clientesIU actualizaCliente = new clientesIU();
-			if (quitarRegistro.equals("")) {
+			if (quitarRegistro.equals("")) 
+			{
 				System.out.println("Error");
-			} else {
-				actualizaCliente.modificaCliente(quitarRegistro);
+			} 
+			else 
+			{
+				Optional<ButtonType> result = actualizaCliente.modificaCliente(quitarRegistro);
+				try {
+					if (result.get() == ButtonType.OK){
+						limpiaPantalla();
+					} 
+					else
+					{
+						limpiaPantalla();
+					}
+				}
+				catch(Exception e)
+				{
+					System.out.println("Error ");
+				}
 			}
 		} else if (event.getSource() == btnClear) {
 			System.out.println("==================================================");

@@ -91,4 +91,26 @@ public class ClientesBO {
 		return insertQuery;
 	}
 
+	
+	
+	public int verificaCliente(String strId) throws SQLException {
+		Connection objConnection = new ConexionMySQL().conexion();
+		int insertQuery = 0;
+
+		try {
+
+			insertQuery = new ClientesDAO().existeCLiente(objConnection, strId);
+
+			return insertQuery;
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+		} finally {
+			if (objConnection != null) {
+				objConnection.close();
+			}
+		}
+		return insertQuery;
+	}
+	
 }

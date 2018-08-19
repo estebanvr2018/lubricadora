@@ -106,4 +106,26 @@ public class UsuariosBO {
 		}
 		return insertQuery;
 	}
+	
+	
+	
+	public int existeUsuarioRegistrado(String strUser) throws SQLException {
+		Connection objConnection = new ConexionMySQL().conexion();
+		int insertQuery = 0;
+
+		try {
+			
+			insertQuery = new UsuariosDAO().existeUsuario(objConnection, strUser);//.insertaUsuarioDAO(objConnection, NomApellidos, strUser, strPassword);
+			
+			return insertQuery;
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+		} finally {
+			if (objConnection != null) {
+				objConnection.close();
+			}
+		}
+		return insertQuery;
+	}
 }

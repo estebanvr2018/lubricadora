@@ -185,31 +185,55 @@ public class ProductosDAO {
 	public List<productoDTO> traeProdProveedor(Connection objConnection, String strProducto) throws SQLException {
 
 		List<productoDTO> lsProductosDTO = new ArrayList<>();
+		
 		int idProveedor = idProveedor(objConnection, strProducto);
-
+		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
 		try {
-			ps = objConnection.prepareStatement(" select * from tb_producto f where f.id_proveedor= ?");
-			ps.setInt(1, idProveedor);
+			//ps = objConnection.prepareStatement(" select * from tb_producto f where f.id_proveedor= ?");
+			/**/
+			System.out.println("11"); 
+			ps = objConnection.prepareStatement("SELECT    P.ID_PRODUCTO,"	   
+												+ "		   P.NOMBREPRODUCTO,"
+												+ "		   P.DESCRIPCION, "
+												+ "        P.VALOR_COMPRA, "
+												+ "        P.STOCK, "
+												+ "        P.VALOR_VENTA," 
+												+ "        P.fecha_ingreso,"
+												+ "		   P.fecha_actualiza,"
+												+ "		   C.DESCRIPCION  AS CATEGORIA," 
+												+ "        D.DESCRIPCION AS DESCRIPCION,"
+												+ "		   P.estado,"
+												+ "		   P.usuario_ingreso"
+												+ "		   FROM TB_PRODUCTO_CAT C,"
+												+ "		   TB_PRODUCTO_DESCRIP D,"
+												+ "		   TB_PRODUCTO P "
+												+ "		   WHERE C.ID_PRODUCTO_CAT = D.ID_PRODUCTO_CAT"
+												+ "		   AND D.ID_PROD_DES = P.ID_PROD_DES"
+												+ "        AND P.id_proveedor= ?");
 
+			/**/
+			
+			ps.setInt(1, idProveedor);
+			
 			rs = ps.executeQuery();
 			
 			while (rs.next()) {
 				productoDTO objProductosDTO = new productoDTO();
 				objProductosDTO.setIdProducto(rs.getInt(1));
-				objProductosDTO.setIdProductoDescri(rs.getInt(2));
-				objProductosDTO.setIdProveedor(rs.getInt(3)); 
-				
-				objProductosDTO.setNombreProducto(rs.getString(4));
-				
-				objProductosDTO.setDescripcion(rs.getString(5));
-				objProductosDTO.setValorCompra(rs.getFloat(6));
-				objProductosDTO.setStock(rs.getInt(7));
-				objProductosDTO.setValorVenta(rs.getFloat(8));
-				objProductosDTO.setFechaIngreso(rs.getTimestamp(9));
-				objProductosDTO.setFechaActualiza(rs.getTimestamp(10));
+				/*objProductosDTO.setIdProductoDescri(rs.getInt(2));
+				objProductosDTO.setIdProveedor(rs.getInt(3)); */
+				objProductosDTO.setNombreProducto(rs.getString(2));
+				objProductosDTO.setDescripcion(rs.getString(3));
+				objProductosDTO.setValorCompra(rs.getFloat(4));
+				objProductosDTO.setStock(rs.getInt(5));
+				objProductosDTO.setValorVenta(rs.getFloat(6));
+				objProductosDTO.setFechaIngreso(rs.getTimestamp(7));
+				objProductosDTO.setFechaActualiza(rs.getTimestamp(8));
+				objProductosDTO.setCategoria(rs.getString(9));
+				objProductosDTO.setSubcategoria(rs.getString(10));
 				objProductosDTO.setEstado(rs.getString(11));
 				objProductosDTO.setUsuarioIngreso(rs.getString(12));
 
@@ -848,4 +872,73 @@ public class ProductosDAO {
 		return lsProductosDTO;
 	}
 
+	
+	
+	public int existeCategoria(Connection objConnection, String categoria) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = objConnection.prepareStatement(
+					"select count(f.id_producto_cat) as idCategoria from tb_producto_cat f where f.descripcion=? ;");
+			ps.setString(1, categoria);
+			rs = ps.executeQuery();
+
+			if (rs.next() == true) {
+				return rs.getInt("idCategoria");
+			} else
+				return rs.getInt("idCategoria");
+
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+			return 0;
+		} finally {
+			if (rs != null && rs.isClosed()) {
+				rs.close();
+			}
+			if (ps != null && !ps.isClosed()) {
+				ps.close();
+			}
+		}
+	}
+	
+	
+	
+	public int existeSubcategoria(Connection objConnection, String categoria, String descripcion) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		int id_categ = idCategoriaSub(objConnection, categoria);
+		try {
+			ps = objConnection.prepareStatement(
+					 " select count(f.descripcion) as idCategoria "	
+					+ " from tb_producto_descrip f " 
+					+ " where f.id_producto_cat= ? "
+			        + " and f.descripcion = ? ;");
+			ps.setInt(1, id_categ);
+			ps.setString(2, descripcion);
+			System.out.println("Query : "+ps.toString());
+			rs = ps.executeQuery();
+
+			if (rs.next() == true) {
+				return rs.getInt("idCategoria");
+			} else
+				return rs.getInt("idCategoria");
+
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+			return 0;
+		} finally {
+			if (rs != null && rs.isClosed()) {
+				rs.close();
+			}
+			if (ps != null && !ps.isClosed()) {
+				ps.close();
+			}
+		}
+	}
+	
+	
+	
 }
