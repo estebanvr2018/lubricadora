@@ -361,12 +361,11 @@ public class ProductosDAO {
 	/*** FIN trae categoria Sub ***/
 	/*** ***/
 
-	public int insertaProductoCategoria(Connection objConnection, String strProducto) throws SQLException {
+	public int insertaProductoCategoria(Connection objConnection, String strProducto, String user) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int resQuery = 0;
 		int id_productoCat = idMayorPCAT(objConnection);
-		String user = "Lubri";
 		String estado = "A";
 
 		try {
@@ -398,12 +397,11 @@ public class ProductosDAO {
 
 	/*** FIN inserta categoría ***/
 
-	public int insertaPrCategDes(Connection objConnection, int id, String strProducto) throws SQLException {
+	public int insertaPrCategDes(Connection objConnection, int id, String strProducto, String user) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int resQuery = 0;
 		int id_productoCat = idMayorProducto(objConnection);
-		String user = "Lubri";
 		String estado = "A";
 		try {
 			ps = objConnection.prepareStatement(
@@ -433,14 +431,13 @@ public class ProductosDAO {
 
 	/*** FIN inserta categoría ***/
 
-	public int insertaPrCSoloSubcategoria(Connection objConnection, String subCate, String strProducto)
+	public int insertaPrCSoloSubcategoria(Connection objConnection, String subCate, String strProducto,String usuarioGlobal)
 			throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int resQuery = 0;
 		int id_productoCat = idMayorProducto(objConnection);
 		int id_categ = idCategoriaSub(objConnection, strProducto);
-		String user = "Lubri";
 		String estado = "A";
 		try {
 			ps = objConnection.prepareStatement(
@@ -449,7 +446,7 @@ public class ProductosDAO {
 			ps.setInt(2, id_categ);
 			ps.setString(3, subCate);
 			ps.setString(4, estado);
-			ps.setString(5, user);
+			ps.setString(5, usuarioGlobal);
 			resQuery = ps.executeUpdate();
 
 		} catch (Exception e) {
@@ -471,13 +468,12 @@ public class ProductosDAO {
 	/*** FIN inserta categoría ***/
 
 	public int insertaProductosDAO(Connection objConnection, int idProveedor,String prodEsp, String strProducto, String descripcionProd,
-			float valorUni, int Stock, float fltPrecioVta) throws SQLException {
+			float valorUni, int Stock, float fltPrecioVta, String usuarioGlobal) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int resQuery = 0;
 		int id_producto = idProducto(objConnection);
 		int id_proSub = idCategoria(objConnection, prodEsp);
-		String user = "Lubri";
 		String estado = "A";
 		try {
 			ps = objConnection.prepareStatement(
@@ -491,7 +487,7 @@ public class ProductosDAO {
 			ps.setInt(7, Stock);
 			ps.setFloat(8, fltPrecioVta);
 			ps.setString(9, estado);
-			ps.setString(10, user);
+			ps.setString(10, usuarioGlobal);
 			resQuery = ps.executeUpdate();
 			System.out.println(ps.toString());
 		} catch (Exception e) {
@@ -517,10 +513,13 @@ public class ProductosDAO {
 		String user = "Lubri";
 		String estado = "A";
 		try {
-			ps = objConnection.prepareStatement("UPDATE tb_producto\n" + "SET `id_prod_des` = ?,\n"
-					+ "`nombreProducto` = ?,\n" + "`descripcion` = ?,\n" + "`valor_compra` = ?,\n" + "`stock` = ?,\n"
-					+ "`valor_venta` = ?,\n" + "`estado` = ?,\n" + "`usuario_ingreso` = ?\n"
-					+ "WHERE `id_producto` = ?;");
+			ps = objConnection.prepareStatement(" UPDATE tb_producto  "
+					+" SET  valor_compra = ? ,"
+					+"             stock = stock + ?, "
+					+"       valor_venta = ?, "
+					+"            estado = ?, " 
+					+"  usuario_ingreso = ? "
+					+" WHERE id_producto = ? ;");
 			
 			ps.setFloat(1, valorUni);
 			ps.setInt(2, Stock);
@@ -529,7 +528,7 @@ public class ProductosDAO {
 			ps.setString(5, user);
 			ps.setInt(6, idProducto);
 			System.out.println("Query :"+ps.toString());
-			//resQuery = ps.executeUpdate();
+			resQuery = ps.executeUpdate();
 		} catch (Exception e) {
 			StringWriter errores = new StringWriter();
 			e.printStackTrace(new PrintWriter(errores));
@@ -546,12 +545,11 @@ public class ProductosDAO {
 	}
 	/* FIN actualiza productos */
 	public int actualizarProductos(Connection objConnection, int intIdProd, String prodEsp, String strProducto,
-			String descripcionProd, float valorUni, int Stock, float fltPrecioVta) throws SQLException {
+			String descripcionProd, float valorUni, int Stock, float fltPrecioVta, String usuarioGlobal) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int resQuery = 0;
 		int id_proSub = idCategoria(objConnection, prodEsp);
-		String user = "Lubri";
 		String estado = "A";
 		try {
 			ps = objConnection.prepareStatement("UPDATE tb_producto\n" + "SET `id_prod_des` = ?,\n"
@@ -565,7 +563,7 @@ public class ProductosDAO {
 			ps.setInt(5, Stock);
 			ps.setFloat(6, fltPrecioVta);
 			ps.setString(7, estado);
-			ps.setString(8, user);
+			ps.setString(8, usuarioGlobal);
 			ps.setInt(9, intIdProd);
 			resQuery = ps.executeUpdate();
 		} catch (Exception e) {
@@ -940,5 +938,33 @@ public class ProductosDAO {
 	}
 	
 	
-	
+	public int actualizarProductoStock(Connection objConnection,  int idProducto, int Stock) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		int resQuery = 0;
+		String user = "Lubri";
+		String estado = "A";
+		try {
+			ps = objConnection.prepareStatement(" UPDATE tb_producto " 
+												+" SET stock = stock + ? "
+												+" WHERE id_producto = ? ;");
+			
+			ps.setInt(1, Stock);
+			ps.setInt(2, idProducto);
+			System.out.println("Query :"+ps.toString());
+			resQuery = ps.executeUpdate();
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+			resQuery = -1;
+		} finally {
+			if (rs != null && rs.isClosed()) {
+				rs.close();
+			}
+			if (ps != null && !ps.isClosed()) {
+				ps.close();
+			}
+		}
+		return resQuery;
+	}
 }

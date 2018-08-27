@@ -48,14 +48,14 @@ public class ClientesBO {
 	}
 
 	public int insertaCliente(String strId, String strNombre, String strApellidos, String strDireccion,
-			String strTelefono, String strCorreo) throws SQLException {
+			String strTelefono, String strCorreo, String usuarioGlobal) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
 		int insertQuery = 0;
 
 		try {
 
 			insertQuery = new ClientesDAO().insertaClienteDAO(objConnection, strId, strNombre, strApellidos,
-					strDireccion, strTelefono, strCorreo);
+					strDireccion, strTelefono, strCorreo, usuarioGlobal);
 
 			return insertQuery;
 		} catch (Exception e) {
@@ -70,14 +70,14 @@ public class ClientesBO {
 	}
 
 	public int actualizaCliente(String strId, String strNombre, String strApellidos, String strDireccion,
-			String strTelefono, String strCorreo) throws SQLException {
+			String strTelefono, String strCorreo, String usuarioGlobal) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
 		int insertQuery = 0;
 		System.out.println(" 3 ");
 		try {
 			System.out.println(" 4 ");
 			insertQuery = new ClientesDAO().actualizaClienteDAO(objConnection, strId, strNombre, strApellidos,
-					strDireccion, strTelefono, strCorreo);
+					strDireccion, strTelefono, strCorreo, usuarioGlobal);
 			System.out.println(" 5");
 			return insertQuery;
 		} catch (Exception e) {

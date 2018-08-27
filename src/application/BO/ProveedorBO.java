@@ -52,13 +52,13 @@ public class ProveedorBO
 
 	/*** INI inserta proveedor***/
 	public int insertaProveedor(String strId, String strNombre, String strDescripcion,
-			String strTelefono) throws SQLException {
+			String strTelefono,String usuario) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
 		int insertQuery = 0;
 
 		try {
 
-			insertQuery = new ProveedorDAO().insertaProveedorDAO(objConnection, strId, strNombre, strTelefono, strDescripcion);
+			insertQuery = new ProveedorDAO().insertaProveedorDAO(objConnection, strId, strNombre, strTelefono, strDescripcion, usuario);
 					
 					return insertQuery;
 		} catch (Exception e) {
@@ -75,13 +75,13 @@ public class ProveedorBO
 	/*** FIN inserta proveedor***/
 	
 	/*** INI actualiza proveedor***/
-	public int actualizaProveedor(String strIdentificacion,String strNombres, String strTelefono,String srtDescripcion) throws SQLException {
+	public int actualizaProveedor(String strIdentificacion,String strNombres, String strTelefono,String srtDescripcion, String usuarioGlobal) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
 		int insertQuery = 0;
 		System.out.println(" 3 ");
 		try {
 			System.out.println(" 4 ");
-			insertQuery = new ProveedorDAO().actualizaProveedorDAO(objConnection, strIdentificacion, strNombres, strTelefono, srtDescripcion) ;
+			insertQuery = new ProveedorDAO().actualizaProveedorDAO(objConnection, strIdentificacion, strNombres, strTelefono, srtDescripcion, usuarioGlobal) ;
 					
 			System.out.println(" 5");
 			return insertQuery;

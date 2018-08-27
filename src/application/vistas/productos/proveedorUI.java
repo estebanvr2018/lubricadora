@@ -38,9 +38,10 @@ public class proveedorUI implements EventHandler<ActionEvent>
 	Stage VentanaConsultas;
 	Optional<ButtonType> optionPrincipal=null;
 	int retInsercionProveedor=0;
-	
-	public Optional<ButtonType> insertaProveedor(String identificacion) 
+	public String usuarioGlobal = "";
+	public Optional<ButtonType> insertaProveedor(String identificacion, String usuario) 
 	{
+		usuarioGlobal = usuario;
 		Label scenetitle = new Label("Datos del nuevo proveedor");
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 		scenetitle.setLayoutX(100);
@@ -135,7 +136,7 @@ public class proveedorUI implements EventHandler<ActionEvent>
 					{	
 						System.out.println("Entro");
 						retInsercionProveedor = insertaProveedorBD(txtRuc.getText().toString().trim(),txtNombres.getText().toString().trim(),
-								txtTelefono.getText().toString().trim(), txtPasswordT.getText().toString().trim());
+								txtTelefono.getText().toString().trim(), txtPasswordT.getText().toString().trim(), usuarioGlobal);
 						if ( retInsercionProveedor == 1 )
 						{
 							
@@ -203,8 +204,9 @@ public class proveedorUI implements EventHandler<ActionEvent>
 	
 	/*** Modifica proveedor 
 	 * @return ***/
-	public Optional<ButtonType> modificaProveedor(ProveedorDTO objProv) 
+	public Optional<ButtonType> modificaProveedor(ProveedorDTO objProv, String usuario) 
 	{
+		usuarioGlobal = usuario;
 		Label scenetitle = new Label("Datos del proveedor");
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 		scenetitle.setLayoutX(140);
@@ -279,7 +281,7 @@ public class proveedorUI implements EventHandler<ActionEvent>
 				System.out.println(" Actualizar registro...");
 				System.out.println("==================================================");
 				retInsercionProveedor = actualizaProveedorBD(txtRuc.getText().toString().trim(),txtNombres.getText().toString().trim(),
-						txtTelefono.getText().toString().trim(), txtPasswordT.getText().toString().trim());
+						txtTelefono.getText().toString().trim(), txtPasswordT.getText().toString().trim(),usuarioGlobal );
 				if ( retInsercionProveedor == 1 )
 				{
 					
@@ -363,14 +365,14 @@ public class proveedorUI implements EventHandler<ActionEvent>
 	/*** FIN carga campos del proveedor***/
 	
 	/*** Ingreso y actualizacion de proveedores ***/
-	public int insertaProveedorBD(String strIdentificacion,String strNombres, String strTelefono,String srtDescripcion) {
+	public int insertaProveedorBD(String strIdentificacion,String strNombres, String strTelefono,String srtDescripcion, String usuario) {
 		System.out.println("================================================================================");
 		System.out.println(" Ingreso de cliente...");
 		System.out.println("================================================================================");
 		ProveedorBO objInsertar = new ProveedorBO();
 		int resInsert = 0;
 		try {
-			resInsert = objInsertar.insertaProveedor(strIdentificacion, strNombres, srtDescripcion, strTelefono);
+			resInsert = objInsertar.insertaProveedor(strIdentificacion, strNombres, srtDescripcion, strTelefono, usuario);
 			if (resInsert == 1) {
 				//alertasMensajes alertas = new alertasMensajes();
 				//String strMensaje = "Se ha insertado el proveedor:" + strIdentificacion;
@@ -386,7 +388,7 @@ public class proveedorUI implements EventHandler<ActionEvent>
 		return resInsert;
 	}
 
-	public int actualizaProveedorBD(String strIdentificacion,String strNombres, String strTelefono,String srtDescripcion)
+	public int actualizaProveedorBD(String strIdentificacion,String strNombres, String strTelefono,String srtDescripcion, String usuarioGlobal )
 	{
 		System.out.println("================================================================================");
 		System.out.println(" update de Proveedor...");
@@ -394,7 +396,7 @@ public class proveedorUI implements EventHandler<ActionEvent>
 		ProveedorBO objInsertar = new ProveedorBO();
 		int resInsert = 0;
 		try {
-			resInsert = objInsertar.actualizaProveedor(strIdentificacion, strNombres, strTelefono, srtDescripcion) ;
+			resInsert = objInsertar.actualizaProveedor(strIdentificacion, strNombres, strTelefono, srtDescripcion, usuarioGlobal) ;
 			System.out.println(" 2: " + resInsert);
 			if (resInsert == 1) {
 				//alertasMensajes alertas = new alertasMensajes();
@@ -460,7 +462,7 @@ public class proveedorUI implements EventHandler<ActionEvent>
 			{
 				System.out.println("Entro");
 				insertaProveedorBD(txtRuc.getText().toString().trim(),txtNombres.getText().toString().trim(),
-						txtTelefono.getText().toString().trim(), txtPasswordT.getText().toString().trim());
+						txtTelefono.getText().toString().trim(), txtPasswordT.getText().toString().trim(),usuarioGlobal);
 				/*insertaClienteBD(txtRuc.getText().toString().trim(), txtCliente.getText().toString().trim(),
 						txtApellidos.getText().toString().trim(), txtDireccion.getText().toString().trim(),
 						txtTelefono.getText().toString().trim(), txtCorreo.getText().toString().trim());*/
@@ -477,7 +479,7 @@ public class proveedorUI implements EventHandler<ActionEvent>
 			System.out.println(" Actualizar registro...");
 			System.out.println("==================================================");
 			actualizaProveedorBD(txtRuc.getText().toString().trim(),txtNombres.getText().toString().trim(),
-					txtTelefono.getText().toString().trim(), txtPasswordT.getText().toString().trim());
+					txtTelefono.getText().toString().trim(), txtPasswordT.getText().toString().trim(),usuarioGlobal);
 		}
 	}
 

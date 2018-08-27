@@ -136,7 +136,7 @@ public class facturaPrincipal implements EventHandler<ActionEvent> {
 			ventanaActual.toBack();
 			ventanaActual.close();
 			Principal menuInicio = new Principal();
-			menuInicio.panelPrincipal();
+			//menuInicio.panelPrincipal();
 
 		}
 	}

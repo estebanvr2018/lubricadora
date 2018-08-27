@@ -186,11 +186,11 @@ public class ProductosBO {
 	/*** FIN tb_productos CAT tb_productos_cat_descripcion ***/
 
 	/*** INICIO Inserta producto categoria ***/
-	public int insertaCategoriaProd(String descripcionProd) throws SQLException {
+	public int insertaCategoriaProd(String descripcionProd, String usuarioGlobal) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
 		int insertQuery = 0;
 		try {
-			insertQuery = new ProductosDAO().insertaProductoCategoria(objConnection, descripcionProd);
+			insertQuery = new ProductosDAO().insertaProductoCategoria(objConnection, descripcionProd, usuarioGlobal);
 			return insertQuery;
 		} catch (Exception e) {
 			StringWriter errores = new StringWriter();
@@ -206,11 +206,11 @@ public class ProductosBO {
 	/*** FIN Inserta producto categoria ***/
 
 	/*** INICIO Inserta producto subcategoria ***/
-	public int insertaSubCatProd(int idCat, String descripcionProd) throws SQLException {
+	public int insertaSubCatProd(int idCat, String descripcionProd, String usuarioGlobal) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
 		int insertQuery = 0;
 		try {
-			insertQuery = new ProductosDAO().insertaPrCategDes(objConnection, idCat, descripcionProd);
+			insertQuery = new ProductosDAO().insertaPrCategDes(objConnection, idCat, descripcionProd, usuarioGlobal);
 			return insertQuery;
 		} catch (Exception e) {
 			StringWriter errores = new StringWriter();
@@ -226,11 +226,11 @@ public class ProductosBO {
 	/*** FIN Inserta producto subcategoria ***/
 
 	/*** INICIO Inserta solo subproducto subcategoria ***/
-	public int insertaSubProducto(String SubCate, String descripcionProd) throws SQLException {
+	public int insertaSubProducto(String SubCate, String descripcionProd, String usuarioGlobal) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
 		int insertQuery = 0;
 		try {
-			insertQuery = new ProductosDAO().insertaPrCSoloSubcategoria(objConnection, SubCate, descripcionProd);
+			insertQuery = new ProductosDAO().insertaPrCSoloSubcategoria(objConnection, SubCate, descripcionProd, usuarioGlobal);
 			return insertQuery;
 		} catch (Exception e) {
 			StringWriter errores = new StringWriter();
@@ -246,12 +246,12 @@ public class ProductosBO {
 	/*** FIN Inserta producto subcategoria ***/
 
 	public int insertaProductos(int idProveedor,String prodEsp, String nomProd, String descripcionProd, float precioCompra, int stock,
-			float fltPrecioVta) throws SQLException {
+			float fltPrecioVta, String usuarioGlobal) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
 		int insertQuery = 0;
 		try {
 			insertQuery = new ProductosDAO().insertaProductosDAO(objConnection, idProveedor,prodEsp, nomProd, descripcionProd,
-					precioCompra, stock, fltPrecioVta);
+					precioCompra, stock, fltPrecioVta,usuarioGlobal);
 			return insertQuery;
 		} catch (Exception e) {
 			StringWriter errores = new StringWriter();
@@ -284,12 +284,12 @@ public class ProductosBO {
 	/* FIN */
 
 	public int actualizarProductos(int intIdProd, String prodEsp, String nomProd, String descripcionProd,
-			float precioCompra, int stock, float fltPrecioVta) throws SQLException {
+			float precioCompra, int stock, float fltPrecioVta, String usuarioGlobal) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
 		int insertQuery = 0;
 		try {
 			insertQuery = new ProductosDAO().actualizarProductos(objConnection, intIdProd, prodEsp, nomProd,
-					descripcionProd, precioCompra, stock, fltPrecioVta);
+					descripcionProd, precioCompra, stock, fltPrecioVta,usuarioGlobal);
 			return insertQuery;
 		} catch (Exception e) {
 			StringWriter errores = new StringWriter();
@@ -359,5 +359,22 @@ public class ProductosBO {
 		return insertQuery;
 	}
 	
+	
+	public int modifStockProductos( int idProducto, int stock) throws SQLException {
+		Connection objConnection = new ConexionMySQL().conexion();
+		int insertQuery = 0;
+		try {
+			insertQuery = new ProductosDAO().actualizarProductoStock(objConnection, idProducto, stock); // .actualizarProducto(objConnection, idProducto, stock);
+			return insertQuery;
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+		} finally {
+			if (objConnection != null) {
+				objConnection.close();
+			}
+		}
+		return insertQuery;
+	}
 	
 }

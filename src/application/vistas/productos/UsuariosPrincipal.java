@@ -60,8 +60,10 @@ public class UsuariosPrincipal implements EventHandler<ActionEvent> {
 	public TableColumn<UsuariosDTO, String> Nombres = new TableColumn<>("Nombres");
 	public TableColumn<UsuariosDTO, String> Usuario = new TableColumn<>("Usuario");
 	public List<UsuariosDTO> usuarios = null;
-
-	public void ingresoUsuarios(Stage ventanaIngreso) {
+	
+	public void ingresoUsuarios(Stage ventanaIngreso) 
+	{
+		
 		// cargaComboTipo();
 		ventanaActual = new Stage();
 		Label scenetitle = new Label("Usuarios");

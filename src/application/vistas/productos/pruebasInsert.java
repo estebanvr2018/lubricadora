@@ -139,7 +139,7 @@ public class pruebasInsert implements EventHandler<ActionEvent> {
 			ventanaActual.toBack();
 			ventanaActual.close();
 			Principal prin = new Principal();
-			prin.panelPrincipal();
+			//prin.panelPrincipal();
 		}
 	}
 }

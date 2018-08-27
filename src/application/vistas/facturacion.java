@@ -98,9 +98,12 @@ public class facturacion implements EventHandler<ActionEvent> {
 
 	public int ingresoFactCab = 0;
 
+	public String usuarioGlobal = "";
 	/*** ***/
 
-	public void formularioFactura(Stage stgFactura) {
+	public void formularioFactura(Stage stgFactura, String usuario) 
+	{
+		usuarioGlobal = usuario;
 		//ventanaActual = stgFactura;
 		ventanaActual = new Stage();
 
@@ -680,6 +683,7 @@ public class facturacion implements EventHandler<ActionEvent> {
 				if (ingresoFactCab != 0) 
 				{
 					boolean gReporte = false;
+					boolean gReporteExcel = false;
 					alertasMensajes msjError = new alertasMensajes();
 					FacturacionReporte objGeneraReporte = new FacturacionReporte();
 					gReporte = objGeneraReporte.genereFactura(ingresoFactCab);
@@ -729,7 +733,7 @@ public class facturacion implements EventHandler<ActionEvent> {
 
 	/*** Metodo para insertar el cliente ***/
 	public int insertaClienteBD(String strId, String strNombre, String strApellidos, String strDireccion,
-			String strTelefono, String strCorreo) {
+			String strTelefono, String strCorreo, String user) {
 		System.out.println("================================================================================");
 		System.out.println(" Ingreso de cliente...");
 		System.out.println("================================================================================");
@@ -738,7 +742,7 @@ public class facturacion implements EventHandler<ActionEvent> {
 		try {
 			System.out.println(" 1");
 			resInsert = objInsertar.insertaCliente(strId, strNombre, strApellidos, strDireccion, strTelefono,
-					strCorreo);
+					strCorreo, user);
 			System.out.println(" 2: " + resInsert);
 			if (resInsert == 1) {
 				System.out.println("Cliente insertado" + resInsert);
@@ -778,7 +782,7 @@ public class facturacion implements EventHandler<ActionEvent> {
 
 	/*** Metodo para insertar facturaCabecera ***/
 	public int insertaCabFact(String intIdentificacion, float fltSutbtotal, float fltSutbtotalReq, float fltIvaC,
-			float fltIvaCDoce, float valorTotal, String valorTotalLetras) {
+			float fltIvaCDoce, float valorTotal, String valorTotalLetras, String usuarioGl) {
 		System.out.println("================================================================================");
 		System.out.println(" Ingreso de cabecera...");
 		System.out.println("================================================================================");
@@ -787,7 +791,7 @@ public class facturacion implements EventHandler<ActionEvent> {
 		try {
 			System.out.println(" 1");
 			resInsert = objInsertar.insertaCabeceraFactura(intIdentificacion, fltSutbtotal, fltSutbtotalReq, fltIvaC,
-					fltIvaCDoce, valorTotal, valorTotalLetras);
+					fltIvaCDoce, valorTotal, valorTotalLetras,usuarioGl);
 			System.out.println(" 2: " + resInsert);
 			if (resInsert != -1) {
 				System.out.println("Factura cabecera insertada" + resInsert);
@@ -986,11 +990,11 @@ public class facturacion implements EventHandler<ActionEvent> {
 				idProducto = productosFacturar.getItems().get(i).getIdProducto();
 				cantidad = productosFacturar.getItems().get(i).getCantidad();
 				valorUnitario = productosFacturar.getItems().get(i).getValor();
-				resInsert = objInsertar.insertaDetalleFactura(idFacturaCab, idProducto, cantidad, valorUnitario);
+				resInsert = objInsertar.insertaDetalleFactura(idFacturaCab, idProducto, cantidad, valorUnitario,usuarioGlobal);
 				if (resInsert == 1) {
 					System.out.println("Factura detalle insertada");
 					int updateStock = 0;
-					updateStock = objInsertar.actualizaStockProducto(idProducto, cantidad);
+					updateStock = objInsertar.actualizaStockProducto(idProducto, cantidad,usuarioGlobal);
 					if (updateStock == 1) {
 						System.out.println("Stock Actualizado correctamente");
 					} else {
@@ -1183,7 +1187,7 @@ public class facturacion implements EventHandler<ActionEvent> {
 								// int ingresoFactCab = 0;
 								try {
 									ingresoFactCab = insertaCabFact(txtRuc.getText().toString(), Subtotal, 0, ivaCero,
-											ivaDoce, totalVenta, txtCantidadString.getText().toString());
+											ivaDoce, totalVenta, txtCantidadString.getText().toString(), usuarioGlobal);
 									System.out.println(" Id de la factura: " + ingresoFactCab);
 									try {
 										error = recorrerProductosFactura(ingresoFactCab);
@@ -1212,20 +1216,20 @@ public class facturacion implements EventHandler<ActionEvent> {
 									ingresoCliente = insertaClienteBD(txtRuc.getText().toString(),
 											txtCliente.getText().toString(), txtApellidos.getText().toString(),
 											txtDireccion.getText().toString(), txtTelefono.getText().toString(),
-											txtCorreo.getText().toString());
+											txtCorreo.getText().toString(), usuarioGlobal);
 									if (ingresoCliente != 0) {
 										System.out.println("Resultado de ingresar el cliente: " + ingresoCliente);
 										// int ingresoFactCab = 0;
 
 										ingresoFactCab = insertaCabFact(txtRuc.getText().toString(), Subtotal, 0,
-												ivaCero, ivaDoce, totalVenta, txtCantidadString.getText().toString());
+												ivaCero, ivaDoce, totalVenta, txtCantidadString.getText().toString(), usuarioGlobal );
 										System.out.println("Resultado de cabecera: " + ingresoFactCab);
 										if (ingresoFactCab != 0) {
 											System.out.println(" Id de la factura: " + ingresoFactCab);
 											try {
 												error = recorrerProductosFactura(ingresoFactCab);
 												if (error) {
-													String srtError = "No se ha podido facturar con narmalidad ...";
+													String srtError = "No se ha podido facturar con normalidad ...";
 													msjError.alertaError(srtError);
 												} else {
 													String srtconfirmacion = "La factura se ha generado con éxito ...";

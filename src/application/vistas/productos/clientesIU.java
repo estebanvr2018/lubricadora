@@ -38,7 +38,8 @@ public class clientesIU implements EventHandler<ActionEvent> {
 	public Button btnAdd, btnCancelar, btnUpdate;
 
 	Stage VentanaConsultas;
-
+	public String usuarioGlobal = "";
+	
 	public float totalFacturar = 0.2f;
 	public ObservableList<String> Contenido = FXCollections.observableArrayList("Seleccione un producto");;
 	public ComboBox<String> comboProductos = new ComboBox<String>(Contenido);
@@ -47,8 +48,9 @@ public class clientesIU implements EventHandler<ActionEvent> {
 	Optional<ButtonType> optionRetorno=null;
 	/**/
 
-	public Optional<ButtonType> insertaCliente(String identificacion) 
+	public Optional<ButtonType> insertaCliente(String identificacion, String usuario) 
 	{
+		usuarioGlobal = usuario;
 		Label scenetitle = new Label(" - Datos del nuevo cliente -");
 		//scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 		scenetitle.setLayoutX(100);
@@ -174,7 +176,7 @@ public class clientesIU implements EventHandler<ActionEvent> {
 						{	
 								int resultadoInsert = insertaClienteBD(txtRuc.getText().toString().trim(), txtCliente.getText().toString().trim(),
 										txtApellidos.getText().toString().trim(), txtDireccion.getText().toString().trim(),
-										txtTelefono.getText().toString().trim(), txtCorreo.getText().toString().trim());
+										txtTelefono.getText().toString().trim(), txtCorreo.getText().toString().trim(), usuarioGlobal);
 								
 								
 								if ( resultadoInsert == 1 )
@@ -254,8 +256,8 @@ public class clientesIU implements EventHandler<ActionEvent> {
 
 	/*** INI modifica cliente 
 	 * @return ***/
-	public Optional<ButtonType> modificaCliente(ClientesDTO objCliente) {
-		
+	public Optional<ButtonType> modificaCliente(ClientesDTO objCliente, String usuario) {
+		usuarioGlobal = usuario;
 		Label scenetitle = new Label(" - Datos del cliente - ");
 		//scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 		scenetitle.setLayoutX(150);
@@ -358,7 +360,7 @@ public class clientesIU implements EventHandler<ActionEvent> {
 				System.out.println("==================================================");
 				int resultadoInsert = actualizaClienteBD(txtRuc.getText().toString().trim(), txtCliente.getText().toString().trim(),
 						txtApellidos.getText().toString().trim(), txtDireccion.getText().toString().trim(),
-						txtTelefono.getText().toString().trim(), txtCorreo.getText().toString().trim());
+						txtTelefono.getText().toString().trim(), txtCorreo.getText().toString().trim(),usuarioGlobal);
 				alertasMensajes alertas = new alertasMensajes();
 				if ( resultadoInsert == 1 )
 				{
@@ -493,7 +495,7 @@ public class clientesIU implements EventHandler<ActionEvent> {
 	}
 
 	public int insertaClienteBD(String strId, String strNombre, String strApellidos, String strDireccion,
-			String strTelefono, String strCorreo) {
+			String strTelefono, String strCorreo, String usuarioGlobal) {
 		System.out.println("================================================================================");
 		System.out.println(" Ingreso de cliente...");
 		System.out.println("================================================================================");
@@ -502,7 +504,7 @@ public class clientesIU implements EventHandler<ActionEvent> {
 		try 
 		{
 			resInsert = objInsertar.insertaCliente(strId, strNombre, strApellidos, strDireccion, strTelefono,
-					strCorreo);
+					strCorreo, usuarioGlobal);
 			if (resInsert == 1) {
 				System.out.println("Resultado del query: " + resInsert);
 				/*alertasMensajes alertas = new alertasMensajes();
@@ -520,7 +522,7 @@ public class clientesIU implements EventHandler<ActionEvent> {
 	}
 
 	public int actualizaClienteBD(String strId, String strNombre, String strApellidos, String strDireccion,
-			String strTelefono, String strCorreo) {
+			String strTelefono, String strCorreo, String usuarioGlobal) {
 		System.out.println("================================================================================");
 		System.out.println(" update de cliente...");
 		System.out.println("================================================================================");
@@ -529,7 +531,7 @@ public class clientesIU implements EventHandler<ActionEvent> {
 		try 
 		{
 			resInsert = objInsertar.actualizaCliente(strId, strNombre, strApellidos, strDireccion, strTelefono,
-					strCorreo);
+					strCorreo, usuarioGlobal);
 			if (resInsert == 1) {
 				System.out.println("Resultado del query: " + resInsert);
 				/*alertasMensajes alertas = new alertasMensajes();
@@ -562,7 +564,7 @@ public class clientesIU implements EventHandler<ActionEvent> {
 				System.out.println("Entro");
 				insertaClienteBD(txtRuc.getText().toString().trim(), txtCliente.getText().toString().trim(),
 						txtApellidos.getText().toString().trim(), txtDireccion.getText().toString().trim(),
-						txtTelefono.getText().toString().trim(), txtCorreo.getText().toString().trim());
+						txtTelefono.getText().toString().trim(), txtCorreo.getText().toString().trim(),usuarioGlobal);
 			}
 		} else if (event.getSource() == btnCancelar) {
 			System.out.println("==================================================");
@@ -576,7 +578,7 @@ public class clientesIU implements EventHandler<ActionEvent> {
 			System.out.println("==================================================");
 			actualizaClienteBD(txtRuc.getText().toString().trim(), txtCliente.getText().toString().trim(),
 					txtApellidos.getText().toString().trim(), txtDireccion.getText().toString().trim(),
-					txtTelefono.getText().toString().trim(), txtCorreo.getText().toString().trim());
+					txtTelefono.getText().toString().trim(), txtCorreo.getText().toString().trim(),usuarioGlobal);
 			// ventanaActual.close();
 
 		}

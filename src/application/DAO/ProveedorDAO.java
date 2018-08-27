@@ -95,7 +95,7 @@ public class ProveedorDAO
 	/*** Fin metodo que me trae a los clientes ***/
 	
 	/*** INI inserta proveedor***/
-	public int insertaProveedorDAO(Connection objConnection, String strIdentificacion,String strNombres, String strTelefono,String srtDescripcion)
+	public int insertaProveedorDAO(Connection objConnection, String strIdentificacion,String strNombres, String strTelefono,String srtDescripcion, String usuario)
 										throws SQLException {
 		/*** ***/
 		PreparedStatement ps = null;
@@ -103,8 +103,6 @@ public class ProveedorDAO
 		
 		int idProveedor= idMaxProveedor(objConnection);
 		int resQuery = 0;
-		String user = "Lubri";
-
 		String estado = "A";
 		Date dateT = new Date();
 
@@ -121,7 +119,7 @@ public class ProveedorDAO
 			ps.setString(4, srtDescripcion);
 			ps.setString(5, strTelefono);
 			ps.setString(6, estado);
-			ps.setString(7, user);
+			ps.setString(7, usuario);
 			System.out.println("Query " + ps.toString());
 			resQuery = ps.executeUpdate();
 			System.out.println("Que retorna " + resQuery);
@@ -169,14 +167,12 @@ public class ProveedorDAO
 	}
 	
 	/*** INI actualiza proveedor ***/
-	public int actualizaProveedorDAO(Connection objConnection, String strIdentificacion,String strNombres, String strTelefono,String srtDescripcion) 
+	public int actualizaProveedorDAO(Connection objConnection, String strIdentificacion,String strNombres, String strTelefono,String srtDescripcion, String usuarioGlobal) 
 			throws SQLException {
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int resQuery = 0;
-		String user = "Lubri";
-
 		String estado = "A";
 		Date dateT = new Date();
 
@@ -194,7 +190,7 @@ public class ProveedorDAO
 			ps.setString(4,  strTelefono);
 			ps.setString(5, fechaU);
 			ps.setString(6, estado);
-			ps.setString(7, user);
+			ps.setString(7, usuarioGlobal);
 			ps.setString(8, strIdentificacion);
 			System.out.println("Query: " + ps.toString());
 			resQuery = ps.executeUpdate();

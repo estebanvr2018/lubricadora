@@ -12,13 +12,13 @@ import application.com.conxionMySql.ConexionMySQL;
 
 public class FacturaBO {
 	public int insertaCabeceraFactura(String intIdentificacion, float fltSutbtotal, float fltSutbtotalReq,
-			float fltIvaC, float fltIvaCDoce, float valorTotal, String valorTotalLetras) throws SQLException {
+			float fltIvaC, float fltIvaCDoce, float valorTotal, String valorTotalLetras, String usuario) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
 		int insertQuery = 0;
 		try {
 			FacturaDAO facturar = new FacturaDAO();
 			insertQuery = facturar.insertaFacturaCab(objConnection, intIdentificacion, fltSutbtotal, fltSutbtotalReq,
-					fltIvaC, fltIvaCDoce, valorTotal, valorTotalLetras);
+					fltIvaC, fltIvaCDoce, valorTotal, valorTotalLetras, usuario);
 
 			return insertQuery;
 		} catch (Exception e) {
@@ -32,12 +32,12 @@ public class FacturaBO {
 		return insertQuery;
 	}
 
-	public int insertaDetalleFactura(int idFactCab, int idProducto, int cantidad, float valor) throws SQLException {
+	public int insertaDetalleFactura(int idFactCab, int idProducto, int cantidad, float valor, String usuarioGlobal) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
 		int insertQuery = 0;
 		try {
 			FacturaDAO facturar = new FacturaDAO();
-			insertQuery = facturar.insertaFacturaDet(objConnection, idFactCab, idProducto, cantidad, valor);
+			insertQuery = facturar.insertaFacturaDet(objConnection, idFactCab, idProducto, cantidad, valor, usuarioGlobal);
 
 			return insertQuery;
 		} catch (Exception e) {
@@ -51,12 +51,12 @@ public class FacturaBO {
 		return insertQuery;
 	}
 
-	public int actualizaStockProducto(int idProducto, int cantidad) throws SQLException {
+	public int actualizaStockProducto(int idProducto, int cantidad, String usuarioGlobal) throws SQLException {
 		Connection objConnection = new ConexionMySQL().conexion();
 		int insertQuery = 0;
 		try {
 			FacturaDAO facturar = new FacturaDAO();
-			insertQuery = facturar.actualizaStockProductos(objConnection, idProducto, cantidad);
+			insertQuery = facturar.actualizaStockProductos(objConnection, idProducto, cantidad, usuarioGlobal);
 			return insertQuery;
 		} catch (Exception e) {
 			StringWriter errores = new StringWriter();

@@ -12,6 +12,11 @@ public class comprasDTO
 	public float total;
 	public String estado;
 	public String usuarioIngreso;
+	// Campos necesario para reportes
+	public String mesCompra;
+	public String rucProveedor;
+	public String nombreProveedor;
+	public String fechaComprasTexto;
 	public int getIdCompra() {
 		return idCompra;
 	}
@@ -73,4 +78,35 @@ public class comprasDTO
 		this.usuarioIngreso = usuarioIngreso;
 	}
 
+	public String getMesCompra() {
+		return mesCompra;
+	}
+
+	public void setMesCompra(String mesCompra) {
+		this.mesCompra = mesCompra;
+	}
+
+	public String getRucProveedor() {
+		return rucProveedor;
+	}
+
+	public void setRucProveedor(String rucProveedor) {
+		this.rucProveedor = rucProveedor;
+	}
+
+	public String getNombreProveedor() {
+		return nombreProveedor;
+	}
+
+	public void setNombreProveedor(String nombreProveedor) {
+		this.nombreProveedor = nombreProveedor;
+	}
+
+	public String getFechaComprasTexto() {
+		return fechaComprasTexto;
+	}
+
+	public void setFechaComprasTexto(String fechaComprasTexto) {
+		this.fechaComprasTexto = fechaComprasTexto;
+	}
 }

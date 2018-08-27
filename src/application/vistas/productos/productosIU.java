@@ -3,6 +3,7 @@ package application.vistas.productos;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Optional;
 
 import application.BO.ProductosBO;
 import application.Dialog.alertasMensajes;
@@ -22,6 +23,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
@@ -53,12 +55,14 @@ public class productosIU
 	txtValorU, txtActStock;
 
 public TextField txtProNew, txtCatNew, numProductos;
-
+public String usuarioGlobal = "";
 public Button btnGuardar, btnBuscar, btnExit, btnPrecio, btnGuardarCategoria, btnEnvia, btnLimpiar, btnActualizar;
 public Stage ventanaActual;
 public Stage VentanaConsulta;
 
 public boolean verifica = false;
+
+Optional<ButtonType> optionRetorno=null;
 
 public productoDTO productoRec = new productoDTO();
 
@@ -92,8 +96,9 @@ public ComboBox<String> comboProCatDescripcion = new ComboBox<String>(ContenidoD
 public String strBanderaControlaMensaje = "N";
 // permite actualizar la lista al actualizar o guardar un producto
 public String strSubCategoria = "";
-	public void ingresoProductos(int idProveedor) {
-
+	public Optional<ButtonType> ingresoProductos(int idProveedor, String usuario) 
+	{
+		usuarioGlobal = usuario;
 		// Bandera para controlar que ingreso por primera vez
 				
 		Label scenetitle = new Label("Sección productos");
@@ -188,7 +193,7 @@ public String strSubCategoria = "";
 			}
 		});
 
-		btnPrecio = new Button("Calcular");
+		btnPrecio = new Button("Calcula");
 		btnPrecio.setLayoutX(500);
 		btnPrecio.setLayoutY(115);
 		//btnPrecio.setPrefSize(15, 20);
@@ -301,6 +306,7 @@ public String strSubCategoria = "";
 				System.out.println("Comenzando a guardar el producto...");
 				System.out.println("=======================================================");
 				/*** ***/
+				alertasMensajes alertas = new alertasMensajes();
 				if (!txtNProducto.getText().toString().isEmpty() && !txtDescripcion.getText().toString().isEmpty()
 						&& !txtPrecioCompra.getText().toString().isEmpty() && !txtStock.getText().toString().isEmpty()
 						&& !txtPrecioVta.getText().toString().isEmpty()) {
@@ -311,12 +317,23 @@ public String strSubCategoria = "";
 					fltPrecioCompra = Float.parseFloat(txtPrecioCompra.getText().toString().trim());
 					fltPrecioVta = Float.parseFloat(txtPrecioVta.getText().toString().trim());
 					Stock = Integer.parseInt(txtStock.getText().toString().trim());
-					System.out.println("Antes");
-					insertaProducto(idProveedor, productoEspecifico, txtNProducto.getText().toString().trim(),
-							txtDescripcion.getText().toString().trim(), fltPrecioCompra, Stock, fltPrecioVta);
-					System.out.println("Despues");
-					comprasPrincipal abc = new comprasPrincipal();
 					
+					int resultadoInsert = insertaProducto(idProveedor, productoEspecifico, txtNProducto.getText().toString().trim(),
+							txtDescripcion.getText().toString().trim(), fltPrecioCompra, Stock, fltPrecioVta);
+					comprasPrincipal abc = new comprasPrincipal();
+					if ( resultadoInsert == 1 )
+					{
+						
+						optionRetorno = alertas.opcionConfirmacion("Confirmación", "Se ha guardado el producto ");
+						ventanaActual.close();
+					}	
+					else 
+					{
+						
+						String  strMensaje="No se ha guardado el cliente, por favor vuelva a intentarlo";
+						alertas.alertaError(strMensaje);
+						ventanaActual.close();
+					}	
 					limpiarPantalla();
 					abc.recibeParametro(idProveedor);
 					// btnGuardar.setVisible(false);
@@ -324,8 +341,8 @@ public String strSubCategoria = "";
 				} else {
 					System.out.println("Error");
 					String srtError = "Faltan datos de ingresar, por favor revise...";
-					alertasMensajes alerta = new alertasMensajes();
-					alerta.alertaGeneral(srtError);
+					
+					alertas.alertaGeneral(srtError);
 				}
 				traeProductosCategoria();
 
@@ -576,17 +593,19 @@ public String strSubCategoria = "";
 							System.out.println("==================================================");
 							int existeCategoria = 0;
 							try {
+								String srtError="";
 								existeCategoria = new ProductosBO().existeCategoriaProd(txtProNew.getText().toString().trim());
 								if ( existeCategoria == 0 )
 								{	
 									insertaProductosCategoria(txtProNew.getText().toString().trim());
+									srtError="";
 									limpiarTemporal();
 									traeProductosCategoria();
 									limpiarPantalla();
 								}
 								else 
 								{
-									String srtError = "La categoría " + txtProNew.getText().toString().trim() +  " ya se encuentra registrada.";
+									srtError = "La categoría " + txtProNew.getText().toString().trim() +  " ya se encuentra registrada.";
 									alerta.alertaOK(srtError);
 								}	
 							} catch (SQLException e) {
@@ -676,8 +695,8 @@ public String strSubCategoria = "";
 		ventanaActual.setResizable(false);
 		ventanaActual.initModality(Modality.APPLICATION_MODAL);
 		ventanaActual.getIcons().add(b.iconoLaren());
-		ventanaActual.show();
-
+		ventanaActual.showAndWait();;
+		return optionRetorno;
 	}
 	
 	
@@ -724,10 +743,10 @@ public String strSubCategoria = "";
 				existeCategoria = new ProductosBO().existeSubCatProductos(nomCat, descripcion); 
 				if ( existeCategoria ==  0 )
 				{	
-					resInsert = new ProductosBO().insertaSubProducto(descripcion, nomCat);
+					resInsert = new ProductosBO().insertaSubProducto(descripcion, nomCat, usuarioGlobal );
 					System.out.println(tableDescProductos.getItems().get(i).getDescripcion());
 					if (resInsert != 1) {
-						String srtError = "La subcategoría " + descripcion + "no se pudo ingresar : ";
+						String srtError = "La subcategoría " + descripcion + " no se pudo ingresar : ";
 						
 						alerta.alertaGeneral(srtError);
 						System.out.println("NO HAY DATOS");
@@ -754,14 +773,18 @@ public String strSubCategoria = "";
 		System.out.println(" Guardando categoria...");
 		System.out.println("==================================================");
 		int resInsert = 0;
+		alertasMensajes alerta = new alertasMensajes();
+		String srtError="";
 		try {
-			resInsert = new ProductosBO().insertaCategoriaProd(Descripcion);
-			if (resInsert != 0 || resInsert != -1) {
+			resInsert = new ProductosBO().insertaCategoriaProd(Descripcion, usuarioGlobal);
+			if (resInsert != 0 || resInsert != -1) 
+			{
+				srtError = "La categoría " + Descripcion + " se guardo satisfactoriamente en el sistema ";
+				alerta.alertaOK(srtError);
 				insertaProductosDetalle(resInsert);
 			} else {
 				// MOSTAR MENSAJE POR PANTALLA
-				String srtError = "Categoría no se pudo insertar : ";
-				alertasMensajes alerta = new alertasMensajes();
+				srtError = "Categoría no se pudo guardar en el sistema";
 				alerta.alertaGeneral(srtError);
 			}
 
@@ -777,18 +800,24 @@ public String strSubCategoria = "";
 		System.out.println(" Guardando Sub-categoria...");
 		System.out.println("==================================================");
 		int resInsert = 0;
+		alertasMensajes alerta = new alertasMensajes();
+		String srtError = "";
 		try {
 			for (int i = 0; i < tableDescProductos.getItems().size(); i++) {
 				String descripcion = null;
 				descripcion = tableDescProductos.getItems().get(i).getDescripcion();
-				resInsert = new ProductosBO().insertaSubCatProd(idCat, descripcion);
+				resInsert = new ProductosBO().insertaSubCatProd(idCat, descripcion, usuarioGlobal);
 				System.out.println(tableDescProductos.getItems().get(i).getDescripcion());
 				if (resInsert != 1) {
-					String srtError = "La subcategoría " + descripcion + "no se pudo ingresar : ";
-					alertasMensajes alerta = new alertasMensajes();
+					srtError = "La subcategoría " + descripcion + " no se pudo guardar";
 					alerta.alertaGeneral(srtError);
 					System.out.println("NO HAY DATOS");
 				}
+				else 
+				{
+					srtError = "La subcategoría " + descripcion + " se guardo satisfactoriamente ";
+					alerta.alertaOK(srtError);
+				}	
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -882,39 +911,41 @@ public String strSubCategoria = "";
 		}
 
 	}
-	public void insertaProducto(int idProveedor,String prodEsp, String nomProd, String Descirpcion, float fltValorUni, int intStock,
-			float fltPrecioVta) {
+	public int insertaProducto(int idProveedor,String prodEsp, String nomProd, String Descirpcion, float fltValorUni, int intStock,
+			float fltPrecioVta) 
+	{
 		System.out.println("================================================================================");
 		System.out.println(" Ingreso de productos...");
 		System.out.println("================================================================================");
 		ProductosBO objInsertar = new ProductosBO();
 		int resInsert = 0;
-		System.out.println("inserta  1");
 		try {
-			System.out.println("inserta  2");
 			resInsert = objInsertar.insertaProductos(idProveedor,prodEsp, nomProd, Descirpcion, fltValorUni, intStock,
-					fltPrecioVta);
+					fltPrecioVta, usuarioGlobal);
 			System.out.println("inserta  3 + "+ resInsert);
 			if (resInsert == 1) {
-				System.out.println("Resultado del query: " + resInsert);
-				alertasMensajes alertas = new alertasMensajes();
-				String strMensaje = "Se ha insertado el producto:" + nomProd;
-				alertas.alertaOK(strMensaje);
+				//System.out.println("Resultado del query: " + resInsert);
+				//alertasMensajes alertas = new alertasMensajes();
+				//String strMensaje = "Se ha insertado el producto:" + nomProd;
+				//alertas.alertaOK(strMensaje);
 				//return resInsert;
 				
 				//ventanaActual.toBack();
-				ventanaActual.close();
+				//ventanaActual.close();
+				return resInsert;
 				
 			}
 			else
 			{	
 				System.out.println("inserta  NO");
+				return resInsert;
 				//return 0;
 		}} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("No entro");
 		}
+		return resInsert;
 	}
 	
 	public void limpiarPantalla() 
@@ -935,13 +966,13 @@ public String strSubCategoria = "";
 	}
 	
 	productoDTO objActualizaProd = new productoDTO(); 
-	/*** Actualiza el producto ***/
-	public void actualizaProductos(int idProveedor, productoDTO cargarProducto) {
-
-		
+	/*** Actualiza el producto 
+	 * @return ***/
+	public Optional<ButtonType> actualizaProductos(int idProveedor, productoDTO cargarProducto) 
+	{
 		Label scenetitleT = new Label("Detalles del producto");
 		scenetitleT.setLayoutX(180);
-		scenetitleT.setLayoutX(5);
+		scenetitleT.setLayoutY(5);
 		scenetitleT.setId("texto");
 		// scenetitle.setFont(new Font("Arial",20));
 		/*** Nuevos Cambios para el ingreso del producto ***/
@@ -1102,23 +1133,8 @@ public String strSubCategoria = "";
 		
 		
 		/***Updtae***/
+		
 		ToggleGroup group = new ToggleGroup();
-		group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-			@Override
-			public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle) {
-				// Has selection.
-				if (group.getSelectedToggle() != null) {
-					RadioButton button = (RadioButton) group.getSelectedToggle();
-					if (button.getText().toString() == "C. Final") {
-						System.out.println("Consumidor final ");
-					} else {
-						System.out.println("Normal");
-						
-					}
-				}
-			}
-		});
-
 		// Radio 1: Male
 		RadioButton button1 = new RadioButton("Modificar stock");
 		button1.setToggleGroup(group);
@@ -1143,34 +1159,37 @@ public String strSubCategoria = "";
 		
 		Label scenetitle = new Label("Modificación del producto: "+cargarProducto.getNombreProducto());
 		scenetitle.setLayoutX(100);
-		scenetitle.setLayoutY(5);
+		scenetitle.setLayoutY(3);
 		scenetitle.setId("texto");
 		
 		Label lblPCompra1 = new Label("Precio compra");
 		lblPCompra1.setLayoutX(30);
-		lblPCompra1.setLayoutY(50);
+		lblPCompra1.setLayoutY(70);
+		lblPCompra1.setVisible(false);
 		TextField txtPrecioCompra1 = new TextField();
 		txtPrecioCompra1.setLayoutX(160);
-		txtPrecioCompra1.setLayoutY(45);
+		txtPrecioCompra1.setLayoutY(65);
 		txtPrecioCompra1.setText("");
 		txtPrecioCompra1.setPrefSize(60, 25);
+		txtPrecioCompra1.setVisible(false);
 		txtPrecioCompra1.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				if (!newValue.matches("\\d{0,7}([\\.]\\d{0,2})?")) {
-					txtPrecioCompra.setText(oldValue);
+					txtPrecioCompra1.setText(oldValue);
 				}
 			}
 		});
 
 		Label lblStock1 = new Label("Nuevo # de productos");
 		lblStock1.setLayoutX(260);
-		lblStock1.setLayoutY(90);
-		
+		lblStock1.setLayoutY(110);
+		lblStock1.setVisible(false);
 		TextField txtStock1 = new TextField();
 		txtStock1.setLayoutX(410);
-		txtStock1.setLayoutY(85);
+		txtStock1.setLayoutY(105);
 		txtStock1.setText("");
+		txtStock1.setVisible(false);
 		txtStock1.setPrefSize(60, 25);
 		txtStock1.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -1183,14 +1202,14 @@ public String strSubCategoria = "";
 
 		Label lblPorcentaje1 = new Label("Ganancia[%]");
 		lblPorcentaje1.setLayoutX(260);
-		lblPorcentaje1.setLayoutY(50);
-		
+		lblPorcentaje1.setLayoutY(70);
+		lblPorcentaje1.setVisible(false);
 		TextField txtValorPorcentual1 = new TextField();
 		txtValorPorcentual1.setLayoutX(410);
-		txtValorPorcentual1.setLayoutY(45);
+		txtValorPorcentual1.setLayoutY(65);
 		txtValorPorcentual1.setPrefSize(60, 25);
 		txtValorPorcentual1.setText("");
-		
+		txtValorPorcentual1.setVisible(false);
 		txtValorPorcentual1.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -1201,19 +1220,19 @@ public String strSubCategoria = "";
 		});
 		btnPrecio = new Button("Calcular");
 		btnPrecio.setLayoutX(500);
-		btnPrecio.setLayoutY(50);
+		btnPrecio.setLayoutY(70);
 		//btnPrecio.setPrefSize(15, 20);
-		
+		btnPrecio.setVisible(false);
 		Label lblPVta1 = new Label("Precio Venta");
 		lblPVta1.setLayoutX(260);
-		lblPVta1.setLayoutY(130);
-		
+		lblPVta1.setLayoutY(150);
+		lblPVta1.setVisible(false);
 		TextField txtPrecioVta1 = new TextField();
 		txtPrecioVta1.setLayoutX(410);
-		txtPrecioVta1.setLayoutY(125);
+		txtPrecioVta1.setLayoutY(145);
 		txtPrecioVta1.setText("");
 		txtPrecioVta1.setPrefSize(60, 25);
-		
+		txtPrecioVta1.setVisible(false);
 		
 		btnPrecio.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -1248,21 +1267,16 @@ public String strSubCategoria = "";
 		
 		btnActualizar = new Button("Actualizar");
 		btnActualizar.setLayoutX(160);
-		btnActualizar.setLayoutY(180);
+		btnActualizar.setLayoutY(200);
 		btnActualizar.setGraphic(btna.botonActualizaProducto());
+		btnActualizar.setVisible(false);
 		btnActualizar.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("=======================================================");
 				System.out.println("Calculando Actualiza..."+txtPrecioCompra1.getText().toString().trim());
 				System.out.println("=======================================================");
-				
-				System.out.println(" M: "+txtPrecioCompra1.getText());
-				System.out.println(" M: "+txtValorPorcentual1.getText());
-				System.out.println(" M: "+txtPrecioVta1.getText());
 				alertasMensajes alerta = new alertasMensajes();
-				
-				
 				
 				if (txtStock1.getText().toString().trim().isEmpty())
 				{	
@@ -1285,7 +1299,21 @@ public String strSubCategoria = "";
 								String srtError2 = "Se procederá a actualizar el Stock del producto: "+cargarProducto.getNombreProducto();
 								alerta.alertaOK(srtError2);
 								float pCompra = 0, pVenta = 0;
-								actualizaProducto(cargarProducto, pCompra, stockNuevo, pVenta);
+								
+							    int resultadoInsert =actualizaProducto(cargarProducto, pCompra, stockNuevo, pVenta);
+							    if ( resultadoInsert == 1 )
+								{
+									
+									optionRetorno = alerta.opcionConfirmacion("Confirmación", "Se ha actualizado el producto ");
+									ventanaActual.close();
+								}	
+								else 
+								{
+									
+									String  strMensaje="No se ha actualizado el producto, por favor vuelva a intentarlo";
+									alerta.alertaError(strMensaje);
+									ventanaActual.close();
+								}	
 							}
 							else
 							{	if(!txtPrecioCompra1.getText().toString().isEmpty() && !txtValorPorcentual1.getText().toString().isEmpty() && !txtPrecioVta1.getText().toString().isEmpty() && !txtStock1.getText().toString().isEmpty())
@@ -1304,7 +1332,20 @@ public String strSubCategoria = "";
 									System.out.println("OK");
 									String srtError1 = "Se procederá a actualizar el producto: "+cargarProducto.getNombreProducto();
 									alerta.alertaOK(srtError1);
-									actualizaProducto(cargarProducto, precioCompra, stockNuevo, calculoPorcentaje);
+									int resultadoInsert = actualizaProducto(cargarProducto, precioCompra, stockNuevo, calculoPorcentaje);
+									 if ( resultadoInsert == 1 )
+										{
+											
+											optionRetorno = alerta.opcionConfirmacion("Confirmación", "Se ha actualizado el producto ");
+											ventanaActual.close();
+										}	
+										else 
+										{
+											
+											String  strMensaje="No se ha actualizado el producto, por favor vuelva a intentarlo";
+											alerta.alertaError(strMensaje);
+											ventanaActual.close();
+										}
 								}
 								else
 								{
@@ -1317,21 +1358,127 @@ public String strSubCategoria = "";
 								}
 							}
 						}
-				}
-				
-					
-				
-					
-					
-					
+				}					
 			}
 
 		});
 		
 		btnExit  = new Button("Cerrar");
 		btnExit.setLayoutX(320);
-		btnExit.setLayoutY(180);
+		btnExit.setLayoutY(200);
 		btnExit.setGraphic(btna.botonError());
+		
+		/*** ***/
+		Label lblStock2 = new Label("cantidad comprada");
+		lblStock2.setLayoutX(30);
+		lblStock2.setLayoutY(70);
+		TextField txtStock2 = new TextField();
+		txtStock2.setLayoutX(160);
+		txtStock2.setLayoutY(65);
+		txtStock2.setText("");
+		Button btnPrecioStock = new Button("Actualizar");
+		btnPrecioStock.setLayoutX(160);
+		btnPrecioStock.setLayoutY(200);
+		btnPrecioStock.setGraphic(btna.botonActualizaProducto());
+		
+		group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+			@Override
+			public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle) {
+				// Has selection.
+				if (group.getSelectedToggle() != null) {
+					RadioButton button = (RadioButton) group.getSelectedToggle();
+					lblPCompra1.setVisible(false);
+					txtPrecioCompra1.setVisible(false);
+					lblStock1.setVisible(false);
+					txtStock1.setVisible(false);
+					lblPorcentaje1.setVisible(false);
+					txtValorPorcentual1.setVisible(false);
+					lblPVta1.setVisible(false);
+					txtPrecioVta1.setVisible(false);
+					txtStock2.setVisible(false);
+					lblStock2.setVisible(false);
+					btnPrecio.setVisible(false);
+					btnActualizar.setVisible(false);
+					btnPrecioStock.setVisible(false);
+					if (button.getText().toString() == "Modificar stock") 
+					{
+						System.out.println("Modificando stock");
+						lblStock2.setVisible(true);
+						txtStock2.setVisible(true);
+						btnPrecioStock.setVisible(true);
+					} 
+					else 
+					{
+						System.out.println("Modificando stock y precio");
+						lblPCompra1.setVisible(true);
+						txtPrecioCompra1.setVisible(true);
+						lblStock1.setVisible(true);
+						txtStock1.setVisible(true);
+						lblPorcentaje1.setVisible(true);
+						txtValorPorcentual1.setVisible(true);
+						lblPVta1.setVisible(true);
+						txtPrecioVta1.setVisible(true);
+						btnPrecio.setVisible(true);
+						btnActualizar.setVisible(true);
+					}
+				}
+			}
+		});
+		/*** **/
+		btnPrecioStock.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				System.out.println("=======================================================");
+				System.out.println("Actualizando Stock "+cargarProducto.getIdProducto());
+				System.out.println("=======================================================");
+				alertasMensajes alerta = new alertasMensajes();
+				int Stock=0;
+
+				if (txtStock2.getText().toString().isEmpty() )
+				{	String srtError1 = "No ha ingresado el número de productos que compro.. ";
+					alerta.alertaGeneral(srtError1);
+				}
+				
+				else 
+				{	
+					Stock = Integer.parseInt(txtStock2.getText().toString().trim());
+					ProductosBO objInsertar = new ProductosBO();
+					if ( Stock > 0 )
+					{	
+						int resInsert = 0;
+						try {
+							
+							resInsert = objInsertar.modifStockProductos(cargarProducto.getIdProducto(), Stock); 
+							if (resInsert == 1) 
+							{
+									optionRetorno = alerta.opcionConfirmacion("Confirmación", "Se ha actualizado el producto ");
+									ventanaActual.close();
+							}	
+							else 
+							{
+									
+									String  strMensaje="No se ha actualizado el producto, por favor vuelva a intentarlo";
+									alerta.alertaError(strMensaje);
+									ventanaActual.close();
+							}
+							
+						}catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							System.out.println("No entro");
+						}
+					}
+					else 
+					{
+						String srtError1 = "El número de productos que ha ingresado no es válido ";
+						alerta.alertaGeneral(srtError1);
+					}	
+				}
+				
+				
+		}});
+		
+		
 		
 		AnchorPane datosModificarProductos = new AnchorPane();
 		datosModificarProductos.getChildren().addAll(scenetitle,
@@ -1343,6 +1490,9 @@ public String strSubCategoria = "";
 													txtStock1,
 													lblPVta1,
 													txtPrecioVta1,
+													lblStock2,
+													txtStock2,
+													btnPrecioStock,
 													btnPrecio,
 													btnActualizar,
 													radioButtonCliente,
@@ -1363,21 +1513,8 @@ public String strSubCategoria = "";
 		rootIngreso.getChildren().addAll( bp,datosIngresoProductos,datosModificarProductos
 
 		);
-
-		Scene escenaProductos = null;
-		escenaProductos = new Scene(rootIngreso, 630, 550);
-		escenaProductos.getStylesheets().add("DarkTheme.css");
-		ventanaActual = new Stage();
-		
-		ventanaActual.setTitle("Actualiza de productos");
-		ventanaActual.setScene(escenaProductos);
-		ventanaActual.setResizable(false);
-		ventanaActual.initModality(Modality.APPLICATION_MODAL);
-		ventanaActual.getIcons().add(b.iconoLaren());
-		ventanaActual.show();
-		
-		
-		btnExit.setOnAction(new EventHandler<ActionEvent>() {
+		btnExit.setOnAction(new EventHandler<ActionEvent>() 
+		{
 			@Override
 			public void handle(ActionEvent event) 
 			{
@@ -1389,13 +1526,27 @@ public String strSubCategoria = "";
 			}
 
 		});
+		Scene escenaProductos = null;
+		escenaProductos = new Scene(rootIngreso, 630, 550);
+		escenaProductos.getStylesheets().add("DarkTheme.css");
+		ventanaActual = new Stage();
+		
+		ventanaActual.setTitle("Actualiza de productos");
+		ventanaActual.setScene(escenaProductos);
+		ventanaActual.setResizable(false);
+		ventanaActual.initModality(Modality.APPLICATION_MODAL);
+		ventanaActual.getIcons().add(b.iconoLaren());
+		ventanaActual.showAndWait();
+		return optionRetorno;
+		
+		
 
 	}
 	/*** FIN actualiza el producto
 	 * @param cargarProducto ***/
 	
 	/*Meotod para actuilizar el producto */
-	public void actualizaProducto(productoDTO cargarProducto, Float precioCompra, int  stockNuevo, float resultado)
+	public int actualizaProducto(productoDTO cargarProducto, Float precioCompra, int  stockNuevo, float resultado)
 	{
 		System.out.println("================================================================================");
 		System.out.println(" Modificación de productos...");
@@ -1405,28 +1556,28 @@ public String strSubCategoria = "";
 		try {
 			
 			resInsert = objInsertar.modificaProductosNew(cargarProducto.getIdProducto(), precioCompra, stockNuevo, resultado);
-					
-			System.out.println("inserta  3 + "+ resInsert);
-			if (resInsert == 1) {
-				System.out.println("Resultado del query: " + resInsert);
-				alertasMensajes alertas = new alertasMensajes();
-				String strMensaje = "Se ha actualizado el producto: " +objActualizaProd.getNombreProducto();
-				alertas.alertaOK(strMensaje);
+			
+			if (resInsert == 1) 
+			{
+				//alertasMensajes alertas = new alertasMensajes();
+				//String strMensaje = "Se ha actualizado el producto: " +cargarProducto.getNombreProducto();
+				//alertas.alertaOK(strMensaje);
 				//return resInsert;
-				ventanaActual.toBack();
-				ventanaActual.close();
-				
+				//ventanaActual.toBack();
+				//ventanaActual.close();
+				return resInsert;
 			}
 			else
 			{	
 				System.out.println("inserta  NO");
+				return resInsert;
 				//return 0;
 		}} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("No entro");
 		}
-		
+		return resInsert;
 	}
 	/* FIn*/
 }

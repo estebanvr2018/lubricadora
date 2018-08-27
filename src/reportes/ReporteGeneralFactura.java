@@ -26,17 +26,23 @@ public class ReporteGeneralFactura {
 				mapParametros.put("fecha_inicio", strFechaInicio);
 				mapParametros.put("fecha_fin", strFechaFin);
 				String strRuta = objGeneraReportes.generaRutaReportesGeneral();
+				
 				System.out.println("Ruta del reporte: "+strRuta);
 				if (strRuta != null) {
 					strRuta = strRuta + "\\" + strTipo + "_" + strFechaActual + ".xls";
+					
 					JasperReport jasper = (JasperReport) JRLoader.loadObject(getClass().getResource("/reportes/reporteGeneralFactura.jasper"));
 					String strError = objGeneraReportes.creaReporte(jasper, mapParametros,strRuta, "XLS");
+				
 					if (strError != null) {
 						alertasMensajes alerta = new alertasMensajes();
 						alerta.alertaGeneral(strError);
 					} else {
 						File ruta = new File(strRuta);
 						System.out.println("ruta: " + ruta);
+						strError = "El reporte se ha generado exitosamente, espere un momento mientras se abre Microsoft Excel";
+						alertasMensajes alerta = new alertasMensajes();
+						alerta.alertaOK(strError);
 						Desktop.getDesktop().open(ruta);
 					}
 				}

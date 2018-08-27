@@ -107,15 +107,13 @@ public class ClientesDAO {
 	}
 
 	public int insertaClienteDAO(Connection objConnection, String strId, String strNombre, String strApellidos,
-			String strDireccion, String strTelefono, String strCorreo) throws SQLException {
+			String strDireccion, String strTelefono, String strCorreo,String usuarioGlobal) throws SQLException {
 		/*** ***/
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int resQuery = 0;
-		String user = "Lubri";
-
-		String estado = "A";
-		String strApellidosT = "v";
+				String estado = "A";
+		String strApellidosT = " ";
 		String tipo = null;
 		if (strId.length() == 10)
 			tipo = "CED";
@@ -141,7 +139,7 @@ public class ClientesDAO {
 			ps.setString(9, fechaU);
 			ps.setString(10, fechaU);
 			ps.setString(11, estado);
-			ps.setString(12, user);
+			ps.setString(12, usuarioGlobal);
 			resQuery = ps.executeUpdate();
 			System.out.println("Que retorna " + resQuery);
 		} catch (Exception e) {
@@ -161,14 +159,12 @@ public class ClientesDAO {
 	}
 
 	public int actualizaClienteDAO(Connection objConnection, String strId, String strNombre, String strApellidos,
-			String strDireccion, String strTelefono, String strCorreo) throws SQLException {
+			String strDireccion, String strTelefono, String strCorreo, String usuarioGlobal) throws SQLException {
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int resQuery = 0;
-		String user = "Lubri";
-
-		String estado = "A";
+				String estado = "A";
 		String strApellidosT = "v";
 		Date dateT = new Date();
 
@@ -186,7 +182,7 @@ public class ClientesDAO {
 			ps.setString(4, strTelefono);
 			ps.setString(5, strCorreo);
 			ps.setString(6, fechaU);
-			ps.setString(7, user);
+			ps.setString(7, usuarioGlobal);
 			ps.setString(8, strId);
 			System.out.println("Query: " + ps.toString());
 			resQuery = ps.executeUpdate();

@@ -100,11 +100,12 @@ public class productosPrincipal implements EventHandler<ActionEvent> {
 	public String strBanderaControlaMensaje = "N";
 	// permite actualizar la lista al actualizar o guardar un producto
 	public String strSubCategoria = "";
-
+	public String usuarioGlobal = "";
 	/*** FIn ingreso de productois ***/
 
-	public void ingresoProductos(Stage ventanaIngreso) {
-
+	public void ingresoProductos(Stage ventanaIngreso, String usuario) 
+	{
+		usuarioGlobal = usuario;
 		// Bandera para controlar que ingreso por primera vez
 		strBanderaControlaMensaje = "S";
 
@@ -801,7 +802,7 @@ public class productosPrincipal implements EventHandler<ActionEvent> {
 		System.out.println("==================================================");
 		int resInsert = 0;
 		try {
-			resInsert = new ProductosBO().insertaCategoriaProd(Descripcion);
+			resInsert = new ProductosBO().insertaCategoriaProd(Descripcion,usuarioGlobal);
 			if (resInsert != 0 || resInsert != -1) {
 				insertaProductosDetalle(resInsert);
 			} else {
@@ -828,7 +829,7 @@ public class productosPrincipal implements EventHandler<ActionEvent> {
 			for (int i = 0; i < tableDescProductos.getItems().size(); i++) {
 				String descripcion = null;
 				descripcion = tableDescProductos.getItems().get(i).getDescripcion();
-				resInsert = new ProductosBO().insertaSubCatProd(idCat, descripcion);
+				resInsert = new ProductosBO().insertaSubCatProd(idCat, descripcion,usuarioGlobal);
 				System.out.println(tableDescProductos.getItems().get(i).getDescripcion());
 				if (resInsert != 1) {
 					String srtError = "La subcategoría " + descripcion + "no se pudo ingresar : ";
@@ -855,7 +856,7 @@ public class productosPrincipal implements EventHandler<ActionEvent> {
 			for (int i = 0; i < tableDescProductos.getItems().size(); i++) {
 				String descripcion = null;
 				descripcion = tableDescProductos.getItems().get(i).getDescripcion();
-				resInsert = new ProductosBO().insertaSubProducto(descripcion, nomCat);
+				resInsert = new ProductosBO().insertaSubProducto(descripcion, nomCat, usuarioGlobal );
 				System.out.println(tableDescProductos.getItems().get(i).getDescripcion());
 				if (resInsert != 1) {
 					String srtError = "La subcategoría " + descripcion + "no se pudo ingresar : ";
@@ -1120,7 +1121,7 @@ public class productosPrincipal implements EventHandler<ActionEvent> {
 		int resInsert = 0;
 		try {
 			resInsert = objInsertar.insertaProductos(1,prodEsp, nomProd, Descirpcion, fltValorUni, intStock,
-					fltPrecioVta);
+					fltPrecioVta, usuarioGlobal);
 			if (resInsert == 1) {
 				System.out.println("Resultado del query: " + resInsert);
 				alertasMensajes alertas = new alertasMensajes();
@@ -1143,7 +1144,7 @@ public class productosPrincipal implements EventHandler<ActionEvent> {
 		int resActualizar = 0;
 		try {
 			resActualizar = objActualizar.actualizarProductos(intIdProd, prodEsp, nomProd, Descirpcion, fltValorUni,
-					intStock, fltPrecioVta);
+					intStock, fltPrecioVta,usuarioGlobal);
 			if (resActualizar == 1) {
 				System.out.println("Resultado del query: " + resActualizar);
 				alertasMensajes alertas = new alertasMensajes();
@@ -1236,7 +1237,7 @@ public class productosPrincipal implements EventHandler<ActionEvent> {
 			ventanaActual.toBack();
 			ventanaActual.close();
 			Principal prin = new Principal();
-			prin.panelPrincipal();
+			prin.panelPrincipal(usuarioGlobal);
 
 		} else if (event.getSource() == btnGuardar) {
 			System.out.println("==================================================");

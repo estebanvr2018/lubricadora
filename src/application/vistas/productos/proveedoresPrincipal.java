@@ -58,8 +58,10 @@ public class proveedoresPrincipal   implements EventHandler<ActionEvent>
 	
 	public List<ClientesDTO> clientes = null;
 	public Stage ventanaActual;
-	
-	public void ingresoProveedores(Stage ventanaIngreso) {
+	public String usuarioGlobal = "";
+	public void ingresoProveedores(Stage ventanaIngreso, String usuario) 
+	{
+		usuarioGlobal = usuario;
 		ventanaActual = new Stage();
 
 		// Bandera para controlar que ingreso por primera vez
@@ -353,7 +355,7 @@ public class proveedoresPrincipal   implements EventHandler<ActionEvent>
 					proveedorUI insertaProveedor = new proveedorUI();
 					Optional<ButtonType> resInsercion = null;
 					try{
-					resInsercion = insertaProveedor.insertaProveedor(txtIdentificacion.getText().toString().trim());
+					resInsercion = insertaProveedor.insertaProveedor(txtIdentificacion.getText().toString().trim(), usuarioGlobal);
 					System.out.println(" Que trajo: "+resInsercion.get());
 					if (resInsercion.get() == ButtonType.OK){
 						limpiaPantalla();
@@ -374,7 +376,7 @@ public class proveedoresPrincipal   implements EventHandler<ActionEvent>
 						proveedorUI modificaProveedor = new proveedorUI();
 						Optional<ButtonType> resUpdate = null;
 						try{
-							resUpdate = modificaProveedor.modificaProveedor(quitarRegistro);;
+							resUpdate = modificaProveedor.modificaProveedor(quitarRegistro,usuarioGlobal);
 							
 							if (resUpdate.get() == ButtonType.OK){
 								limpiaPantalla();

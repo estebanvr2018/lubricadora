@@ -16,13 +16,12 @@ import sun.util.calendar.BaseCalendar.Date;
 public class FacturaDAO {
 	/*** Inserta cabecera de la factura ***/
 	public int insertaFacturaCab(Connection objConnection, String intIdentificacion, float fltSutbtotal,
-			float fltSutbtotalReq, float fltIvaC, float fltIvaCDoce, float valorTotal, String valorTotalLetras)
+			float fltSutbtotalReq, float fltIvaC, float fltIvaCDoce, float valorTotal, String valorTotalLetras,  String usuario)
 			throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int resQuery = 0;
 		int idFacturaCab = idMayorFactura(objConnection);
-		String user = "Lubri";
 		String estado = "A";
 
 		try {
@@ -39,7 +38,7 @@ public class FacturaDAO {
 			ps.setFloat(7, valorTotal);
 			ps.setString(8, valorTotalLetras);
 			ps.setString(9, estado);
-			ps.setString(10, user);
+			ps.setString(10, usuario);
 			resQuery = ps.executeUpdate();
 			if (resQuery == 1) {
 				resQuery = idFacturaCab;
@@ -89,13 +88,12 @@ public class FacturaDAO {
 	}
 
 	/*** INI Inserta detalle de la factura ***/
-	public int insertaFacturaDet(Connection objConnection, int idFactCab, int idProducto, int cantidad, float valor)
+	public int insertaFacturaDet(Connection objConnection, int idFactCab, int idProducto, int cantidad, float valor, String usuarioGlobal)
 			throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int resQuery = 0;
 		int idFacturaDet = idMayorFacturaDet(objConnection);
-		String user = "Lubri";
 		String estado = "A";
 
 		try {
@@ -108,7 +106,7 @@ public class FacturaDAO {
 			ps.setInt(4, cantidad);
 			ps.setFloat(5, valor);
 			ps.setString(6, estado);
-			ps.setString(7, user);
+			ps.setString(7, usuarioGlobal);
 			resQuery = ps.executeUpdate();
 			if (resQuery == 1) {
 				return resQuery;
@@ -159,7 +157,7 @@ public class FacturaDAO {
 	}
 
 	/*** INI Actualiza Stock ***/
-	public int actualizaStockProductos(Connection objConnection, int idProducto, int cantidad) throws SQLException {
+	public int actualizaStockProductos(Connection objConnection, int idProducto, int cantidad, String usuarioGlobal) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int resQuery = 0;

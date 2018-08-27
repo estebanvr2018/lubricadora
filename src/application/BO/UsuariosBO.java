@@ -128,4 +128,24 @@ public class UsuariosBO {
 		}
 		return insertQuery;
 	}
+	
+	public int loginUsuario(String strUser, String password) throws SQLException {
+		Connection objConnection = new ConexionMySQL().conexion();
+		int insertQuery = 0;
+
+		try {
+			
+			insertQuery = new UsuariosDAO().loginUsuarioSistema(objConnection, strUser, password);
+			return insertQuery;
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+		} finally {
+			if (objConnection != null) {
+				objConnection.close();
+			}
+		}
+		return insertQuery;
+	}
+		
 }

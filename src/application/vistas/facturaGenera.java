@@ -37,7 +37,7 @@ public class facturaGenera {
 	public TableColumn<tablaFacturaDet, String> Precio = new TableColumn<>("Valor total");
 
 	public Stage ventanaActual;
-
+	public String usuarioGlobal="";
 	public TextField txtRuc, txtCliente, txtDireccion, txtApellidos, txtTelefono, txtCorreo, txtStock;
 	public TextField txtConsulta, txtCantidad, txtSubtotal, txtIva, txtIvaDoce, txtTotal, txtCantidadString;
 	public Button btnAdd, btnExit, btnAddProducto;
@@ -45,7 +45,9 @@ public class facturaGenera {
 	public ObservableList<String> Contenido = FXCollections.observableArrayList("Seleccione un producto");;
 	public ComboBox<String> comboProductos = new ComboBox<String>(Contenido);
 
-	public void formularioFactura(Stage stgFactura) {
+	public void formularioFactura(Stage stgFactura, String usuario) 
+	{
+		usuarioGlobal = usuario;
 		//ventanaActual = stgFactura;
 		ventanaActual = new Stage();
 		Text scenetitle = new Text("Facturación");

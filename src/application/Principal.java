@@ -5,9 +5,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import application.BO.ClientesBO;
 import application.BO.ProductosBO;
+import application.BO.UsuariosBO;
+import application.Dialog.alertasMensajes;
 import application.com.DTOS.ClientesDTO;
 import application.com.DTOS.ProductosDTO;
 import application.extras.botones;
@@ -31,6 +34,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -58,13 +62,15 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import reportes.ProductoReporte;
+import reportes.VentasReporteGeneral;
 
 public class Principal extends Application implements EventHandler<ActionEvent> {
 	Button btnLogin;
 	Button btnExit;
 	Button btnAgregar;
+	String usuarioGlobal = "";
 	MenuItem facturacionMenuItem, bodegaMenuItem, exMenuItem, pruebasCombos;
-	MenuItem ingresoProductoMenuItem, reporteProductoMenuItem, CompraProductoMenuItem ;
+	MenuItem ingresoProductoMenuItem, reporteProductoMenuItem, CompraProductoMenuItem, reporteGeneralVentasMenuItem ;
 	MenuItem ingresoClientesMenuItem;
 	MenuItem facturasMenuItem, factConsulta, factReporteGeneral;
 	MenuItem cargaUserMenuItem;
@@ -73,7 +79,8 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 	boolean segunda = false;
 	boolean boolFact = false;
 	Stage VentanaT;
-
+	TextField userTextField;
+	PasswordField pwBox;
 	public TableView<ProductosDTO> table = new TableView();
 	public TableView<ProductosDTO> tableT = new TableView();
 	public TableView<ProductosDTO> tableFacturacion = new TableView();
@@ -85,7 +92,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 	public TableColumn<ProductosDTO, String> Nombre = new TableColumn<>("Nombre");
 	public TableColumn<ProductosDTO, String> Desc = new TableColumn<>("Descripcion");
 	public TableColumn<ProductosDTO, String> Precio = new TableColumn<>("Precio");
-
+	Optional<ButtonType> optionRetorno=null;
 	@Override
 	public void start(Stage primaryStage) {
 		botones bot = new botones();
@@ -106,11 +113,13 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		grid.add(scenetitle, 0, 0, 2, 1);
 		Label userName = new Label("Usuario:");
 		grid.add(userName, 0, 1);
-		TextField userTextField = new TextField();
+		userTextField = new TextField();
+		userTextField.setText("");
 		grid.add(userTextField, 1, 1);
 		Label pw = new Label("Contraseña:");
 		grid.add(pw, 0, 2);
-		PasswordField pwBox = new PasswordField();
+		pwBox = new PasswordField();
+		pwBox.setText("");
 		grid.add(pwBox, 1, 2);
 		
 		botones b = new botones();
@@ -127,28 +136,61 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		HBox hButton = new HBox(10);
 		hButton.setAlignment(Pos.BOTTOM_CENTER);
 		hButton.getChildren().addAll(btnLogin, btnExit);
-		grid.add(hButton, 1, 4);
+		grid.add(hButton, 1, 6);
 		
 		
 		Scene scene = new Scene(grid, 410, 310);
-		scene.getStylesheets().add("DarkTheme.css");
-		
+		//scene.getStylesheets().add("DarkTheme.css");
+		alertasMensajes alerta = new alertasMensajes();
 		btnLogin.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("=======================================================");
 				System.out.println("Entrando al menu principal...");
 				System.out.println("=======================================================");
-				primaryStage.toBack();
-				primaryStage.close();
-				panelPrincipal();
+				
+				if (!userTextField.getText().toString().isEmpty() && !pwBox.getText().toString().isEmpty() )
+				{	
+					UsuariosBO objInsertar = new UsuariosBO();
+					try 
+					{
+						int loginok = 0;
+						loginok = objInsertar.loginUsuario(userTextField.getText().toString().trim(), pwBox.getText().toString().trim());
+						if ( loginok > 0 )
+						{	
+							optionRetorno = alerta.opcionConfirmacion("Credenciales correctas", " Bienvenido usuario " +userTextField.getText().toString() );
+							primaryStage.close();
+							panelPrincipal(userTextField.getText().toString().trim());
+						}
+						else 
+						{
+							String srtError = "Usuario no existe en el sistema, por favor vuelva a ingresar ...";
+							alerta.alertaOK(srtError);
+							userTextField.setText(""); 
+							pwBox.setText("");
+						}	
+							
+						
+					} 
+					catch (SQLException e) 
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+				 }
+				 else 
+				 {
+					String srtError = "Falta ingresar usuario y/o contraseña, por favor revise";
+					alerta.alertaError(srtError);
+				 }
+				
 			}
 
 		});
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		primaryStage.setResizable(false);
-		
 		primaryStage.getIcons().add(bot.iconoLaren());
 	}
 
@@ -161,7 +203,8 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		diAlerta.showAndWait();
 	}
 
-	public void panelPrincipal() {
+	public void panelPrincipal(String usuario) {
+		usuarioGlobal = usuario;
 		VentanaT = new Stage();
 		VentanaT.setTitle("Principal");
 		Group raiz = new Group();
@@ -190,8 +233,10 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		reporteProductoMenuItem.setOnAction(this);
 		CompraProductoMenuItem = new MenuItem("Compras productos");
 		CompraProductoMenuItem.setOnAction(this);
+		reporteGeneralVentasMenuItem = new MenuItem("Reporte General de Ventas");
+		reporteGeneralVentasMenuItem.setOnAction(this);
 		
-		filePoliticas.getItems().addAll(ingresoProductoMenuItem, reporteProductoMenuItem, CompraProductoMenuItem);
+		filePoliticas.getItems().addAll(ingresoProductoMenuItem, reporteProductoMenuItem, CompraProductoMenuItem,reporteGeneralVentasMenuItem);
 
 		/*** Proveedores***/
 		Menu fileProveedores = new Menu("_Proveedores");
@@ -241,7 +286,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 		escena.getStylesheets().add("DarkTheme.css");
 		
 		VentanaT.setScene(escena);
-		VentanaT.setResizable(false);
+		VentanaT.setResizable(true);
 		VentanaT.getIcons().add(b.iconoLaren());
 		//VentanaT.setX(5);
 		//VentanaT.setY(5);
@@ -623,7 +668,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 			System.out.println("==================================================");
 			System.out.println("Logueandose...");
 			System.out.println("==================================================");
-			panelPrincipal();
+			panelPrincipal(usuarioGlobal);
 
 		} else if (event.getSource() == btnExit) {
 			System.out.println("==================================================");
@@ -637,7 +682,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 			System.out.println("==================================================");
 			facturacion fact = new facturacion();
 			facturaGenera a = new facturaGenera();
-			a.formularioFactura(VentanaT);
+			a.formularioFactura(VentanaT, usuarioGlobal);
 			// panelFactura();
 			// fact.formularioFactura();
 			boolFact = true;
@@ -659,7 +704,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 			System.out.println("Ingreso de producto.");
 			System.out.println("==================================================");
 			productosPrincipal ingreso = new productosPrincipal();
-			ingreso.ingresoProductos(VentanaT);
+			ingreso.ingresoProductos(VentanaT, usuarioGlobal );
 
 		}  else if (event.getSource() == reporteProductoMenuItem) {
 			System.out.println("==================================================");
@@ -674,14 +719,14 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 			System.out.println("Ingreso de Clientes.");
 			System.out.println("==================================================");
 			clientesPrincipal clientes = new clientesPrincipal();
-			clientes.ingresoClientes(VentanaT);
+			clientes.ingresoClientes(VentanaT, usuarioGlobal);
 
 		}  else if (event.getSource() == facturasMenuItem) {
 			System.out.println("==================================================");
 			System.out.println("Creacion de facturas.");
 			System.out.println("==================================================");
 			facturacion factura = new facturacion();
-			factura.formularioFactura(VentanaT);
+			factura.formularioFactura(VentanaT, usuarioGlobal);
 
 		} else if (event.getSource() == factConsulta) {
 			System.out.println("==================================================");
@@ -720,7 +765,7 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 			System.out.println("Menu de proveedores.");
 			System.out.println("==================================================");
 			proveedoresPrincipal proveedores = new proveedoresPrincipal();
-			proveedores.ingresoProveedores(VentanaT);
+			proveedores.ingresoProveedores(VentanaT, usuarioGlobal);
 
 		} 
 		else if (event.getSource() == CompraProductoMenuItem)
@@ -729,10 +774,16 @@ public class Principal extends Application implements EventHandler<ActionEvent> 
 			System.out.println("Menu de compras de productos.");
 			System.out.println("==================================================");
 			comprasPrincipal compras = new comprasPrincipal();
-			compras.comprasPrin(VentanaT);
-			
+			compras.comprasPrin(VentanaT, usuarioGlobal);
+		}
+		 else if (event.getSource() == reporteGeneralVentasMenuItem) {
+				System.out.println("==================================================");
+				System.out.println("Reporte General de Ventas.");
+				System.out.println("==================================================");
+				VentasReporteGeneral objReporte = new VentasReporteGeneral();
+				objReporte.ventanaReporte(VentanaT);
 
-		} 
+			}
 		
 
 	}

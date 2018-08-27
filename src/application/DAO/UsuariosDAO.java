@@ -242,4 +242,34 @@ public class UsuariosDAO {
 	}
 	
 	
+	public int loginUsuarioSistema(Connection objConnection, String usuario, String password) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			ps = objConnection.prepareStatement("select count(f.usuario) as usuario from tb_usuarios f where f.usuario= ? and f.password = ? ;");
+			ps.setString(1, usuario);
+			ps.setString(2, password);
+			rs = ps.executeQuery();
+
+			if (rs.next() == true) {
+				return rs.getInt("usuario");
+			} else
+				return rs.getInt("usuario");
+
+		} catch (Exception e) {
+			StringWriter errores = new StringWriter();
+			e.printStackTrace(new PrintWriter(errores));
+			return 0;
+		} finally {
+			if (rs != null && rs.isClosed()) {
+				rs.close();
+			}
+			if (ps != null && !ps.isClosed()) {
+				ps.close();
+			}
+		}
+	}
+	
+	
 }

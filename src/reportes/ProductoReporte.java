@@ -254,6 +254,9 @@ public class ProductoReporte implements EventHandler<ActionEvent> {
 					} else {
 						File ruta = new File(strRuta);
 						System.out.println("ruta: " + ruta);
+						strError = "El reporte se ha generado exitosamente, espere un momento mientras se abre Microsoft Excel";
+						alertasMensajes alerta = new alertasMensajes();
+						alerta.alertaOK(strError);
 						Desktop.getDesktop().open(ruta);
 					}
 				}

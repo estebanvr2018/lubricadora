@@ -200,11 +200,14 @@ public class consultaFacturas implements EventHandler<ActionEvent> {
 			if (objFactura != null && objFactura.getFechaFactura() != null
 					&& String.valueOf(objFactura.getIdFactura()) != null) {
 				String strRuta = objGeneraReportes.generaRutaFacturasPDF(objFactura.getFechaFactura());
+				
 				System.out.println(strRuta);
 				if (strRuta != null) {
 					File ruta = new File(strRuta + "\\" + objFactura.getIdFactura() + ".pdf");
+					
 					System.out.println("ruta: " + ruta);
 					Desktop.getDesktop().open(ruta);
+					
 				} else {
 					alerta.alertaGeneral(srtError);
 				}

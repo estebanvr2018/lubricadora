@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.aquafx_project.AquaFx;
 
@@ -27,6 +28,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
@@ -85,9 +87,11 @@ public class comprasPrincipal implements EventHandler<ActionEvent>
 	public TableColumn<productoDTO, String> subcategoria = new TableColumn<>("Sub-categoría");
 	/*** ***/
 	/* FIN tabla de productos*/
+	public String usuarioGlobal = "";
 	
-	public void comprasPrin(Stage ventanaIngreso) 
+	public void comprasPrin(Stage ventanaIngreso, String usuario) 
 	{
+		usuarioGlobal = usuario;
 		//ventanaActual = ventanaIngreso;
 		ventanaActual = new Stage();
 		// Bandera para controlar que ingreso por primera vez
@@ -128,11 +132,12 @@ public class comprasPrincipal implements EventHandler<ActionEvent>
 					System.out.println("================================================================================");
 					proveedor="";
 					proveedor=p2;
+					btnModifProducto.setDisable(true);
 					if (p2 != null) {
 						if (p2 == "Nuevo proveedor")
 						{
 							proveedorUI insertaProveedor = new proveedorUI();
-							insertaProveedor.insertaProveedor(null);
+							insertaProveedor.insertaProveedor(null,usuarioGlobal);
 
 						} 
 						else 
@@ -468,15 +473,16 @@ public class comprasPrincipal implements EventHandler<ActionEvent>
 					if (event.getClickCount() == 2) {
 						try {
 							cargarProducto = productosIngresados.getSelectionModel().getSelectedItem();
-							System.out.println("Error 2 clicks");
+							btnModifProducto.setDisable(false);
+							
 						} catch (Exception exs) {
 							// btnAdd.setDisable(true);
 							System.out.println("Error");
 						}
 					}
 					if (event.getClickCount() == 1) {
-						System.out.println("Un solo click");
 						cargarProducto = productosIngresados.getSelectionModel().getSelectedItem();
+						btnModifProducto.setDisable(false);
 					}
 				});
 				
@@ -502,7 +508,7 @@ public class comprasPrincipal implements EventHandler<ActionEvent>
 				btnModifProducto.setTextFill(Color.GREEN);
 				btnModifProducto.setContentDisplay(ContentDisplay.BOTTOM);
 				btnModifProducto.setOnAction(this);
-				
+				btnModifProducto.setDisable(true);
 				
 				/*  INI Refrescar tabla cuando ingreso un nuevo producto*/
 				Button btnRefrescarTabla = new Button ("Actualizar");
@@ -626,7 +632,7 @@ public class comprasPrincipal implements EventHandler<ActionEvent>
 		ComprasBO objInsertar = new ComprasBO();
 		int resInsert = 0;
 		try {
-			resInsert = objInsertar.insertaCompra(idProveedor, nFactura, base0, baseD, iva, totalCOmpra);
+			resInsert = objInsertar.insertaCompra(idProveedor, nFactura, base0, baseD, iva, totalCOmpra, usuarioGlobal);
 			if (resInsert == 1) {
 				System.out.println("Resultado del query: " + resInsert);
 				alertasMensajes alertas = new alertasMensajes();
@@ -742,7 +748,21 @@ public class comprasPrincipal implements EventHandler<ActionEvent>
 					System.out.println(" id Proveedorres: "+idProveedorGeneral);
 				}	
 			}
-			ingresoPrdo.ingresoProductos(idProveedorGeneral);
+			Optional<ButtonType> result = ingresoPrdo.ingresoProductos(idProveedorGeneral, usuarioGlobal);
+			try {
+				if (result.get() == ButtonType.OK){
+					cargaProductos(proveedor);
+				} 
+				else
+				{
+					cargaProductos(proveedor);
+				}
+			}
+			catch(Exception e)
+			{
+				System.out.println("Error ");
+			}
+			
 			/*Navegacion entre ventanas*/
 			productosIU ControllerStage2 = new productosIU();
 			//Stage1Controller
@@ -763,7 +783,21 @@ public class comprasPrincipal implements EventHandler<ActionEvent>
 					System.out.println(" id Producto: "+idProveedorGeneral);
 				}	
 			}
-			ingresoPrdo.actualizaProductos(idProveedorGeneral, cargarProducto);
+			Optional<ButtonType> result = ingresoPrdo.actualizaProductos(idProveedorGeneral, cargarProducto);
+			try {
+				if (result.get() == ButtonType.OK){
+					cargaProductos(proveedor);
+				} 
+				else
+				{
+					cargaProductos(proveedor);
+				}
+				
+			}
+			catch(Exception e)
+			{
+				System.out.println("Error ");
+			}
 		}
 		// 
 		

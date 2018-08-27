@@ -56,9 +56,11 @@ public class clientesPrincipal implements EventHandler<ActionEvent> {
 	public TableColumn<ClientesDTO, String> Correo = new TableColumn<>("Correo");
 	public List<ClientesDTO> clientes = null;
 
-	public void ingresoClientes(Stage ventanaIngreso) {
+	public String usuarioGlobal = "";
+	public void ingresoClientes(Stage ventanaIngreso, String usuario) {
 		// cargaComboTipo();
 		//ventanaActual = ventanaIngreso;
+		usuarioGlobal = usuario;
 		ventanaActual = new Stage();
 		//Text scenetitle = new Text("Clientes");
 		Label scenetitle = new Label(" - Búsqueda de clientes - ");
@@ -354,7 +356,7 @@ public class clientesPrincipal implements EventHandler<ActionEvent> {
 			System.out.println("==================================================");
 			// ventanaActual.close();
 			clientesIU insertaCliente = new clientesIU();
-			Optional<ButtonType> result = insertaCliente.insertaCliente(txtIdentificacion.getText().toString().trim());
+			Optional<ButtonType> result = insertaCliente.insertaCliente(txtIdentificacion.getText().toString().trim(),usuarioGlobal);
 			try {
 				if (result.get() == ButtonType.OK){
 					limpiaPantalla();
@@ -381,7 +383,7 @@ public class clientesPrincipal implements EventHandler<ActionEvent> {
 			} 
 			else 
 			{
-				Optional<ButtonType> result = actualizaCliente.modificaCliente(quitarRegistro);
+				Optional<ButtonType> result = actualizaCliente.modificaCliente(quitarRegistro, usuarioGlobal);
 				try {
 					if (result.get() == ButtonType.OK){
 						limpiaPantalla();
